@@ -1,24 +1,28 @@
 package br.edu.ufape.poo.backend.business.basic;
 
+import java.time.LocalDate;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Account
+public class Bookshelf
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String name;
-	private String email;
-	private String password;
 	@Column(columnDefinition = "TEXT")
-	private String biography;
+	private String description;
+	private List<String> bookApiIds;
+	private LocalDate creationDate;
 	private boolean privacy;
-	private String picture;
+	@ManyToOne
+	private Account owner;
 	
 	public long getId()
 	{
@@ -40,34 +44,34 @@ public class Account
 		this.name = name;
 	}
 	
-	public String getEmail()
+	public String getDescription()
 	{
-		return this.email;
+		return this.description;
 	}
 	
-	public void setEmail(String email)
+	public void setDescription(String description)
 	{
-		this.email = email;
+		this.description = description;
 	}
 	
-	public String getPassword()
+	public List<String> getBookApiIds()
 	{
-		return this.password;
+		return this.bookApiIds;
 	}
 	
-	public void setPassword(String password)
+	public void setBookApiIds(List<String> bookApiIds)
 	{
-		this.password = password;
+		this.bookApiIds = bookApiIds;
 	}
 	
-	public String getBiography()
+	public LocalDate getCreationDate()
 	{
-		return this.biography;
+		return this.creationDate;
 	}
 	
-	public void setBiography(String biography)
+	public void setCreationDate(LocalDate creationDate)
 	{
-		this.biography = biography;
+		this.creationDate = creationDate;
 	}
 	
 	public boolean isPrivacy()
@@ -80,13 +84,13 @@ public class Account
 		this.privacy = privacy;
 	}
 	
-	public String getPicture()
+	public Account getOwner()
 	{
-		return this.picture;
+		return this.owner;
 	}
 	
-	public void setPicture(String picture)
+	public void setOwner(Account owner)
 	{
-		this.picture = picture;
+		this.owner = owner;
 	}
 }

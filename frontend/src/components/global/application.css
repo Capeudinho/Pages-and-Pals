@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap");
+
+*
+{
+    margin: 0px;
+    padding: 0px;
+    outline: 0px;
+    box-sizing: border-box;
+}
+
+html, body, #root
+{
+    height: max-content;
+    min-height: 100vh;
+}
+
+body
+{
+    background-color: #ffffff;
+    -webkit-font-smoothig: antialiased;
+}
+
+body, div, input, select, button
+{
+    border: none;
+    font-family: Roboto, sans-serif;
+    font-size: 13.5px;
+    line-height: 10px;
+}
+
+textarea
+{
+    border: none;
+    font-family: Roboto, sans-serif;
+    font-size: 13.5px;
+    line-height: 20px;
+}
+
+button
+{
+    width: fit-content;
+    background-color: #ffffff;
+    white-space: nowrap;
+}
+
+a
+{
+    color: inherit;
+    text-decoration: none;
+}
+
+button:hover
+{
+    cursor: pointer;
+}
+
+.area
+{
+    min-height: 100vh;
+}
+
+.overlay
+{
+    position: fixed;
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: rgba(0, 0, 0, 0.0);
+}
