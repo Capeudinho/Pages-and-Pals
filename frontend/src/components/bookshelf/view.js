@@ -13,15 +13,11 @@ function BookshelfView()
     const {loggedAccount, setLoggedAccount} = useContext(loggedAccountContext);
     const {alert, setAlert} = useContext(alertContext);
     const {overlay, setOverlay} = useContext(overlayContext);
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [creationDate, setCreationDate] = useState("");
-    const [privacy, setPrivacy] = useState(false);
-    const [ownerId, setOwnerId] = useState("");
-    const [bookCards, setBookCards] = useState([]);
-    const [bookCardsPage, setBookCardsPage] = useState(-1);
+    const [bookshelf, setBookshelf] = useState(null);
+    const [books, setBooks] = useState(null);
     const [mode, setMode] = useState("books");
     const navigate = useNavigate();
+    const {ownerId} = useParams();
     const {id} = useParams();
 
     useEffect
@@ -34,22 +30,46 @@ function BookshelfView()
                 setOverlay(true);
                 try
                 {
-                    const accountResponse = await api.get("/bookshelf/findbyid/"+id);
-                    setName(accountResponse.data.name);
-                    setDescription(accountResponse.data.description);
-                    setCreationDate(accountResponse.data.creationDate);
-                    setPrivacy(accountResponse.data.privacy);
-                    setOwnerId(accountResponse.data.owner.id);
-                    setBookCardsPage(0);
+                    var response;
+                    if (loggedAccount?.id !== undefined && loggedAccount?.id === Number(ownerId))
+                    {
+                        response = await api.get
+                        (
+                            "/bookshelf/findownbyid/"+id,
+                            {
+                                headers:
+                                {
+                                    email: loggedAccount?.email,
+                                    password: loggedAccount?.password
+                                }
+                            }
+                        );
+                    }
+                    else
+                    {
+                        response = await api.get("/bookshelf/findbyid/"+id);
+                    }
+                    setBookshelf(response?.data);
+                    if (response?.data?.bookApiIds?.length > 0)
+                    {
+                        loadBookCards(true);
+                    }
                 }
                 catch (exception)
                 {
-                    if (exception.response.hasOwnProperty("data"))
+                    if (exception?.response?.data === "incorrect id")
                     {
-                        if (exception.response.data === "incorrect id")
-                        {
-                            navigate("/");
-                        }
+                        navigate("/");
+                    }
+                    else if (exception?.response?.data === "authentication failed")
+                    {
+                        localStorage.clear();
+                        setLoggedAccount(null);
+                        navigate("/");
+                    }
+                    else if (exception?.response?.data === "access denied")
+                    {
+                        navigate("/");
                     }
                 }
                 setOverlay(false);
@@ -60,40 +80,85 @@ function BookshelfView()
         [id]
     );
 
-    useEffect
-    (
-        () =>
+    async function loadBookCards(overwrite)
+    {
+        if (books?.length < bookshelf?.bookApiIds?.length)
         {
-            let mounted = true;
-            const runEffect = async () =>
+            var offset = null;
+            if (overwrite)
             {
-                if (bookCardsPage !== -1)
+                offset = 0;
+            }
+            else
+            {
+                offset = books?.length;
+            }
+            setOverlay(true);
+            try
+            {
+                var response;
+                if (loggedAccount?.id !== undefined && loggedAccount?.id === Number(ownerId))
                 {
-                    setOverlay(true);
-                    try
-                    {
-                        const bookCardsResponse = await api.get
-                        (
-                            "/bookshelf/findbookcardsbyid/"+id,
+                    response = await api.get
+                    (
+                        "/bookshelf/findownbooksbyidpaginate/"+id,
+                        {
+                            params:
                             {
-                                params:
-                                {
-                                    page: bookCardsPage,
-                                    size: 20
-                                }
+                                offset: offset,
+                                limit: 20
+                            },
+                            headers:
+                            {
+                                email: loggedAccount?.email,
+                                password: loggedAccount?.password
                             }
-                        );
-                        setBookCards([...bookCards, ...bookCardsResponse.data]);
-                    }
-                    catch (exception) {}
-                    setOverlay(false);
+                        }
+                    );
+                }
+                else
+                {
+                    response = await api.get
+                    (
+                        "/bookshelf/findbooksbyidpaginate/"+id,
+                        {
+                            params:
+                            {
+                                offset: offset,
+                                limit: 20
+                            }
+                        }
+                    );
+                }
+                if (overwrite)
+                {
+                    setBooks(response?.data);
+                }
+                else
+                {
+                    setBooks([...books, ...response?.data]);
                 }
             }
-            runEffect();
-            return (() => {mounted = false;});
-        },
-        [bookCardsPage]
-    );
+            catch (exception)
+            {
+                if (exception?.response?.data === "incorrect id")
+                {
+                    navigate("/");
+                }
+                else if (exception?.response?.data === "authentication failed")
+                {
+                    localStorage.clear();
+                    setLoggedAccount(null);
+                    navigate("/");
+                }
+                else if (exception?.response?.data === "access denied")
+                {
+                    navigate("/");
+                }
+            }
+            setOverlay(false);
+        }
+    }
 
     function handleChangeModeBooks()
     {
@@ -107,16 +172,16 @@ function BookshelfView()
 
     function handleFormatDate(date)
     {
-        var dateArray = date.split("-");
-        var newDate = dateArray[2]+"/"+dateArray[1]+"/"+dateArray[0];
-        return newDate;
-    }
-
-    function handleInvalidCover(bookCardIndex)
-    {
-        var newBookCards = [...bookCards];
-        newBookCards[bookCardIndex].cover = "";
-        setBookCards(newBookCards);
+        if (date !== null && date !== undefined)
+        {
+            var dateArray = date?.split("-");
+            var newDate = dateArray[2]+"/"+dateArray[1]+"/"+dateArray[0];
+            return newDate;
+        }
+        else
+        {
+            return undefined;
+        }
     }
 
     function handleEdit()
@@ -131,16 +196,20 @@ function BookshelfView()
         {
             await api.delete("/bookshelf/deletebyid/"+id);
             setAlert([{text: "Bookshelf deleted.", type: "success", key: Math.random()}]);
-            navigate(-1);
+            if (bookshelf?.owner?.id !== undefined)
+            {
+                navigate("/account/view/"+bookshelf?.owner?.id);
+            }
+            else
+            {
+                navigate("/");
+            }
         }
         catch (exception)
         {
-            if (exception.response.hasOwnProperty("data"))
+            if (exception?.response?.data === "incorrect id")
             {
-                if (exception.response.data === "incorrect id")
-                {
-                    navigate("/");
-                }
+                navigate("/");
             }
         }
         setOverlay(false);
@@ -153,152 +222,159 @@ function BookshelfView()
                     <div className = "covers">
                         <div
                         className = "cover coverOne"
-                        onError = {() => {handleInvalidCover(bookCards[0])}}
-                        style = {{backgroundImage: bookCards[0] === undefined || bookCards[0].cover === "" ? "url(https://cdn.discordapp.com/attachments/623206414139260998/1133598045720817724/image.png)" : "url("+bookCards[0].cover+")"}}
+                        style = {{backgroundImage: "url("+bookshelf?.covers?.[0]+")"}}
                         />
                         <div
                         className = "cover coverTwo"
-                        onError = {() => {handleInvalidCover(bookCards[1])}}
-                        style = {{backgroundImage: bookCards[1] === undefined || bookCards[1].cover === "" ? "url(https://cdn.discordapp.com/attachments/623206414139260998/1133598045720817724/image.png)" : "url("+bookCards[1].cover+")"}}
+                        style = {{backgroundImage: "url("+bookshelf?.covers?.[1]+")"}}
                         />
                         <div
                         className = "cover coverThree"
-                        onError = {() => {handleInvalidCover(bookCards[2])}}
-                        style = {{backgroundImage: bookCards[2] === undefined || bookCards[2].cover === "" ? "url(https://cdn.discordapp.com/attachments/623206414139260998/1133598045720817724/image.png)" : "url("+bookCards[2].cover+")"}}
+                        style = {{backgroundImage: "url("+bookshelf?.covers?.[2]+")"}}
                         />
                     </div>
                     <div className = "headBox">
-                        <div className = "name">{name}</div>
-                        <div className = "creationDate">{handleFormatDate(creationDate)}</div>
-                    </div>
-                    <div
-                    className = "buttonBox"
-                    style = {{display: loggedAccount !== null && ownerId === loggedAccount.id ? "flex" : "none"}}
-                    >
-                        <button
-                        className = "normalButton"
-                        onClick = {() => {handleEdit()}}
+                        <div className = "name">{bookshelf?.name}</div>
+                        <Link
+                        className = "ownerLink"
+                        to = {"/account/view/"+bookshelf?.owner?.id}
                         >
-                            Edit
-                        </button>
-                        <button
-                        className = "normalButton"
-                        onClick = {() => {handleDelete()}}
-                        >
-                            Delete
-                        </button>
-                    </div>
-                </div>
-                <div className = "modeBox">
-                    <button
-                    className = "modeButton modeBooksButton"
-                    onClick = {() => {handleChangeModeBooks()}}
-                    style = {{backgroundColor: mode === "books" ? "#cccccc" : "#ffffff"}}
-                    >
-                        Books
-                    </button>
-                    <button
-                    className = "modeButton modeDescriptionButton"
-                    onClick = {() => {handleChangeModeDescription()}}
-                    style = {{backgroundColor: mode === "description" ? "#cccccc" : "#ffffff"}}
-                    >
-                        Description
-                    </button>
-                </div>
-                <div className = "infoBox">
-                    <div
-                    className = "books"
-                    style = {{display: mode === "books" ? "flex" : "none"}}
-                    >
+                            <div
+                            className = "ownerPicture"
+                            style = {{backgroundImage: "url("+bookshelf?.owner?.picture+")"}}
+                            />
+                            <div className = "ownerName">{bookshelf?.owner?.name}</div>
+                        </Link>
                         {
-                            bookCards.map
-                            (
-                                (book, bookIndex) =>
-                                {
-                                    return (
-                                        <div className = "bookBox">
-                                            <Link
-                                            to = {"/books/view/"+book.apiId}
-                                            key = {bookIndex}
-                                            >
-                                                <div className = "book">
-                                                    <div
-                                                    className = "cover"
-                                                    onError = {() => {handleInvalidCover(bookIndex)}}
-                                                    style = {{backgroundImage: book.cover === "" ? "url(https://cdn.discordapp.com/attachments/623206414139260998/1133598045720817724/image.png)" : "url("+book.cover+")"}}
-                                                    />
-                                                    <div className = "bookInfoBox">
-                                                        <div className = "title">{book.title}</div>
-                                                        <div
-                                                        className = "authors"
-                                                        style = {{display: book.authors !== [] ? "flex" : "none"}}
-                                                        >
-                                                            {
-                                                                book.authors.map
-                                                                (
-                                                                    (author, authorIndex) =>
-                                                                    {
-                                                                        return (
-                                                                            <div
-                                                                            className = "author"
-                                                                            key = {authorIndex}
-                                                                            >
-                                                                                {author}
-                                                                            </div>
-                                                                        );
-                                                                    }
-                                                                )
-                                                            }
-                                                        </div>
-                                                        <div
-                                                        className = "categories"
-                                                        style = {{display: book.categories.length !== 0 ? "flex" : "none"}}
-                                                        >
-                                                            {
-                                                                book.categories.map
-                                                                (
-                                                                    (category, categoryIndex) =>
-                                                                    {
-                                                                        return (
-                                                                            <div
-                                                                            className = "category"
-                                                                            key = {categoryIndex}
-                                                                            >
-                                                                                {category}
-                                                                            </div>
-                                                                        );
-                                                                    }
-                                                                )
-                                                            }
-                                                        </div>
-                                                        <div
-                                                        className = "score"
-                                                        style = {{display: book.score !== null ? "block" : "none"}}
-                                                        >
-                                                            {book.score !== null ? book.score : ""}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Link>
-                                            <button
-                                            className = "removeButton"
-                                            onClick = {() => {}}
-                                            >
-                                                X
-                                            </button>
-                                        </div>
-                                    );
-                                }
-                            )
+                            loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id ?
+                            <div className = "creationDate">{handleFormatDate(bookshelf?.creationDate)}</div> :
+                            <></>
                         }
                     </div>
-                    <div
-                    className = "description"
-                    style = {{display: mode === "description" ? "block" : "none"}}
-                    >
-                        {description}
-                    </div>
+                    {
+                        loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id ?
+                        <div className = "buttonBox">
+                            <button
+                            className = "normalButton"
+                            onClick = {() => {handleEdit()}}
+                            >
+                                Edit
+                            </button>
+                            <button
+                            className = "normalButton"
+                            onClick = {() => {handleDelete()}}
+                            >
+                                Delete
+                            </button>
+                        </div> :
+                        <></>
+                    }
                 </div>
+                {
+                    (loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id) || bookshelf?.privacy ?
+                    <>
+                        <div className = "modeBox">
+                            <button
+                            className = "modeButton modeBooksButton"
+                            onClick = {() => {handleChangeModeBooks()}}
+                            style = {{backgroundColor: mode === "books" ? "#cccccc" : "#ffffff"}}
+                            >
+                                Books
+                            </button>
+                            <button
+                            className = "modeButton modeDescriptionButton"
+                            onClick = {() => {handleChangeModeDescription()}}
+                            style = {{backgroundColor: mode === "description" ? "#cccccc" : "#ffffff"}}
+                            >
+                                Description
+                            </button>
+                        </div>
+                        <div className = "infoBox">
+                            {
+                                mode === "books" ?
+                                <div className = "books">
+                                    {
+                                        books !== null ?
+                                        books.map
+                                        (
+                                            (book, bookIndex) =>
+                                            {
+                                                return (
+                                                    <div
+                                                    className = "bookBox"
+                                                    key = {bookIndex}
+                                                    >
+                                                        <Link to = {"/books/view/"+book?.apiId}>
+                                                            <div className = "book">
+                                                                <div
+                                                                className = "cover"
+                                                                style = {{backgroundImage: "url("+book?.cover+")"}}
+                                                                />
+                                                                <div className = "bookInfoBox">
+                                                                    <div className = "title">{book?.title}</div>
+                                                                    <div className = "authors">
+                                                                        {
+                                                                            book?.authors?.map
+                                                                            (
+                                                                                (author, authorIndex) =>
+                                                                                {
+                                                                                    return (
+                                                                                        <div
+                                                                                        className = "author"
+                                                                                        key = {authorIndex}
+                                                                                        >
+                                                                                            {author}
+                                                                                        </div>
+                                                                                    );
+                                                                                }
+                                                                            )
+                                                                        }
+                                                                    </div>
+                                                                    <div className = "categories">
+                                                                        {
+                                                                            book?.categories?.map
+                                                                            (
+                                                                                (category, categoryIndex) =>
+                                                                                {
+                                                                                    return (
+                                                                                        <div
+                                                                                        className = "category"
+                                                                                        key = {categoryIndex}
+                                                                                        >
+                                                                                            {category}
+                                                                                        </div>
+                                                                                    );
+                                                                                }
+                                                                            )
+                                                                        }
+                                                                    </div>
+                                                                    <div className = "score">{book?.score}</div>
+                                                                </div>
+                                                            </div>
+                                                        </Link>
+                                                        {
+                                                            loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id ?
+                                                            <button
+                                                            className = "removeButton"
+                                                            onClick = {() => {}}
+                                                            >
+                                                                X
+                                                            </button> :
+                                                            <></>
+                                                        }
+                                                    </div>
+                                                );
+                                            }
+                                        ) :
+                                        <></>
+                                    }
+                                </div> :
+                                <div className = "description">{bookshelf?.description}</div>
+                            }
+                        </div>
+                    </> :
+                    <div className = "bottomBox">This bookshelf is private.</div>
+                }
             </div>
         </div>
     );

@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import br.edu.ufape.poo.backend.business.basic.Account;
 import br.edu.ufape.poo.backend.data.AccountRepository;
 import br.edu.ufape.poo.backend.exceptions.TakenEmailException;
+import br.edu.ufape.poo.backend.exceptions.AuthenticationFailedException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectEmailException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectPasswordException;
@@ -91,6 +92,17 @@ public class AccountService
 		return newAccount;
 	}
 	
+	public Account deleteById(Long id) throws Exception
+	{
+		Optional<Account> accountOptional = accountRepository.findById(id);
+		if (!accountOptional.isPresent())
+		{
+			throw new IncorrectIdException();
+		}
+		accountRepository.delete(accountOptional.get());
+		return accountOptional.get();
+	}
+	
 	public Account findById(Long id) throws Exception
 	{
 		Optional<Account> accountOptional = accountRepository.findById(id);
@@ -102,14 +114,14 @@ public class AccountService
 		return account;
 	}
 	
-	public Account deleteById(Long id) throws Exception
+	public Account authenticate(String email, String password) throws Exception
 	{
-		Optional<Account> accountOptional = accountRepository.findById(id);
+		Optional<Account> accountOptional = accountRepository.findByEmailAndPassword(email, password);
 		if (!accountOptional.isPresent())
 		{
-			throw new IncorrectIdException();
+			throw new AuthenticationFailedException();
 		}
-		accountRepository.delete(accountOptional.get());
-		return accountOptional.get();
+		Account account = accountOptional.get();
+		return account;
 	}
 }

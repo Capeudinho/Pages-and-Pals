@@ -82,31 +82,28 @@ function AccountEnter()
                     password: signUpPassword
                 }
             );
-            localStorage.setItem("account", JSON.stringify(response.data));
-            setLoggedAccount(response.data);
+            localStorage.setItem("account", JSON.stringify(response?.data));
+            setLoggedAccount(response?.data);
             setAlert([{text: "Account created.", type: "success", key: Math.random()}]);
             navigate("/");
         }
         catch (exception)
         {
-            if (exception.response.hasOwnProperty("data"))
+            if (exception?.response?.data === "email taken")
             {
-                if (exception.response.data === "email taken")
-                {
-                    setAlert([{text: "E-mail is taken.", type: "warning", key: Math.random()}]);
-                }
-                else if (exception.response.data === "invalid name")
-                {
-                    setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
-                }
-                else if (exception.response.data === "invalid email")
-                {
-                    setAlert([{text: "E-mail is invalid.", type: "warning", key: Math.random()}]);
-                }
-                else if (exception.response.data === "invalid password")
-                {
-                    setAlert([{text: "Password is invalid.", type: "warning", key: Math.random()}]);
-                }
+                setAlert([{text: "E-mail is taken.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "invalid name")
+            {
+                setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "invalid email")
+            {
+                setAlert([{text: "E-mail is invalid.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "invalid password")
+            {
+                setAlert([{text: "Password is invalid.", type: "warning", key: Math.random()}]);
             }
         }
         setOverlay(false);
@@ -118,19 +115,16 @@ function AccountEnter()
         try
         {
             const response = await api.post("/account/login/"+logInEmail+"/"+logInPassword);
-            localStorage.setItem("account", JSON.stringify(response.data));
-            setLoggedAccount(response.data);
+            localStorage.setItem("account", JSON.stringify(response?.data));
+            setLoggedAccount(response?.data);
             setAlert([{text: "Logged into account.", type: "success", key: Math.random()}]);
             navigate("/");
         }
         catch (exception)
         {
-            if (exception.response.hasOwnProperty("data"))
+            if (exception?.response?.data === "incorrect information")
             {
-                if (exception.response.data === "incorrect information")
-                {
-                    setAlert([{text: "E-mail, or password is incorrect.", type: "warning", key: Math.random()}]);
-                }
+                setAlert([{text: "E-mail, or password is incorrect.", type: "warning", key: Math.random()}]);
             }
         }
         setOverlay(false);
@@ -140,12 +134,8 @@ function AccountEnter()
         <div className = "area accountEnterArea">
             <div className = "mainBox">
                 <div className = "topBox">
-                    <div className = "text topText">
-                        Welcome to
-                    </div>
-                    <div className = "text bottomText">
-                        Pages & Pals
-                    </div>
+                    <div className = "text topText">Welcome to</div>
+                    <div className = "text bottomText">Pages & Pals</div>
                 </div>
                 <div className = "modeBox">
                     <button
@@ -164,81 +154,78 @@ function AccountEnter()
                     </button>
                 </div>
                 <div className = "formBox">
-                    <div
-                    className = "innerFormBox"
-                    style = {{display: mode === "signup" ? "block" : "none"}}
-                    >
-                        <div className = "label">Name</div>
-                        <input
-                        className = "normalInput"
-                        value = {signUpName}
-                        onChange = {(event) => {handleChangeSignUpName(event)}}
-                        spellCheck = {false}
-                        />
-                        <div className = "label">E-mail</div>
-                        <input
-                        className = "normalInput"
-                        value = {signUpEmail}
-                        onChange = {(event) => {handleChangeSignUpEmail(event)}}
-                        spellCheck = {false}
-                        />
-                        <div className = "label">Password</div>
-                        <div className = "passwordBox">
+                    {
+                        mode === "signup" ?
+                        <>
+                            <div className = "label">Name</div>
                             <input
-                            className = "passwordInput"
-                            value = {signUpPassword}
-                            onChange = {(event) => {handleChangeSignUpPassword(event)}}
-                            type = {showSignUpPassword ? "text" : "password"}
+                            className = "normalInput"
+                            value = {signUpName}
+                            onChange = {(event) => {handleChangeSignUpName(event)}}
                             spellCheck = {false}
                             />
-                            <button
-                            className = "showPasswordButton"
-                            onClick = {() => {handleChangeShowSignUpPassword()}}
-                            >
-                                {showSignUpPassword ? "H" : "S"}
-                            </button>
-                        </div>
-                        <button
-                        className = "completeButton"
-                        onClick = {() => {handleSignUp()}}
-                        >
-                            Sign up
-                        </button>
-                    </div>
-                    <div
-                    className = "innerFormBox"
-                    style = {{display: mode === "login" ? "block" : "none"}}
-                    >
-                        <div className = "label">E-mail</div>
-                        <input
-                        className = "normalInput"
-                        value = {logInEmail}
-                        onChange = {(event) => {handleChangeLogInEmail(event)}}
-                        spellCheck = {false}
-                        />
-                        <div className = "label">Password</div>
-                        <div className = "passwordBox">
+                            <div className = "label">E-mail</div>
                             <input
-                            className = "passwordInput"
-                            value = {logInPassword}
-                            onChange = {(event) => {handleChangeLogInPassword(event)}}
-                            type = {showLogInPassword ? "text" : "password"}
+                            className = "normalInput"
+                            value = {signUpEmail}
+                            onChange = {(event) => {handleChangeSignUpEmail(event)}}
                             spellCheck = {false}
                             />
+                            <div className = "label">Password</div>
+                            <div className = "passwordBox">
+                                <input
+                                className = "passwordInput"
+                                value = {signUpPassword}
+                                onChange = {(event) => {handleChangeSignUpPassword(event)}}
+                                type = {showSignUpPassword ? "text" : "password"}
+                                spellCheck = {false}
+                                />
+                                <button
+                                className = "showPasswordButton"
+                                onClick = {() => {handleChangeShowSignUpPassword()}}
+                                >
+                                    {showSignUpPassword ? "H" : "S"}
+                                </button>
+                            </div>
                             <button
-                            className = "showPasswordButton"
-                            onClick = {() => {handleChangeShowLogInPassword()}}
+                            className = "completeButton"
+                            onClick = {() => {handleSignUp()}}
                             >
-                                {showLogInPassword ? "H" : "S"}
+                                Sign up
                             </button>
-                        </div>
-                        <button
-                        className = "completeButton"
-                        onClick = {() => {handleLogIn()}}
-                        >
-                            Log in
-                        </button>
-                    </div>
+                        </> :
+                        <>
+                            <div className = "label">E-mail</div>
+                            <input
+                            className = "normalInput"
+                            value = {logInEmail}
+                            onChange = {(event) => {handleChangeLogInEmail(event)}}
+                            spellCheck = {false}
+                            />
+                            <div className = "label">Password</div>
+                            <div className = "passwordBox">
+                                <input
+                                className = "passwordInput"
+                                value = {logInPassword}
+                                onChange = {(event) => {handleChangeLogInPassword(event)}}
+                                type = {showLogInPassword ? "text" : "password"}
+                                spellCheck = {false}
+                                />
+                                <button
+                                className = "showPasswordButton"
+                                onClick = {() => {handleChangeShowLogInPassword()}}
+                                >
+                                    {showLogInPassword ? "H" : "S"}
+                                </button>
+                            </div>
+                            <button
+                            className = "completeButton"
+                            onClick = {() => {handleLogIn()}}
+                            >
+                                Log in
+                            </button>
+                        </>
+                    }
                 </div>
             </div>
         </div>

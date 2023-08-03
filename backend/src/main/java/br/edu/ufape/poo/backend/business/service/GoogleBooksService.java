@@ -15,27 +15,7 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class GoogleBooksService
 {
-	public String findCoverByApiId(String id)
-	{
-		Gson gson = new Gson();
-		WebClient webClient = WebClient.create();
-		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/"+id).retrieve().bodyToMono(String.class).block();
-		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
-		String cover = "";
-		if
-		(
-			jsonObject != null &&
-			jsonObject.get("volumeInfo") != null &&
-			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks") != null &&
-			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail") != null
-		)
-		{
-			cover = jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
-		}
-		return cover;
-	}
-	
-	public Map<String, Object> findBasicByApiId(String apiId)
+	public Map<String, Object> findByApiId(String apiId)
 	{
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
@@ -45,7 +25,7 @@ public class GoogleBooksService
 		String cover = "";
 		List<String> authors = new ArrayList<String>();
 		List<String> categories = new ArrayList<String>();
-		Map<String, Object> bookBasicInformation = new HashMap<>();
+		Map<String, Object> bookBasic = new HashMap<>();
 		if (jsonObject != null && jsonObject.get("volumeInfo") != null)
 		{
 			JsonObject volumeInfo = jsonObject.get("volumeInfo").getAsJsonObject();
@@ -91,10 +71,30 @@ public class GoogleBooksService
 				}
 			}
 		}
-		bookBasicInformation.put("title", title);
-		bookBasicInformation.put("cover", cover);
-		bookBasicInformation.put("authors", authors);
-		bookBasicInformation.put("categories", categories);
-		return bookBasicInformation;
+		bookBasic.put("title", title);
+		bookBasic.put("cover", cover);
+		bookBasic.put("authors", authors);
+		bookBasic.put("categories", categories);
+		return bookBasic;
+	}
+	
+	public String findCoverByApiId(String id)
+	{
+		Gson gson = new Gson();
+		WebClient webClient = WebClient.create();
+		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/"+id).retrieve().bodyToMono(String.class).block();
+		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
+		String cover = "";
+		if
+		(
+			jsonObject != null &&
+			jsonObject.get("volumeInfo") != null &&
+			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks") != null &&
+			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail") != null
+		)
+		{
+			cover = jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
+		}
+		return cover;
 	}
 }

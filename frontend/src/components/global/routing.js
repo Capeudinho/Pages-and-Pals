@@ -32,7 +32,7 @@ function Routing()
                     <Route exact path = "/account/view/:id" element = {<AccountView/>}/>
                     <Route exact path = "/account/enter" element = {<AccountEnter/>}/>
                     <Route exact path = "/account/edit" element = {<AccountEdit/>}/>
-                    <Route exact path = "/bookshelf/view/:id" element = {<BookshelfView/>}/>
+                    <Route exact path = "/bookshelf/from/:ownerId/view/:id" element = {<BookshelfView/>}/>
                     <Route exact path = "/bookshelf/create" element = {<BookshelfCreate/>}/>
                     <Route exact path = "/bookshelf/edit/:id" element = {<BookshelfEdit/>}/>
                 </Routes>

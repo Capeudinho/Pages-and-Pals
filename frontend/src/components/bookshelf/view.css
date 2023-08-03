@@ -89,6 +89,7 @@
 
 .bookshelfViewArea .books
 {
+    display: flex;
     flex-direction: column;
     gap: 10px;
 }
@@ -119,12 +120,14 @@
 
 .bookshelfViewArea .authors
 {
+    display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
 .bookshelfViewArea .categories
 {
+    display: flex;
     flex-direction: row;
     gap: 10px;
 }
@@ -144,6 +147,7 @@
 
 .bookshelfViewArea .buttonBox
 {
+    display: flex;
     flex-direction: row;
     gap: 10px;
 }
@@ -177,4 +181,25 @@
     gap: 10px;
     flex: 1;
     margin-right: 50px;
+}
+
+.bookshelfViewArea .ownerLink
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    flex: 1;
+    width: fit-content;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.bookshelfViewArea .ownerPicture
+{
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #cccccc;
 }

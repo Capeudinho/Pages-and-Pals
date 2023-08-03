@@ -12,7 +12,7 @@ import "./application.css";
 
 function Application ()
 {
-    const [loggedAccount, setLoggedAccount] = useState(null);
+    const [loggedAccount, setLoggedAccount] = useState("loading");
     const [alert, setAlert] = useState([]);
     const [overlay, setOverlay] = useState(false);
     
@@ -28,18 +28,20 @@ function Application ()
                     setOverlay(true);
                     try
                     {
-                        const account = JSON.parse(localStorage.getItem("account"));
-                        const response = await api.get("/account/findbyid/"+account.id);
-                        setLoggedAccount(response.data);
+                        var account = JSON.parse(localStorage.getItem("account"));
+                        var response = await api.post("/account/login/"+account?.email+"/"+account.password);
+                        setLoggedAccount(response?.data);
                     }
                     catch (exception)
                     {
-                        if (exception.response.data === "incorrect id")
-                        {
-                            localStorage.clear();
-                        }
+                        localStorage.clear();
+                        setLoggedAccount(null);
                     }
                     setOverlay(false);
+                }
+                else
+                {
+                    setLoggedAccount(null);
                 }
             }
             runEffect();
@@ -53,12 +55,19 @@ function Application ()
             <loggedAccountContext.Provider value = {{loggedAccount, setLoggedAccount}}>
             <alertContext.Provider value = {{alert, setAlert}}>
             <overlayContext.Provider value = {{overlay, setOverlay}}>
-                <div
-                className = "overlay"
-                style = {{display: overlay ? "block" : "none"}}
-                />
-                <AlertList/>
-                <Routing/>
+                {
+                    loggedAccount?.id !== undefined || loggedAccount === null ?
+                    <>
+                        {
+                            overlay ?
+                            <div className = "overlay"/> :
+                            <></>
+                        }
+                        <AlertList/>
+                        <Routing/>
+                    </> :
+                    <></>
+                }
             </overlayContext.Provider>
             </alertContext.Provider>
             </loggedAccountContext.Provider>

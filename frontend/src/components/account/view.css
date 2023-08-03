@@ -35,6 +35,7 @@
     border-radius: 5px;
     background-size: cover;
     background-position: center;
+    background-color: #cccccc;
 }
 
 .accountViewArea .name
@@ -46,6 +47,7 @@
 
 .accountViewArea .buttonBox
 {
+    display: flex;
     flex-direction: row;
     gap: 10px;
 }
@@ -111,6 +113,7 @@
     border-radius: 5px;
     background-size: cover;
     background-position: center;
+    background-color: #cccccc;
 }
 
 .accountViewArea .coverOne

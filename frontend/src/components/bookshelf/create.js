@@ -91,7 +91,6 @@ function BookshelfCreate()
                 spellCheck = {false}
                 contentEditable = {true}
                 placeholder = "Optional"
-                suppressContentEditableWarning = {true}
                 >
                     {description}
                 </div>

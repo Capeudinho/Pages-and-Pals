@@ -28,14 +28,6 @@ body, div, input, select, button
     line-height: 10px;
 }
 
-textarea
-{
-    border: none;
-    font-family: Roboto, sans-serif;
-    font-size: 13.5px;
-    line-height: 20px;
-}
-
 button
 {
     width: fit-content;

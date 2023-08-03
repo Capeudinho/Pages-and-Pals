@@ -13,12 +13,17 @@ function AccountEdit()
     const {loggedAccount, setLoggedAccount} = useContext(loggedAccountContext);
     const {alert, setAlert} = useContext(alertContext);
     const {overlay, setOverlay} = useContext(overlayContext);
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [biography, setBiography] = useState("");
-    const [privacy, setPrivacy] = useState(false);
-    const [picture, setPicture] = useState("");
+    const [account, setAccount] = useState
+    (
+        {
+            name: "",
+            email: "",
+            password: "",
+            biography: "",
+            privacy: false,
+            picture: ""
+        }
+    );
     const [showPassword, setShowPassword] = useState(false);
     const biographyInput = useRef();
     const navigate = useNavigate();
@@ -27,15 +32,10 @@ function AccountEdit()
     (
         () =>
         {
-            if (loggedAccount !== null)
+            if (loggedAccount?.id !== undefined)
             {
-                setName(loggedAccount.name);
-                setEmail(loggedAccount.email);
-                setPassword(loggedAccount.password);
-                setBiography(loggedAccount.biography);
-                setPrivacy(loggedAccount.privacy);
-                setPicture(loggedAccount.picture);
-                biographyInput.current.innerText = loggedAccount.biography;
+                setAccount(loggedAccount);
+                biographyInput.current.innerText = loggedAccount?.biography;
             }
             else
             {
@@ -47,47 +47,56 @@ function AccountEdit()
 
     function handleChangeName(event)
     {
-        setName(event.target.value);
+        var newAccount = {...account};
+        newAccount.name = event.target.value;
+        setAccount(newAccount);
     }
 
     function handleChangeEmail(event)
     {
-        setEmail(event.target.value);
+        var newAccount = {...account};
+        newAccount.email = event.target.value;
+        setAccount(newAccount);
     }
 
     function handleChangePassword(event)
     {
-        setPassword(event.target.value);
+        var newAccount = {...account};
+        newAccount.password = event.target.value;
+        setAccount(newAccount);
     }
 
     function handleChangeBiography(event)
     {
-        setBiography(event.target.innerText);
+        var newAccount = {...account};
+        newAccount.biography = event.target.innerText;
+        setAccount(newAccount);
     }
 
     function handleChangePrivacyPublic()
     {
-        setPrivacy(true);
+        var newAccount = {...account};
+        newAccount.privacy = true;
+        setAccount(newAccount);
     }
 
     function handleChangePrivacyPrivate()
     {
-        setPrivacy(false);
+        var newAccount = {...account};
+        newAccount.privacy = false;
+        setAccount(newAccount);
     }
 
     function handleChangePicture(event)
     {
-        setPicture(event.target.value);
+        var newAccount = {...account};
+        newAccount.picture = event.target.value;
+        setAccount(newAccount);
     }
 
     function handleChangeShowPassword()
     {
         setShowPassword(!showPassword);
-    }
-
-    function handleInvalidPicture()
-    {
-        setPicture("");
     }
 
     async function handleSave()
@@ -98,47 +107,36 @@ function AccountEdit()
             const response = await api.patch
             (
                 "/account/update",
-                {
-                    id: loggedAccount.id,
-                    name: name,
-                    email: email,
-                    password: password,
-                    biography: biography,
-                    privacy: privacy,
-                    picture: picture
-                }
+                account
             );
-            localStorage.setItem("account", JSON.stringify(response.data));
-            setLoggedAccount(response.data);
+            localStorage.setItem("account", JSON.stringify(response?.data));
+            setLoggedAccount(response?.data);
             setAlert([{text: "Account saved.", type: "success", key: Math.random()}]);
-            navigate("/account/view/"+loggedAccount.id);
+            navigate("/account/view/"+loggedAccount?.id);
         }
         catch (exception)
         {
-            if (exception.response.hasOwnProperty("data"))
+            if (exception?.response?.data === "incorrect id")
             {
-                if (exception.response.data === "incorrect id")
-                {
-                    localStorage.clear();
-                    setLoggedAccount(null);
-                    navigate("/");
-                }
-                else if (exception.response.data === "email taken")
-                {
-                    setAlert([{text: "E-mail is taken.", type: "warning", key: Math.random()}]);
-                }
-                else if (exception.response.data === "invalid name")
-                {
-                    setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
-                }
-                else if (exception.response.data === "invalid email")
-                {
-                    setAlert([{text: "E-mail is invalid.", type: "warning", key: Math.random()}]);
-                }
-                else if (exception.response.data === "invalid password")
-                {
-                    setAlert([{text: "Password is invalid.", type: "warning", key: Math.random()}]);
-                }
+                localStorage.clear();
+                setLoggedAccount("none");
+                navigate("/");
+            }
+            else if (exception?.response?.data === "email taken")
+            {
+                setAlert([{text: "E-mail is taken.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "invalid name")
+            {
+                setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "invalid email")
+            {
+                setAlert([{text: "E-mail is invalid.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "invalid password")
+            {
+                setAlert([{text: "Password is invalid.", type: "warning", key: Math.random()}]);
             }
         }
         setOverlay(false);
@@ -146,7 +144,7 @@ function AccountEdit()
 
     async function handleCancel()
     {
-        navigate(-1);
+        navigate("/account/view/"+loggedAccount.id);
     }
 
     return (
@@ -155,14 +153,14 @@ function AccountEdit()
                 <div className = "label">Name</div>
                 <input
                 className = "normalInput"
-                value = {name}
+                value = {account?.name}
                 onChange = {(event) => {handleChangeName(event)}}
                 spellCheck = {false}
                 />
                 <div className = "label">E-mail</div>
                 <input
                 className = "normalInput"
-                value = {email}
+                value = {account?.email}
                 onChange = {(event) => {handleChangeEmail(event)}}
                 spellCheck = {false}
                 />
@@ -170,7 +168,7 @@ function AccountEdit()
                 <div className = "passwordBox">
                     <input
                     className = "passwordInput"
-                    value = {password}
+                    value = {account?.password}
                     onChange = {(event) => {handleChangePassword(event)}}
                     type = {showPassword ? "text" : "password"}
                     spellCheck = {false}
@@ -186,7 +184,6 @@ function AccountEdit()
                 <div
                 className = "biographyInput"
                 ref = {biographyInput}
-                value = {biography}
                 onInput = {(event) => {handleChangeBiography(event)}}
                 spellCheck = {false}
                 contentEditable = {true}
@@ -197,14 +194,14 @@ function AccountEdit()
                     <button
                     className = "privacyButton privacyPublicButton"
                     onClick = {() => {handleChangePrivacyPublic()}}
-                    style = {{backgroundColor: privacy ? "#ffffff" : "#cccccc"}}
+                    style = {{backgroundColor: account?.privacy ? "#ffffff" : "#cccccc"}}
                     >
                         Public
                     </button>
                     <button
                     className = "privacyButton privacyPrivateButton"
                     onClick = {() => {handleChangePrivacyPrivate()}}
-                    style = {{backgroundColor: !privacy ? "#ffffff" : "#cccccc"}}
+                    style = {{backgroundColor: !account?.privacy ? "#ffffff" : "#cccccc"}}
                     >
                         Private
                     </button>
@@ -212,19 +209,18 @@ function AccountEdit()
                 <div className = "label">Link to profile picture</div>
                 <input
                 className = "normalInput"
-                value = {picture}
+                value = {account?.picture}
                 onChange = {(event) => {handleChangePicture(event)}}
                 spellCheck = {false}
                 />
                 <div className = "pictureBox">
                     <div
                     className = "picture bigPicture"
-                    onError = {() => {handleInvalidPicture()}}
-                    style = {{backgroundImage: picture === "" ? "url(https://cdn.discordapp.com/attachments/623206414139260998/1133598045720817724/image.png)" : "url("+picture+")"}}
+                    style = {{backgroundImage: "url("+account?.picture+")"}}
                     />
                     <div
                     className = "picture smallPicture"
-                    style = {{backgroundImage: picture === "" ? "url(https://cdn.discordapp.com/attachments/623206414139260998/1133598045720817724/image.png)" : "url("+picture+")"}}
+                    style = {{backgroundImage: "url("+account?.picture+")"}}
                     />
                 </div>
                 <div className = "buttonBox">

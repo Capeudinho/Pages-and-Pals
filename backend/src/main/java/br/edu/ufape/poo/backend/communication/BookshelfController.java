@@ -12,11 +12,16 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import br.edu.ufape.poo.backend.business.basic.Bookshelf;
 import br.edu.ufape.poo.backend.business.facade.Facade;
+import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
+import br.edu.ufape.poo.backend.exceptions.AuthenticationFailedException;
+import br.edu.ufape.poo.backend.exceptions.DuplicateApiIdException;
+import br.edu.ufape.poo.backend.exceptions.IncorrectApiIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectIdException;
 import br.edu.ufape.poo.backend.exceptions.InvalidNameBookshelfException;
 
@@ -31,101 +36,356 @@ public class BookshelfController
 	@PostMapping("create")
 	public ResponseEntity<?> create(@RequestBody Bookshelf bookshelf) throws Exception
 	{
+		ResponseEntity<Object> responseEntity;
 		try
 		{
 			Bookshelf newBookshelf = facade.bookshelfCreate(bookshelf);
-			ResponseEntity<Bookshelf> responseEntity = new ResponseEntity<Bookshelf>(newBookshelf, HttpStatus.CREATED);
-			return responseEntity;
+			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.CREATED);
 		}
 		catch (InvalidNameBookshelfException exception)
 		{
-			ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("invalid name");
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
 		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
 	}
 	
 	@PatchMapping("update")
-	public ResponseEntity<?> update(@RequestBody Bookshelf bookshelf) throws Exception
+	public ResponseEntity<?> update(@RequestBody Bookshelf bookshelf, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
+		ResponseEntity<Object> responseEntity;
 		try
 		{
-			Bookshelf newBookshelf = facade.bookshelfUpdate(bookshelf);
-			ResponseEntity<Bookshelf> responseEntity = new ResponseEntity<Bookshelf>(newBookshelf, HttpStatus.OK);
-			return responseEntity;
+			Bookshelf newBookshelf = facade.bookshelfUpdate(bookshelf, email, password);
+			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
 		{
-			ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("incorrect id");
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		}
 		catch (InvalidNameBookshelfException exception)
 		{
-			ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("invalid name");
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
 		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
 	}
 	
-	@GetMapping("findcardsbyownerid/{id}")
-	public ResponseEntity<?> bookshelfFindCardsByOwnerId(@PathVariable Long id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1") int size) throws Exception
+	@PatchMapping("addbookapiidbyid")
+	public ResponseEntity<?> addBookApiIdById(@RequestBody Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
+		ResponseEntity<Object> responseEntity;
 		try
 		{
-			List<Map<String, Object>> bookshelfCards = facade.bookshelfFindCardsByOwnerId(id, page, size);
-			ResponseEntity<List<Map<String, Object>>> responseEntity = new ResponseEntity<List<Map<String, Object>>>(bookshelfCards, HttpStatus.OK);
-			return responseEntity;
+			Bookshelf newBookshelf = facade.bookshelfAddBookApiIdById(id, apiId, email, password);
+			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
 		{
-			ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("incorrect id");
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		}
+		catch (DuplicateApiIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("duplicate api id");
+		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
 	}
 	
-	@GetMapping("findbyid/{id}")
-	public ResponseEntity<?> findById(@PathVariable Long id) throws Exception
+	@PatchMapping("removebookapiidbyid")
+	public ResponseEntity<?> removeBookApiIdById(@RequestBody Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
+		ResponseEntity<Object> responseEntity;
 		try
 		{
-			Bookshelf bookshelf = facade.bookshelfFindById(id);
-			ResponseEntity<Bookshelf> responseEntity = new ResponseEntity<Bookshelf>(bookshelf, HttpStatus.OK);
-			return responseEntity;
+			Bookshelf newBookshelf = facade.bookshelfRemoveBookApiIdById(id, apiId, email, password);
+			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
 		{
-			ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("incorrect id");
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		}
-	}
-	
-	@GetMapping("findbookcardsbyid/{id}")
-	public ResponseEntity<?> findBookCardsById(@PathVariable Long id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "1") int size) throws Exception
-	{
-		try
+		catch (IncorrectApiIdException exception)
 		{
-			List<Map<String, Object>> books = facade.bookshelfFindBookCardsById(id, page, size);
-			ResponseEntity<List<Map<String, Object>>> responseEntity = new ResponseEntity<List<Map<String, Object>>>(books, HttpStatus.OK);
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect api id");
 		}
-		catch (IncorrectIdException exception)
+		catch (AuthenticationFailedException exception)
 		{
-			ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("incorrect id");
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
 	}
 	
 	@DeleteMapping("deletebyid/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable Long id) throws Exception
+	public ResponseEntity<?> deleteById(@PathVariable Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
+		ResponseEntity<Object> responseEntity;
 		try
 		{
-			Bookshelf bookshelf = facade.bookshelfDeleteById(id);
-			ResponseEntity<Bookshelf> responseEntity = new ResponseEntity<Bookshelf>(bookshelf, HttpStatus.OK);
-			return responseEntity;
+			Bookshelf bookshelf = facade.bookshelfDeleteById(id, email, password);
+			responseEntity = new ResponseEntity<Object>(bookshelf, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
 		{
-			ResponseEntity<String> responseEntity = ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("incorrect id");
-			return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findownbyid/{id}")
+	public ResponseEntity<?> bookshelfFindOwnById(@PathVariable Long id, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			Map<String, Object> bookshelfCard = facade.bookshelfFindOwnById(id, email, password);
+			responseEntity = new ResponseEntity<Object>(bookshelfCard, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findbyid/{id}")
+	public ResponseEntity<?> bookshelfFindById(@PathVariable Long id) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			Map<String, Object> bookshelfCard = facade.bookshelfFindById(id);
+			responseEntity = new ResponseEntity<Object>(bookshelfCard, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findownbyowneridpaginate/{id}")
+	public ResponseEntity<?> bookshelfFindOwnByOwnerIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			List<Map<String, Object>> bookshelfCards = facade.bookshelfFindOwnByOwnerIdPaginate(id, offset, limit, email, password);
+			responseEntity = new ResponseEntity<Object>(bookshelfCards, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findbyowneridpaginate/{id}")
+	public ResponseEntity<?> bookshelfFindByOwnerIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			List<Map<String, Object>> bookshelfCards = facade.bookshelfFindByOwnerIdPaginate(id, offset, limit);
+			responseEntity = new ResponseEntity<Object>(bookshelfCards, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findownbooksbyidpaginate/{id}")
+	public ResponseEntity<?> findOwnBooksByIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			List<Map<String, Object>> books = facade.bookshelfFindOwnBooksByIdPaginate(id, offset, limit, email, password);
+			responseEntity = new ResponseEntity<Object>(books, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findbooksbyidpaginate/{id}")
+	public ResponseEntity<?> findBooksByIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			List<Map<String, Object>> books = facade.bookshelfFindBooksByIdPaginate(id, offset, limit);
+			responseEntity = new ResponseEntity<Object>(books, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findownselectbyownerid/{id}/{apiId}")
+	public ResponseEntity<?> bookshelfFindOwnSelectByOwnerId(@PathVariable Long id, @PathVariable String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			List<Map<String, Object>> bookshelfSelects = facade.bookshelfFindOwnSelectByOwnerId(id, apiId, email, password);
+			responseEntity = new ResponseEntity<Object>(bookshelfSelects, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findselectbyownerid/{id}/{apiId}")
+	public ResponseEntity<?> bookshelfFindSelectByOwnerId(@PathVariable Long id, @PathVariable String apiId) throws Exception
+	{
+		ResponseEntity<Object> responseEntity;
+		try
+		{
+			List<Map<String, Object>> bookshelfSelects = facade.bookshelfFindSelectByOwnerId(id, apiId);
+			responseEntity = new ResponseEntity<Object>(bookshelfSelects, HttpStatus.OK);
+		}
+		catch (IncorrectIdException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		}
+		catch (AccessDeniedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		}
+		catch (Exception exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
 	}
 }
