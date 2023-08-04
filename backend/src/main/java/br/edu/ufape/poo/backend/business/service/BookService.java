@@ -1,10 +1,9 @@
 package br.edu.ufape.poo.backend.business.service;
 
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import br.edu.ufape.poo.backend.business.basic.Book;
+import br.edu.ufape.poo.backend.business.entity.Book;
 import br.edu.ufape.poo.backend.data.BookRepository;
 import jakarta.transaction.Transactional;
 

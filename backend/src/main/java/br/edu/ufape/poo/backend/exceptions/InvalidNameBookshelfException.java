@@ -1,6 +1,6 @@
 package br.edu.ufape.poo.backend.exceptions;
 
-import br.edu.ufape.poo.backend.business.basic.Bookshelf;
+import br.edu.ufape.poo.backend.business.entity.Bookshelf;
 
 public class InvalidNameBookshelfException extends Exception
 {

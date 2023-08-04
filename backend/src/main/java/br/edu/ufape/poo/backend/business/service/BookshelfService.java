@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import br.edu.ufape.poo.backend.business.basic.Bookshelf;
+import br.edu.ufape.poo.backend.business.entity.Bookshelf;
 import br.edu.ufape.poo.backend.data.BookshelfRepository;
 import br.edu.ufape.poo.backend.exceptions.DuplicateApiIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectApiIdException;

@@ -26,10 +26,10 @@ function AccountView()
             let mounted = true;
             const runEffect = async () =>
             {
-                setOverlay(true);
                 try
                 {
                     var response;
+                    setOverlay(true);
                     if (loggedAccount?.id !== undefined && loggedAccount?.id === Number(id))
                     {
                         response = await api.get
@@ -48,30 +48,22 @@ function AccountView()
                     {
                         response = await api.get("/account/findbyid/"+id);
                     }
+                    setOverlay(false);
                     setAccount(response?.data);
                     if (response?.data?.bookshelfCount > 0)
                     {
-                        loadBookshelfCards(true);
+                        loadBookshelves(true);
                     }
                 }
                 catch (exception)
                 {
-                    if (exception?.response?.data === "incorrect id")
-                    {
-                        navigate("/");
-                    }
-                    else if (exception?.response?.data === "authentication failed")
+                    if (exception?.response?.data === "authentication failed")
                     {
                         localStorage.clear();
                         setLoggedAccount(null);
-                        navigate("/");
                     }
-                    else if (exception?.response?.data === "access denied")
-                    {
-                        navigate("/");
-                    }
+                    navigate("/");
                 }
-                setOverlay(false);
             }
             runEffect();
             return (() => {mounted = false;});
@@ -79,9 +71,9 @@ function AccountView()
         [id]
     );
 
-    async function loadBookshelfCards(overwrite)
+    async function loadBookshelves(overwrite)
     {
-        if (bookshelves?.length < account?.bookshelfCount)
+        if (overwrite || bookshelves?.length < account?.bookshelfCount)
         {
             var offset;
             if (overwrite)
@@ -92,10 +84,10 @@ function AccountView()
             {
                 offset = bookshelves?.length;
             }
-            setOverlay(true);
             try
             {
                 var response;
+                setOverlay(true);
                 if (loggedAccount?.id !== undefined && loggedAccount?.id === Number(id))
                 {
                     response = await api.get
@@ -129,6 +121,7 @@ function AccountView()
                         }
                     );
                 }
+                setOverlay(false);
                 if (overwrite)
                 {
                     setBookshelves(response?.data);
@@ -140,22 +133,14 @@ function AccountView()
             }
             catch (exception)
             {
-                if (exception?.response?.data === "incorrect id")
-                {
-                    navigate("/");
-                }
-                else if (exception?.response?.data === "authentication failed")
+                setOverlay(false);
+                if (exception?.response?.data === "authentication failed")
                 {
                     localStorage.clear();
                     setLoggedAccount(null);
-                    navigate("/");
                 }
-                else if (exception?.response?.data === "access denied")
-                {
-                    navigate("/");
-                }
+                navigate("/");
             }
-            setOverlay(false);
         }
     }
 
@@ -188,9 +173,9 @@ function AccountView()
 
     async function handleDelete()
     {
-        setOverlay(true);
         try
         {
+            setOverlay(true);
             await api.delete
             (
                 "/account/deletebyid/"+loggedAccount?.id,
@@ -202,31 +187,22 @@ function AccountView()
                     }
                 }
             );
+            setOverlay(false);
             localStorage.clear();
-            setLoggedAccount("none");
+            setLoggedAccount(null);
             setAlert([{text: "Account deleted.", type: "success", key: Math.random()}]);
             navigate("/");
         }
         catch (exception)
         {
-            if (exception?.response?.data === "incorrect id")
-            {
-                localStorage.clear();
-                setLoggedAccount("none");
-                navigate("/");
-            }
-            else if (exception?.response?.data === "authentication failed")
+            setOverlay(false);
+            if (exception?.response?.data === "authentication failed")
             {
                 localStorage.clear();
                 setLoggedAccount(null);
-                navigate("/");
             }
-            else if (exception?.response?.data === "access denied")
-            {
-                navigate("/");
-            }
+            navigate("/");
         }
-        setOverlay(false);
     }
 
     return (
@@ -241,13 +217,9 @@ function AccountView()
                         <div className = "name">
                             {account?.name}
                         </div>
-                        {
-                            (loggedAccount?.id !== undefined && loggedAccount?.id === Number(id)) || account?.privacy ?
-                            <div className = "email">
-                                {account?.email}
-                            </div> :
-                            <></>
-                        }
+                        <div className = "email">
+                            {account?.email}
+                        </div>
                     </div>
                     {
                         loggedAccount?.id !== undefined && loggedAccount?.id === Number(id) ?
@@ -312,8 +284,7 @@ function AccountView()
                                         <button className = "createBookshelfButton">Create</button>
                                     </Link>
                                     {
-                                        bookshelves !== null ? 
-                                        bookshelves.map
+                                        bookshelves?.map
                                         (
                                             (bookshelf, index) =>
                                             {
@@ -349,8 +320,7 @@ function AccountView()
                                                     </Link>
                                                 );
                                             }
-                                        ) :
-                                        <></>
+                                        )
                                     }
                                 </div> :
                                 <div className = "innerInfoBox reviewsBox">

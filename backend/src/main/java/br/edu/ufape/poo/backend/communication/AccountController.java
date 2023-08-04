@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import br.edu.ufape.poo.backend.business.basic.Account;
+import br.edu.ufape.poo.backend.business.entity.Account;
 import br.edu.ufape.poo.backend.business.facade.Facade;
 import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
 import br.edu.ufape.poo.backend.exceptions.AuthenticationFailedException;
@@ -164,7 +164,7 @@ public class AccountController
 		ResponseEntity<Object> responseEntity;
 		try
 		{
-			Map<String, Object> accountProfile = facade.accountFindOwnProfileById(id, email, password);
+			Map<String, Object> accountProfile = facade.accountFindOwnById(id, email, password);
 			responseEntity = new ResponseEntity<Object>(accountProfile, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
@@ -192,7 +192,7 @@ public class AccountController
 		ResponseEntity<Object> responseEntity;
 		try
 		{
-			Map<String, Object> accountProfile = facade.accountFindProfileById(id);
+			Map<String, Object> accountProfile = facade.accountFindById(id);
 			responseEntity = new ResponseEntity<Object>(accountProfile, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)

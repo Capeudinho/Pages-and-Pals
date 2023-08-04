@@ -42,7 +42,7 @@ function AccountEdit()
                 navigate("/");
             }
         },
-        [loggedAccount]
+        []
     );
 
     function handleChangeName(event)
@@ -101,14 +101,22 @@ function AccountEdit()
 
     async function handleSave()
     {
-        setOverlay(true);
         try
         {
-            const response = await api.patch
+            setOverlay(true);
+            var response = await api.patch
             (
                 "/account/update",
-                account
+                account,
+                {
+                    headers:
+                    {
+                        email: loggedAccount?.email,
+                        password: loggedAccount?.password
+                    }
+                }
             );
+            setOverlay(false);
             localStorage.setItem("account", JSON.stringify(response?.data));
             setLoggedAccount(response?.data);
             setAlert([{text: "Account saved.", type: "success", key: Math.random()}]);
@@ -116,6 +124,7 @@ function AccountEdit()
         }
         catch (exception)
         {
+            setOverlay(true);
             if (exception?.response?.data === "incorrect id")
             {
                 localStorage.clear();

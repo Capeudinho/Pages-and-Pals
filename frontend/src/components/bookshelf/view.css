@@ -26,27 +26,28 @@
 
 .bookshelfViewArea .cover
 {
-    height: 100px;
-    width: 66.66px;
+    height: 90px;
+    width: 60px;
     border-radius: 5px;
     background-size: cover;
     background-position: center;
+    background-color: #cccccc;
 }
 
 .bookshelfViewArea .coverOne
 {
-    margin-left: -100px;
-    margin-right: 66.66px;
+    margin-left: -90px;
+    margin-right: 60px;
 }
 
 .bookshelfViewArea .coverTwo
 {
-    margin-left: -100px;
+    margin-left: -90px;
 }
 
 .bookshelfViewArea .coverThree
 {
-    margin-left: 66.66px;
+    margin-left: 60px;
 }
 
 .bookshelfViewArea .covers

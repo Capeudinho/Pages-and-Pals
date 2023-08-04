@@ -70,9 +70,9 @@ function AccountEnter()
 
     async function handleSignUp()
     {
-        setOverlay(true);
         try
         {
+            setOverlay(true);
             const response = await api.post
             (
                 "/account/signup",
@@ -82,6 +82,7 @@ function AccountEnter()
                     password: signUpPassword
                 }
             );
+            setOverlay(false);
             localStorage.setItem("account", JSON.stringify(response?.data));
             setLoggedAccount(response?.data);
             setAlert([{text: "Account created.", type: "success", key: Math.random()}]);
@@ -89,6 +90,7 @@ function AccountEnter()
         }
         catch (exception)
         {
+            setOverlay(false);
             if (exception?.response?.data === "email taken")
             {
                 setAlert([{text: "E-mail is taken.", type: "warning", key: Math.random()}]);
@@ -106,15 +108,15 @@ function AccountEnter()
                 setAlert([{text: "Password is invalid.", type: "warning", key: Math.random()}]);
             }
         }
-        setOverlay(false);
     }
 
     async function handleLogIn()
     {
-        setOverlay(true);
         try
         {
+            setOverlay(true);
             const response = await api.post("/account/login/"+logInEmail+"/"+logInPassword);
+            setOverlay(false);
             localStorage.setItem("account", JSON.stringify(response?.data));
             setLoggedAccount(response?.data);
             setAlert([{text: "Logged into account.", type: "success", key: Math.random()}]);
@@ -122,12 +124,12 @@ function AccountEnter()
         }
         catch (exception)
         {
+            setOverlay(false);
             if (exception?.response?.data === "incorrect information")
             {
                 setAlert([{text: "E-mail, or password is incorrect.", type: "warning", key: Math.random()}]);
             }
         }
-        setOverlay(false);
     }
 
     return (

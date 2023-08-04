@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {useNavigate} from "react-router-dom";
 import api from "../../services/api.js";
 
@@ -13,65 +13,101 @@ function BookshelfCreate()
     const {loggedAccount, setLoggedAccount} = useContext(loggedAccountContext);
     const {alert, setAlert} = useContext(alertContext);
     const {overlay, setOverlay} = useContext(overlayContext);
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [privacy, setPrivacy] = useState(true);
+    const [bookshelf, setBookshelf] = useState
+    (
+        {
+            name: "",
+            description: "",
+            privacy: false
+        }
+    );
     const navigate = useNavigate();
+
+    useEffect
+    (
+        () =>
+        {
+            if (loggedAccount?.id !== undefined)
+            {
+                navigate("/");
+            }
+        },
+        []
+    );
 
     function handleChangeName(event)
     {
-        setName(event.target.value);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.name = event.target.value;
+        setBookshelf(newBookshelf);
     }
 
     function handleChangeDescription(event)
     {
-        setDescription(event.target.innerText);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.description = event.target.innerText;
+        setBookshelf(newBookshelf);
     }
 
     function handleChangePrivacyPublic()
     {
-        setPrivacy(true);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.privacy = true;
+        setBookshelf(newBookshelf);
     }
 
     function handleChangePrivacyPrivate()
     {
-        setPrivacy(false);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.privacy = false;
+        setBookshelf(newBookshelf);
     }
 
     async function handleCreate()
     {
-        setOverlay(true);
         try
         {
-            await api.post
+            setOverlay(true);
+            var response = await api.post
             (
                 "/bookshelf/create",
+                bookshelf,
                 {
-                    name: name,
-                    description: description,
-                    privacy: privacy,
-                    owner: loggedAccount
+                    headers:
+                    {
+                        email: loggedAccount?.email,
+                        password: loggedAccount?.password
+                    }
                 }
             );
+            setOverlay(false);
             setAlert([{text: "Bookshelf created.", type: "success", key: Math.random()}]);
-            navigate("/account/view/"+loggedAccount.id);
+            navigate("/bookshelf/from/"+loggedAccount.id+"/view/"+response?.data?.id);
         }
         catch (exception)
         {
-            if (exception.response.hasOwnProperty("data"))
+            setOverlay(false);
+            if (exception?.response?.data === "invalid name")
             {
-                if (exception.response.data === "invalid name")
-                {
-                    setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
-                }
+                setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "authentication failed")
+            {
+                localStorage.clear();
+                setLoggedAccount(null);
+                navigate("/");
+            }
+            else
+            {
+                navigate("/");
             }
         }
-        setOverlay(false);
     }
 
     async function handleCancel()
     {
-        navigate(-1);
+        // confirm
+        navigate("/account/view/"+loggedAccount?.id);
     }
 
     return (
@@ -80,7 +116,7 @@ function BookshelfCreate()
                 <div className = "label">Name</div>
                 <input
                 className = "normalInput"
-                value = {name}
+                value = {bookshelf?.name}
                 onChange = {(event) => {handleChangeName(event)}}
                 spellCheck = {false}
                 />
@@ -91,22 +127,20 @@ function BookshelfCreate()
                 spellCheck = {false}
                 contentEditable = {true}
                 placeholder = "Optional"
-                >
-                    {description}
-                </div>
+                />
                 <div className = "label">Privacy</div>
                 <div className = "privacyBox">
                     <button
                     className = "privacyButton privacyPublicButton"
                     onClick = {() => {handleChangePrivacyPublic()}}
-                    style = {{backgroundColor: privacy ? "#ffffff" : "#cccccc"}}
+                    style = {{backgroundColor: bookshelf?.privacy ? "#ffffff" : "#cccccc"}}
                     >
                         Public
                     </button>
                     <button
                     className = "privacyButton privacyPrivateButton"
                     onClick = {() => {handleChangePrivacyPrivate()}}
-                    style = {{backgroundColor: !privacy ? "#ffffff" : "#cccccc"}}
+                    style = {{backgroundColor: !bookshelf?.privacy ? "#ffffff" : "#cccccc"}}
                     >
                         Private
                     </button>

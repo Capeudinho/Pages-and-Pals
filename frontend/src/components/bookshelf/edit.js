@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext, useRef} from "react";
-import {useParams, useNavigate, Link} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import api from "../../services/api.js";
 
 import loggedAccountContext from "../context/loggedAccount.js";
@@ -13,11 +13,14 @@ function BookshelfEdit()
     const {loggedAccount, setLoggedAccount} = useContext(loggedAccountContext);
     const {alert, setAlert} = useContext(alertContext);
     const {overlay, setOverlay} = useContext(overlayContext);
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [privacy, setPrivacy] = useState(true);
-    const [creationDate, setCreationDate] = useState("");
-    const [bookApiIds, setBookApiIds] = useState([]);
+    const [bookshelf, setBookshelf] = useState
+    (
+        {
+            name: "",
+            description: "",
+            privacy: false
+        }
+    );
     const descriptionInput = useRef();
     const navigate = useNavigate();
     const {id} = useParams();
@@ -29,28 +32,34 @@ function BookshelfEdit()
             let mounted = true;
             const runEffect = async () =>
             {
-                setOverlay(true);
                 try
                 {
-                    const accountResponse = await api.get("/bookshelf/findbyid/"+id);
-                    setName(accountResponse.data.name);
-                    setDescription(accountResponse.data.description);
-                    setPrivacy(accountResponse.data.privacy);
-                    setCreationDate(accountResponse.data.creationDate);
-                    setBookApiIds(accountResponse.data.bookApiIds);
-                    descriptionInput.current.innerText = accountResponse.data.description;
+                    setOverlay(true);
+                    var accountResponse = await api.get
+                    (
+                        "/bookshelf/findownbyid/"+id,
+                        {
+                            headers:
+                            {
+                                email: loggedAccount?.email,
+                                password: loggedAccount?.password
+                            }
+                        }
+                    );
+                    setOverlay(false);
+                    setBookshelf(accountResponse?.data);
+                    descriptionInput.current.innerText = accountResponse?.data?.description;
                 }
                 catch (exception)
                 {
-                    if (exception.response.hasOwnProperty("data"))
+                    setOverlay(false);
+                    if (exception?.response?.data === "authentication failed")
                     {
-                        if (exception.response.data === "incorrect id")
-                        {
-                            navigate("/");
-                        }
+                        localStorage.clear();
+                        setLoggedAccount(null);
                     }
+                    navigate("/");
                 }
-                setOverlay(false);
             }
             runEffect();
             return (() => {mounted = false;});
@@ -60,61 +69,77 @@ function BookshelfEdit()
 
     function handleChangeName(event)
     {
-        setName(event.target.value);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.name = event.target.value;
+        setBookshelf(newBookshelf);
     }
 
     function handleChangeDescription(event)
     {
-        setDescription(event.target.innerText);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.description = event.target.innerText;
+        setBookshelf(newBookshelf);
     }
 
     function handleChangePrivacyPublic()
     {
-        setPrivacy(true);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.privacy = true;
+        setBookshelf(newBookshelf);
     }
 
     function handleChangePrivacyPrivate()
     {
-        setPrivacy(false);
+        var newBookshelf = {...bookshelf};
+        newBookshelf.privacy = false;
+        setBookshelf(newBookshelf);
     }
 
     async function handleSave()
     {
-        setOverlay(true);
         try
         {
+            setOverlay(true);
             await api.patch
             (
                 "/bookshelf/update",
+                bookshelf,
                 {
-                    id: id,
-                    name: name,
-                    description: description,
-                    privacy: privacy,
-                    creationDate: creationDate,
-                    bookApiIds: bookApiIds,
-                    owner: loggedAccount
+                    headers:
+                    {
+                        email: loggedAccount?.email,
+                        password: loggedAccount?.password
+                    }
                 }
             );
+            setOverlay(false);
             setAlert([{text: "Bookshelf saved.", type: "success", key: Math.random()}]);
-            navigate("/bookshelf/view/"+id);
+            navigate("/bookshelf/from/"+loggedAccount?.id+"/view/"+id);
         }
         catch (exception)
         {
-            if (exception.response.hasOwnProperty("data"))
+            setOverlay(false);
+            if (exception?.response?.data === "invalid name")
             {
-                if (exception.response.data === "invalid name")
-                {
-                    setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
-                }
+                setAlert([{text: "Name is invalid.", type: "warning", key: Math.random()}]);
+            }
+            else if (exception?.response?.data === "authentication failed")
+            {
+                localStorage.clear();
+                setLoggedAccount(null);
+                navigate("/");
+            }
+            else
+            {
+                navigate("/");
             }
         }
-        setOverlay(false);
     }
 
     async function handleCancel()
     {
-        navigate(-1);
+        // confirm
+        navigate("/bookshelf/from/"+loggedAccount?.id+"/view/"+id);
     }
 
     return (
@@ -123,7 +148,7 @@ function BookshelfEdit()
                 <div className = "label">Name</div>
                 <input
                 className = "normalInput"
-                value = {name}
+                value = {bookshelf?.name}
                 onChange = {(event) => {handleChangeName(event)}}
                 spellCheck = {false}
                 />
@@ -141,14 +166,14 @@ function BookshelfEdit()
                     <button
                     className = "privacyButton privacyPublicButton"
                     onClick = {() => {handleChangePrivacyPublic()}}
-                    style = {{backgroundColor: privacy ? "#ffffff" : "#cccccc"}}
+                    style = {{backgroundColor: bookshelf?.privacy ? "#ffffff" : "#cccccc"}}
                     >
                         Public
                     </button>
                     <button
                     className = "privacyButton privacyPrivateButton"
                     onClick = {() => {handleChangePrivacyPrivate()}}
-                    style = {{backgroundColor: !privacy ? "#ffffff" : "#cccccc"}}
+                    style = {{backgroundColor: !bookshelf?.privacy ? "#ffffff" : "#cccccc"}}
                     >
                         Private
                     </button>

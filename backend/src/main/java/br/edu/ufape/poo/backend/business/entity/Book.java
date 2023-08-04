@@ -1,4 +1,4 @@
-package br.edu.ufape.poo.backend.business.basic;
+package br.edu.ufape.poo.backend.business.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import br.edu.ufape.poo.backend.business.basic.Bookshelf;
+import br.edu.ufape.poo.backend.business.entity.Bookshelf;
 import br.edu.ufape.poo.backend.business.facade.Facade;
 import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
 import br.edu.ufape.poo.backend.exceptions.AuthenticationFailedException;
@@ -45,6 +45,10 @@ public class BookshelfController
 		catch (InvalidNameBookshelfException exception)
 		{
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
+		}
+		catch (AuthenticationFailedException exception)
+		{
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		}
 		catch (Exception exception)
 		{
@@ -85,8 +89,8 @@ public class BookshelfController
 		return responseEntity;
 	}
 	
-	@PatchMapping("addbookapiidbyid")
-	public ResponseEntity<?> addBookApiIdById(@RequestBody Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	@PatchMapping("addbookapiidbyid/{id}")
+	public ResponseEntity<?> addBookApiIdById(@PathVariable Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
@@ -117,10 +121,11 @@ public class BookshelfController
 		return responseEntity;
 	}
 	
-	@PatchMapping("removebookapiidbyid")
-	public ResponseEntity<?> removeBookApiIdById(@RequestBody Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	@PatchMapping("removebookapiidbyid/{id}")
+	public ResponseEntity<?> removeBookApiIdById(@PathVariable Long id, @RequestParam String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
+		responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		try
 		{
 			Bookshelf newBookshelf = facade.bookshelfRemoveBookApiIdById(id, apiId, email, password);
@@ -150,7 +155,7 @@ public class BookshelfController
 	}
 	
 	@DeleteMapping("deletebyid/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	public ResponseEntity<?> deleteById(@PathVariable Long id, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
@@ -233,13 +238,13 @@ public class BookshelfController
 		return responseEntity;
 	}
 	
-	@GetMapping("findownbyowneridpaginate/{id}")
-	public ResponseEntity<?> bookshelfFindOwnByOwnerIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	@GetMapping("findownbyowneridpaginate/{ownerId}")
+	public ResponseEntity<?> bookshelfFindOwnByOwnerIdPaginate(@PathVariable Long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
 		{
-			List<Map<String, Object>> bookshelfCards = facade.bookshelfFindOwnByOwnerIdPaginate(id, offset, limit, email, password);
+			List<Map<String, Object>> bookshelfCards = facade.bookshelfFindOwnByOwnerIdPaginate(ownerId, offset, limit, email, password);
 			responseEntity = new ResponseEntity<Object>(bookshelfCards, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
@@ -261,13 +266,13 @@ public class BookshelfController
 		return responseEntity;
 	}
 	
-	@GetMapping("findbyowneridpaginate/{id}")
-	public ResponseEntity<?> bookshelfFindByOwnerIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit) throws Exception
+	@GetMapping("findbyowneridpaginate/{ownerId}")
+	public ResponseEntity<?> bookshelfFindByOwnerIdPaginate(@PathVariable Long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
 		{
-			List<Map<String, Object>> bookshelfCards = facade.bookshelfFindByOwnerIdPaginate(id, offset, limit);
+			List<Map<String, Object>> bookshelfCards = facade.bookshelfFindByOwnerIdPaginate(ownerId, offset, limit);
 			responseEntity = new ResponseEntity<Object>(bookshelfCards, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
@@ -337,13 +342,13 @@ public class BookshelfController
 		return responseEntity;
 	}
 	
-	@GetMapping("findownselectbyownerid/{id}/{apiId}")
-	public ResponseEntity<?> bookshelfFindOwnSelectByOwnerId(@PathVariable Long id, @PathVariable String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	@GetMapping("findownselectbyowneridandapiid/{ownerId}/{apiId}")
+	public ResponseEntity<?> bookshelfFindOwnSelectByOwnerId(@PathVariable Long ownerId, @PathVariable String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
 		{
-			List<Map<String, Object>> bookshelfSelects = facade.bookshelfFindOwnSelectByOwnerId(id, apiId, email, password);
+			List<Map<String, Object>> bookshelfSelects = facade.bookshelfFindOwnSelectByOwnerId(ownerId, apiId, email, password);
 			responseEntity = new ResponseEntity<Object>(bookshelfSelects, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)
@@ -365,13 +370,13 @@ public class BookshelfController
 		return responseEntity;
 	}
 	
-	@GetMapping("findselectbyownerid/{id}/{apiId}")
-	public ResponseEntity<?> bookshelfFindSelectByOwnerId(@PathVariable Long id, @PathVariable String apiId) throws Exception
+	@GetMapping("findselectbyowneridandapiid/{ownerId}/{apiId}")
+	public ResponseEntity<?> bookshelfFindSelectByOwnerId(@PathVariable Long ownerId, @PathVariable String apiId) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
 		{
-			List<Map<String, Object>> bookshelfSelects = facade.bookshelfFindSelectByOwnerId(id, apiId);
+			List<Map<String, Object>> bookshelfSelects = facade.bookshelfFindSelectByOwnerId(ownerId, apiId);
 			responseEntity = new ResponseEntity<Object>(bookshelfSelects, HttpStatus.OK);
 		}
 		catch (IncorrectIdException exception)

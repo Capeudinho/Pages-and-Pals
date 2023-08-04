@@ -27,10 +27,10 @@ function BookshelfView()
             let mounted = true;
             const runEffect = async () =>
             {
-                setOverlay(true);
                 try
                 {
                     var response;
+                    setOverlay(true);
                     if (loggedAccount?.id !== undefined && loggedAccount?.id === Number(ownerId))
                     {
                         response = await api.get
@@ -49,6 +49,7 @@ function BookshelfView()
                     {
                         response = await api.get("/bookshelf/findbyid/"+id);
                     }
+                    setOverlay(false);
                     setBookshelf(response?.data);
                     if (response?.data?.bookApiIds?.length > 0)
                     {
@@ -57,34 +58,26 @@ function BookshelfView()
                 }
                 catch (exception)
                 {
-                    if (exception?.response?.data === "incorrect id")
-                    {
-                        navigate("/");
-                    }
-                    else if (exception?.response?.data === "authentication failed")
+                    setOverlay(false);
+                    if (exception?.response?.data === "authentication failed")
                     {
                         localStorage.clear();
                         setLoggedAccount(null);
-                        navigate("/");
                     }
-                    else if (exception?.response?.data === "access denied")
-                    {
-                        navigate("/");
-                    }
+                    navigate("/");
                 }
-                setOverlay(false);
             }
             runEffect();
             return (() => {mounted = false;});
         },
-        [id]
+        [id, loggedAccount]
     );
 
     async function loadBookCards(overwrite)
     {
-        if (books?.length < bookshelf?.bookApiIds?.length)
+        if (overwrite || books?.length < bookshelf?.bookApiIds?.length)
         {
-            var offset = null;
+            var offset;
             if (overwrite)
             {
                 offset = 0;
@@ -93,10 +86,10 @@ function BookshelfView()
             {
                 offset = books?.length;
             }
-            setOverlay(true);
             try
             {
                 var response;
+                setOverlay(true);
                 if (loggedAccount?.id !== undefined && loggedAccount?.id === Number(ownerId))
                 {
                     response = await api.get
@@ -130,6 +123,7 @@ function BookshelfView()
                         }
                     );
                 }
+                setOverlay(false);
                 if (overwrite)
                 {
                     setBooks(response?.data);
@@ -141,22 +135,14 @@ function BookshelfView()
             }
             catch (exception)
             {
-                if (exception?.response?.data === "incorrect id")
-                {
-                    navigate("/");
-                }
-                else if (exception?.response?.data === "authentication failed")
+                setOverlay(false);
+                if (exception?.response?.data === "authentication failed")
                 {
                     localStorage.clear();
                     setLoggedAccount(null);
-                    navigate("/");
                 }
-                else if (exception?.response?.data === "access denied")
-                {
-                    navigate("/");
-                }
+                navigate("/");
             }
-            setOverlay(false);
         }
     }
 
@@ -191,28 +177,73 @@ function BookshelfView()
 
     async function handleDelete()
     {
-        setOverlay(true);
         try
         {
-            await api.delete("/bookshelf/deletebyid/"+id);
+            setOverlay(true);
+            await api.delete
+            (
+                "/bookshelf/deletebyid/"+id,
+                {
+                    headers:
+                    {
+                        email: loggedAccount?.email,
+                        password: loggedAccount?.password
+                    }
+                }
+            );
+            setOverlay(false);
             setAlert([{text: "Bookshelf deleted.", type: "success", key: Math.random()}]);
-            if (bookshelf?.owner?.id !== undefined)
-            {
-                navigate("/account/view/"+bookshelf?.owner?.id);
-            }
-            else
-            {
-                navigate("/");
-            }
+            navigate("/account/view/"+bookshelf?.owner?.id);
         }
         catch (exception)
         {
-            if (exception?.response?.data === "incorrect id")
+            setOverlay(false);
+            if (exception?.response?.data === "authentication failed")
             {
-                navigate("/");
+                localStorage.clear();
+                setLoggedAccount(null);
             }
+            navigate("/");
         }
-        setOverlay(false);
+    }
+
+    async function handleRemoveBook(index)
+    {
+        try
+        {
+            setOverlay(true);
+            await api.patch
+            (
+                "/bookshelf/removebookapiidbyid/"+id,
+                {},
+                {
+                    params:
+                    {
+                        apiId: books?.[index]?.apiId
+                    },
+                    headers:
+                    {
+                        email: loggedAccount?.email,
+                        password: loggedAccount?.password
+                    }
+                }
+            );
+            setOverlay(false);
+            var newBooks = [...books];
+            newBooks.splice(index, 1);
+            setBooks(newBooks);
+            setAlert([{text: "Book removed.", type: "success", key: Math.random()}]);
+        }
+        catch (exception)
+        {
+            setOverlay(false);
+            if (exception?.response?.data === "authentication failed")
+            {
+                localStorage.clear();
+                setLoggedAccount(null);
+            }
+            // navigate("/");
+        }
     }
 
     return(
@@ -222,15 +253,15 @@ function BookshelfView()
                     <div className = "covers">
                         <div
                         className = "cover coverOne"
-                        style = {{backgroundImage: "url("+bookshelf?.covers?.[0]+")"}}
+                        style = {{backgroundImage: "url("+books?.[0]?.cover+")"}}
                         />
                         <div
                         className = "cover coverTwo"
-                        style = {{backgroundImage: "url("+bookshelf?.covers?.[1]+")"}}
+                        style = {{backgroundImage: "url("+books?.[1]?.cover+")"}}
                         />
                         <div
                         className = "cover coverThree"
-                        style = {{backgroundImage: "url("+bookshelf?.covers?.[2]+")"}}
+                        style = {{backgroundImage: "url("+books?.[2]?.cover+")"}}
                         />
                     </div>
                     <div className = "headBox">
@@ -245,11 +276,7 @@ function BookshelfView()
                             />
                             <div className = "ownerName">{bookshelf?.owner?.name}</div>
                         </Link>
-                        {
-                            loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id ?
-                            <div className = "creationDate">{handleFormatDate(bookshelf?.creationDate)}</div> :
-                            <></>
-                        }
+                        <div className = "creationDate">Created in {handleFormatDate(bookshelf?.creationDate)}</div>
                     </div>
                     {
                         loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id ?
@@ -294,8 +321,7 @@ function BookshelfView()
                                 mode === "books" ?
                                 <div className = "books">
                                     {
-                                        books !== null ?
-                                        books.map
+                                        books?.map
                                         (
                                             (book, bookIndex) =>
                                             {
@@ -356,7 +382,7 @@ function BookshelfView()
                                                             loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id ?
                                                             <button
                                                             className = "removeButton"
-                                                            onClick = {() => {}}
+                                                            onClick = {() => {handleRemoveBook(bookIndex)}}
                                                             >
                                                                 X
                                                             </button> :
@@ -365,8 +391,7 @@ function BookshelfView()
                                                     </div>
                                                 );
                                             }
-                                        ) :
-                                        <></>
+                                        )
                                     }
                                 </div> :
                                 <div className = "description">{bookshelf?.description}</div>

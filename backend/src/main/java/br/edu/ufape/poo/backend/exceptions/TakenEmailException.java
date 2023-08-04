@@ -1,6 +1,6 @@
 package br.edu.ufape.poo.backend.exceptions;
 
-import br.edu.ufape.poo.backend.business.basic.Account;
+import br.edu.ufape.poo.backend.business.entity.Account;
 
 public class TakenEmailException extends Exception
 {

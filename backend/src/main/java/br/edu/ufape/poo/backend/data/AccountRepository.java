@@ -2,7 +2,7 @@ package br.edu.ufape.poo.backend.data;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import br.edu.ufape.poo.backend.business.basic.Account;
+import br.edu.ufape.poo.backend.business.entity.Account;
 import java.util.Optional;
 
 @Repository
