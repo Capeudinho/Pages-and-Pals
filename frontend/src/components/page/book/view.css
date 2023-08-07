@@ -1,0 +1,44 @@
+.bookViewArea .selects
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    z-index: 1;
+    padding: 10px;
+    border: solid 1px #cccccc;
+    border-radius: 5px;
+}
+
+.bookViewArea .bookshelfName
+{
+    flex: 1;
+}
+
+.bookViewArea .select
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.bookViewArea button
+{
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #cccccc;
+    font-weight: bold;
+    color: #333333;
+}
+
+.bookViewArea .manageButton
+{
+    position: relative;
+    height: 30px;
+}
+
+.bookViewArea .selectButton
+{
+    width: 30px;
+}

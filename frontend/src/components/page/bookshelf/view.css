@@ -1,0 +1,73 @@
+.bookshelfViewArea .mainBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.bookshelfViewArea .topBox
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.bookshelfViewArea .headBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.bookshelfViewArea .name
+{
+    font-size: 27px;
+    line-height: 20px;
+    color: #191919;
+}
+
+.bookshelfViewArea .description
+{
+    margin-top: -5px;
+    line-height: 20px;
+    color: #191919;
+}
+
+.bookshelfViewArea .ownerLink
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: fit-content;
+    align-items: center;
+}
+
+.bookshelfViewArea .ownerPicture
+{
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #cccccc;
+}
+
+.bookshelfViewArea .ownerName
+{
+    color: #191919;
+}
+
+.bookshelfViewArea .creationDate
+{
+    color: #191919;
+}
+
+.bookshelfViewArea .books
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

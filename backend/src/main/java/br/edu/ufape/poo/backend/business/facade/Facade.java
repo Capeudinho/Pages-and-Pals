@@ -389,11 +389,11 @@ public class Facade
 			bookshelfSelect.put("name", bookshelf.getName());
 			if (bookshelf.getBookApiIds().contains(apiId))
 			{
-				bookshelfSelect.put("contais", true);
+				bookshelfSelect.put("contains", true);
 			}
 			else
 			{
-				bookshelfSelect.put("contais", false);
+				bookshelfSelect.put("contains", false);
 			}
 			bookshelfSelects.add(bookshelfSelect);
 		}

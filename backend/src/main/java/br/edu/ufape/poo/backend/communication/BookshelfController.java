@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import br.edu.ufape.poo.backend.business.entity.Bookshelf;
 import br.edu.ufape.poo.backend.business.facade.Facade;
 import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
@@ -90,11 +92,14 @@ public class BookshelfController
 	}
 	
 	@PatchMapping("addbookapiidbyid/{id}")
-	public ResponseEntity<?> addBookApiIdById(@PathVariable Long id, @RequestBody String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	public ResponseEntity<?> addBookApiIdById(@PathVariable Long id, @RequestBody String json, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
 		{
+			Gson gson = new Gson();
+			JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+			String apiId = jsonObject.get("apiId").getAsString();
 			Bookshelf newBookshelf = facade.bookshelfAddBookApiIdById(id, apiId, email, password);
 			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.OK);
 		}
@@ -122,12 +127,14 @@ public class BookshelfController
 	}
 	
 	@PatchMapping("removebookapiidbyid/{id}")
-	public ResponseEntity<?> removeBookApiIdById(@PathVariable Long id, @RequestParam String apiId, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	public ResponseEntity<?> removeBookApiIdById(@PathVariable Long id, @RequestBody String json, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
-		responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		try
 		{
+			Gson gson = new Gson();
+			JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+			String apiId = jsonObject.get("apiId").getAsString();
 			Bookshelf newBookshelf = facade.bookshelfRemoveBookApiIdById(id, apiId, email, password);
 			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.OK);
 		}

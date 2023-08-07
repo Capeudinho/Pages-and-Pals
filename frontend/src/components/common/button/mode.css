@@ -1,0 +1,64 @@
+.buttonModeArea .buttons
+{
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+}
+
+.buttonModeArea .modeButton
+{
+    height: 30px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.buttonModeArea.default .modeButton
+{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.buttonModeArea.default .unselected
+{
+    color: #999999;
+}
+
+.buttonModeArea.default .unselected:hover
+{
+    color: #191919;
+}
+
+.buttonModeArea.default .selected
+{
+    color: #191919;
+    background-color: #e5e5e5;
+}
+
+.buttonModeArea.switch .buttons
+{
+    border-radius: 5px;
+    background-color: #e5e5e5;
+}
+
+.buttonModeArea.switch .modeButton
+{
+    padding-left: 9px;
+    padding-right: 9px;
+    border: solid 1px #e5e5e5;
+}
+
+.buttonModeArea.switch .unselected
+{
+    background-color: #e5e5e5;
+    color: #7f7f7f;
+}
+
+.buttonModeArea.switch .unselected:hover
+{
+    color: #191919;
+}
+
+.buttonModeArea.switch .selected
+{
+    color: #191919;
+}

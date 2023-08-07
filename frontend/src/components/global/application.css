@@ -10,8 +10,7 @@
 
 html, body, #root
 {
-    height: max-content;
-    min-height: 100vh;
+    height: 100vh;
 }
 
 body
@@ -46,6 +45,12 @@ button:hover
     cursor: pointer;
 }
 
+.applicationArea
+{
+    height: 100vh;
+    overflow: auto;
+}
+
 .area
 {
     min-height: 100vh;
@@ -62,4 +67,29 @@ button:hover
     left: 0px;
     right: 0px;
     background-color: rgba(0, 0, 0, 0.0);
+}
+
+::-webkit-scrollbar
+{
+    width: 10px;
+}
+
+::-webkit-scrollbar-track
+{
+    background: #e5e5e5;
+}
+
+::-webkit-scrollbar-thumb
+{
+    background: #cccccc;
+}
+
+::-webkit-scrollbar-thumb:hover
+{
+    background: #b3b3b3;
+}
+
+::-webkit-scrollbar-thumb:active
+{
+    background: #999999;
 }

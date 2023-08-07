@@ -1,24 +1,20 @@
-::-webkit-scrollbar
+.routingArea .enterBackground
 {
-    width: 10px;
+    padding-left: 400px;
+    padding-right: 400px;
+    background-color: #e5e5e5;
 }
 
-::-webkit-scrollbar-track
+.routingArea .otherBackground
 {
-    background: #e5e5e5;
+    padding-left: 200px;
+    padding-right: 200px;
+    background-color: #e5e5e5;
 }
 
-::-webkit-scrollbar-thumb
+.routingArea .main
 {
-    background: #cccccc;
-}
-
-::-webkit-scrollbar-thumb:hover
-{
-    background: #b3b3b3;
-}
-
-::-webkit-scrollbar-thumb:active
-{
-    background: #999999;
+    border-left: solid 1px #cccccc;
+    border-right: solid 1px #cccccc;
+    background-color: #ffffff;
 }

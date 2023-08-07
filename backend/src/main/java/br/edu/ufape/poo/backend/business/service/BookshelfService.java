@@ -105,20 +105,13 @@ public class BookshelfService
 	public List<Bookshelf> findByOwnerIdPaginate(Long id, int offset, int limit)
 	{
 		Pageable pageable = new OffsetPageRequest(offset, limit);
-		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerId(id, pageable);
-		return bookshelves;
-	}
-	
-	public List<Bookshelf> findPublicByOwnerIdPaginate(Long id, int offset, int limit)
-	{
-		Pageable pageable = new OffsetPageRequest(offset, limit);
-		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerIdAndPrivacy(id, true, pageable);
+		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerIdOrderByIdDesc(id, pageable);
 		return bookshelves;
 	}
 	
 	public List<Bookshelf> findByOwnerId(Long id)
 	{
-		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerId(id);
+		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerIdOrderByIdDesc(id);
 		return bookshelves;
 	}
 	

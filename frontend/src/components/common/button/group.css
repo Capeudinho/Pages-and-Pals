@@ -1,0 +1,21 @@
+.buttonGroupArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.buttonGroupArea .optionButton
+{
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    height: 30px;
+    font-weight: bold;
+    color: #191919;
+}
+
+.buttonGroupArea .optionButton:hover
+{
+    background-color: #cccccc;
+}

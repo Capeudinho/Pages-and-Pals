@@ -9,8 +9,7 @@ import java.util.List;
 @Repository
 public interface BookshelfRepository extends JpaRepository<Bookshelf, Long>
 {
-	public List<Bookshelf> findByOwnerId(Long id);
-	public List<Bookshelf> findByOwnerId(Long id, Pageable pageable);
-	public List<Bookshelf> findByOwnerIdAndPrivacy(Long id, boolean privacy, Pageable pageable);
+	public List<Bookshelf> findByOwnerIdOrderByIdDesc(Long id);
+	public List<Bookshelf> findByOwnerIdOrderByIdDesc(Long id, Pageable pageable);
 	public int countByOwnerId(Long id);
 }

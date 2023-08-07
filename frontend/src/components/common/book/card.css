@@ -1,0 +1,88 @@
+.bookCardArea
+{
+    position: relative;
+    color: #191919;
+}
+
+.bookCardArea .book
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 9px;
+    border: solid 1px #e5e5e5;
+    border-radius: 5px;
+}
+
+.bookCardArea .book.spaced
+{
+    padding-right: 49px;
+}
+
+.bookCardArea .book:hover
+{
+    background-color: #f2f2f2;
+}
+
+.bookCardArea .cover
+{
+    height: 90px;
+    width: 60px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e5e5e5;
+}
+
+.bookCardArea .bookInfoBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.bookCardArea .title
+{
+    font-size: 20.25px;
+    line-height: 15px;
+}
+
+.bookCardArea .authors
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.bookCardArea .categories
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.bookCardArea .category
+{
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    text-transform: uppercase;
+}
+
+.bookCardArea .removeButton
+{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    height: 30px;
+    width: 30px;
+    background-color: #e5e5e5;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.bookCardArea .removeButton:hover
+{
+    background-color: #cccccc;
+}

@@ -1,0 +1,105 @@
+.alertListArea
+{
+    z-index: 1;
+    width: 100%;
+    position: fixed;
+    height: auto !important;
+    bottom: 0;
+    left: 0;
+    background: none;
+    pointer-events: none;
+}
+
+.alertListArea .alertList
+{
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    width: 100%;
+    padding-bottom: 20px;
+    padding-left: 20px;
+    background: none;
+}
+
+.alertListArea .alert
+{
+    padding: 10px;
+    width: fit-content;
+    min-width: 25%;
+    border: solid 1px;
+    border-radius: 5px;
+    white-space: nowrap;
+    animation: fadeOut 2s linear 2s;
+    animation-fill-mode: forwards;
+    pointer-events: all;
+}
+
+.alertListArea .confirm
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: fit-content;
+    min-width: 25%;
+    padding: 10px;
+    border: solid 1px #e5ceb7;
+    border-radius: 5px;
+    background-color: #fff2e5;
+    pointer-events: all;
+    align-items: center;
+}
+
+.alertListArea .confirmText
+{
+    flex: 1;
+    color: #190e05;
+    white-space: nowrap;
+}
+
+.alertListArea .confirmButton
+{
+    height: 30px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e5ceb7;
+    font-weight: bold;
+    color: #190e05;
+}
+
+.alertListArea .confirmButton:hover
+{
+    background-color: #ccb7a3;
+}
+
+.alertListArea .error
+{
+    border-color: #e5b7b7;
+    background-color: #ffe6e6;
+    color: #190505;
+}
+
+.alertListArea .warning
+{
+    border-color: #e5e5b7;
+    background-color: #ffffe6;
+    color: #191905;
+}
+
+.alertListArea .success
+{
+    border-color: #b7e5b7;
+    background-color: #e6ffe6;
+    color: #051905;
+}
+
+@keyframes fadeOut
+{
+    0%
+    {
+        opacity: 1;
+    }
+    100%
+    {
+        opacity: 0;
+    }
+}

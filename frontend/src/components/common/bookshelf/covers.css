@@ -1,0 +1,31 @@
+.bookshelfCoversArea
+{
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.bookshelfCoversArea .cover
+{
+    height: 90px;
+    width: 60px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #cccccc;
+}
+
+.bookshelfCoversArea .coverOne
+{
+    margin-left: -90px;
+    margin-right: 60px;
+}
+
+.bookshelfCoversArea .coverTwo
+{
+    margin-left: -90px;
+}
+
+.bookshelfCoversArea .coverThree
+{
+    margin-left: 60px;
+}

@@ -1,0 +1,83 @@
+.accountViewArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.accountViewArea .topBox
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.accountViewArea .picture
+{
+    height: 80px;
+    width: 80px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #cccccc;
+}
+
+.accountViewArea .name
+{
+    font-size: 27px;
+    line-height: 20px;
+    color: #191919;
+}
+
+.accountViewArea .email
+{
+    color: #191919;
+}
+
+.accountViewArea .normalButton
+{
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #cccccc;
+}
+
+.accountViewArea .biography
+{
+    margin-top: -5px;
+    line-height: 20px;
+    color: #191919;
+}
+
+.accountViewArea .headBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.accountViewArea .createBookshelfButton
+{
+    height: 30px;
+    width: 100%;
+    padding-left: 9px;
+    padding-right: 9px;
+    border: solid 1px #e5e5e5;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #191919;
+}
+
+.accountViewArea .createBookshelfButton:hover
+{
+    background-color: #f2f2f2;
+}
+
+.accountViewArea .bookshelvesBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
