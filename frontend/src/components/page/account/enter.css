@@ -3,8 +3,17 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    min-height: 100vh;
     padding: 20px;
+}
+
+.accountEnterArea input
+{
+    height: 30px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    background-color: #e5e5e5;
+    color: #191919;
 }
 
 .accountEnterArea .topBox
@@ -17,13 +26,6 @@
     border-bottom: solid 1px #e5e5e5;
 }
 
-.accountEnterArea .formBox
-{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
 .accountEnterArea .text
 {
     color: #191919;
@@ -31,15 +33,16 @@
     line-height: 20px;
 }
 
+.accountEnterArea .formBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .accountEnterArea .label
 {
     color: #999999;
-}
-
-.accountEnterArea .completeButton
-{
-    border-radius: 5px;
-    background-color: #cccccc;
 }
 
 .accountEnterArea .normalInput
@@ -74,14 +77,4 @@
 .accountEnterArea .showPasswordButton:hover
 {
     background-color: #cccccc;
-}
-
-.accountEnterArea input
-{
-    height: 30px;
-    width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: #e5e5e5;
-    color: #191919;
 }

@@ -6,6 +6,7 @@ import loggedAccountContext from "../../context/loggedAccount.js";
 import alertContext from "../../context/alert.js";
 import confirmContext from "../../context/confirm.js";
 import overlayContext from "../../context/overlay.js";
+import scrollContext from "../../context/scroll.js";
 
 import ButtonGroup from "../../common/button/group.js";
 import ButtonMode from "../../common/button/mode.js";
@@ -20,6 +21,7 @@ function BookshelfView()
     const {alert, setAlert} = useContext(alertContext);
     const {confirm, setConfirm} = useContext(confirmContext);
     const {overlay, setOverlay} = useContext(overlayContext);
+    const {scroll, setScroll} = useContext(scrollContext);
     const [bookshelf, setBookshelf] = useState(null);
     const [books, setBooks] = useState(null);
     const [mode, setMode] = useState("books");
@@ -59,7 +61,7 @@ function BookshelfView()
                     setBookshelf(response?.data);
                     if (response?.data?.bookApiIds?.length > 0)
                     {
-                        loadBooks(true);
+                        await loadBooks(true);
                     }
                 }
                 catch (exception)
@@ -76,7 +78,30 @@ function BookshelfView()
             runEffect();
             return (() => {mounted = false});
         },
-        [id, loggedAccount]
+        [id, ownerId, loggedAccount]
+    );
+
+    useEffect
+    (
+        () =>
+        {
+            let mounted = true;
+            const runEffect = async () =>
+            {
+                if
+                (
+                    !overlay &&
+                    books?.length < bookshelf?.bookApiIds?.length &&
+                    scroll?.target?.scrollHeight-scroll?.target?.scrollTop <= scroll?.target?.offsetHeight+100
+                )
+                {
+                    await loadBooks(false);
+                }
+            }
+            runEffect();
+            return (() => {mounted = false});
+        },
+        [scroll, books]
     );
 
     useEffect
@@ -280,7 +305,7 @@ function BookshelfView()
     }
 
     return(
-        <div className = "bookshelfViewArea">
+        <div className = "page bookshelfViewArea">
             <div className = "topBox">
                 <BookshelfCovers covers = {[books?.[0]?.cover, books?.[1]?.cover, books?.[2]?.cover]}/>
                 <div className = "headBox">

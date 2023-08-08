@@ -132,7 +132,7 @@ function BookshelfCreate()
     }
 
     return (
-        <div className = "area bookshelfCreateArea">
+        <div className = "page bookshelfCreateArea">
             <div className = "label">Name</div>
             <input
             className = "normalInput"

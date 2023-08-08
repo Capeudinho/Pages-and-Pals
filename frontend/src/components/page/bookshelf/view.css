@@ -1,9 +1,8 @@
-.bookshelfViewArea .mainBox
+.bookshelfViewArea
 {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    min-height: 100vh;
     padding: 20px;
 }
 
@@ -29,10 +28,8 @@
     color: #191919;
 }
 
-.bookshelfViewArea .description
+.bookshelfViewArea .creationDate
 {
-    margin-top: -5px;
-    line-height: 20px;
     color: #191919;
 }
 
@@ -52,15 +49,10 @@
     border-radius: 5px;
     background-size: cover;
     background-position: center;
-    background-color: #cccccc;
+    background-color: #e5e5e5;
 }
 
 .bookshelfViewArea .ownerName
-{
-    color: #191919;
-}
-
-.bookshelfViewArea .creationDate
 {
     color: #191919;
 }
@@ -70,4 +62,11 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.bookshelfViewArea .description
+{
+    margin-top: -5px;
+    line-height: 20px;
+    color: #191919;
 }

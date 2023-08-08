@@ -3,13 +3,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 100vh;
     padding: 20px;
-}
-
-.accountEditArea .label
-{
-    color: #7f7f7f;
 }
 
 .accountEditArea input
@@ -22,51 +16,9 @@
     color: #191919;
 }
 
-.accountEditArea .biographyInput
+.accountEditArea .label
 {
-    flex: 1;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 5px;
-    background-color: #e5e5e5;
-    color: #191919;
-    line-height: 20px;
-    cursor: text;
-}
-
-.accountEditArea .biographyInput[placeholder]:empty::before
-{
-    content: attr(placeholder);
-    color: #7f7f7f; 
-}
-
-.accountEditArea .pictureBox
-{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.accountEditArea .picture
-{
-    border-radius: 5px;
-    background-size: cover;
-    background-position: center;
-    background-color: #cccccc;
-}
-
-.accountEditArea .bigPicture
-{
-    height: 80px;
-    width: 80px;
-}
-
-.accountEditArea .smallPicture
-{
-    height: 30px;
-    width: 30px;
+    color: #7f7f7f;
 }
 
 .accountEditArea .normalInput
@@ -103,41 +55,51 @@
     background-color: #cccccc;
 }
 
-.accountEditArea .privacyBox
+.accountEditArea .biographyInput
 {
-    width:fit-content;
-    display: grid;
-    grid-template-columns: 0fr 0fr;
-}
-
-.accountEditArea .privacyButton
-{
-    padding: 9px;
-    border: 1px solid #cccccc;
-}
-
-.accountEditArea .privacyPublicButton
-{
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-}
-
-.accountEditArea .privacyPrivateButton
-{
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
-.accountEditArea .completeButton
-{
+    flex: 1;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
     border-radius: 5px;
+    background-color: #e5e5e5;
+    color: #191919;
+    line-height: 20px;
+    cursor: text;
 }
 
-.accountEditArea .buttonBox
+.accountEditArea .biographyInput[placeholder]:empty::before
+{
+    content: attr(placeholder);
+    color: #7f7f7f; 
+}
+
+.accountEditArea .pictureBox
 {
     display: flex;
     flex-direction: row;
     gap: 10px;
+}
+
+.accountEditArea .picture
+{
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e5e5e5;
+}
+
+.accountEditArea .bigPicture
+{
+    height: 80px;
+    width: 80px;
+}
+
+.accountEditArea .smallPicture
+{
+    height: 30px;
+    width: 30px;
 }
 
 .accountEditArea ::placeholder

@@ -6,7 +6,7 @@ import loggedAccountContext from "../../context/loggedAccount.js";
 import alertContext from "../../context/alert.js";
 import confirmContext from "../../context/confirm.js";
 import overlayContext from "../../context/overlay.js";
-import eventContext from "../../context/event.js";
+import clickContext from "../../context/click.js";
 
 import "./view.css";
 
@@ -16,7 +16,7 @@ function BookView()
     const {alert, setAlert} = useContext(alertContext);
     const {confirm, setConfirm} = useContext(confirmContext);
     const {overlay, setOverlay} = useContext(overlayContext);
-    const {event, setEvent} = useContext(eventContext);
+    const {click, setClick} = useContext(clickContext);
     const [book, setBook] = useState(null);
     const [bookshelves, setBookshelves] = useState(null);
     const [showBookshelves, setShowBookshelves] = useState(false);
@@ -31,11 +31,11 @@ function BookView()
             let mounted = true;
             const runEffect = async () =>
             {
-                if (showBookshelves && event?.target?.closest(".clickSensitive") === null)
+                if (showBookshelves && click?.target?.closest(".clickSensitive") === null)
                 {
                     setShowBookshelves(false);
                 }
-                else if (!showBookshelves && event?.target?.closest(".clickResponsive") !== undefined && event?.target?.closest(".clickResponsive") !== null)
+                else if (!showBookshelves && click?.target?.closest(".clickResponsive") !== undefined && click?.target?.closest(".clickResponsive") !== null)
                 {
                     if (bookshelves?.length === undefined)
                     {
@@ -68,7 +68,7 @@ function BookView()
             runEffect();
             return (() => {mounted = false});
         },
-        [event]
+        [click]
     );
 
     useEffect
@@ -159,7 +159,7 @@ function BookView()
     }
 
     return (
-        <div className = "area bookViewArea">
+        <div className = "page bookViewArea">
             {
                 loggedAccount?.id !== undefined ?
                 <div className = "manageBox" style = {{padding: "20px"}}>

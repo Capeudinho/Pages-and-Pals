@@ -3,7 +3,6 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    min-height: 100vh;
     padding: 20px;
 }
 
@@ -21,7 +20,15 @@
     border-radius: 5px;
     background-size: cover;
     background-position: center;
-    background-color: #cccccc;
+    background-color: #e5e5e5;
+}
+
+.accountViewArea .headBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
 }
 
 .accountViewArea .name
@@ -34,28 +41,6 @@
 .accountViewArea .email
 {
     color: #191919;
-}
-
-.accountViewArea .normalButton
-{
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #cccccc;
-}
-
-.accountViewArea .biography
-{
-    margin-top: -5px;
-    line-height: 20px;
-    color: #191919;
-}
-
-.accountViewArea .headBox
-{
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex: 1;
 }
 
 .accountViewArea .createBookshelfButton
@@ -80,4 +65,11 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.accountViewArea .biography
+{
+    margin-top: -5px;
+    line-height: 20px;
+    color: #191919;
 }

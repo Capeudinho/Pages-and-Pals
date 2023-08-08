@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect, useContext, useRef} from "react";
 import {useParams, useNavigate, Link} from "react-router-dom";
 import api from "../../../services/api.js";
 
@@ -6,6 +6,7 @@ import loggedAccountContext from "../../context/loggedAccount.js";
 import alertContext from "../../context/alert.js";
 import confirmContext from "../../context/confirm.js";
 import overlayContext from "../../context/overlay.js";
+import scrollContext from "../../context/scroll.js";
 
 import ButtonGroup from "../../common/button/group.js";
 import ButtonMode from "../../common/button/mode.js";
@@ -19,6 +20,7 @@ function AccountView()
     const {alert, setAlert} = useContext(alertContext);
     const {confirm, setConfirm} = useContext(confirmContext);
     const {overlay, setOverlay} = useContext(overlayContext);
+    const {scroll, setScroll} = useContext(scrollContext);
     const [account, setAccount] = useState (null);
     const [bookshelves, setBookshelves] = useState(null);
     const [mode, setMode] = useState("bookshelves");
@@ -58,7 +60,7 @@ function AccountView()
                     setAccount(response?.data);
                     if (response?.data?.bookshelfCount > 0)
                     {
-                        loadBookshelves(true);
+                        await loadBookshelves(true);
                     }
                 }
                 catch (exception)
@@ -76,6 +78,29 @@ function AccountView()
             return (() => {mounted = false});
         },
         [id]
+    );
+
+    useEffect
+    (
+        () =>
+        {
+            let mounted = true;
+            const runEffect = async () =>
+            {
+                if
+                (
+                    !overlay &&
+                    bookshelves?.length < account?.bookshelfCount &&
+                    scroll?.target?.scrollHeight-scroll?.target?.scrollTop <= scroll?.target?.offsetHeight+100
+                )
+                {
+                    await loadBookshelves(false);
+                }
+            }
+            runEffect();
+            return (() => {mounted = false});
+        },
+        [scroll, bookshelves]
     );
 
     useEffect
@@ -238,7 +263,7 @@ function AccountView()
     }
 
     return (
-        <div className = "area accountViewArea">
+        <div className = "page accountViewArea">
             <div className = "topBox">
                 <div
                 className = "picture"

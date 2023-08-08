@@ -164,7 +164,7 @@ function BookshelfEdit()
     }
 
     return (
-        <div className = "area bookshelfEditArea">
+        <div className = "page bookshelfEditArea">
             <div className = "label">Name</div>
             <input
             className = "normalInput"

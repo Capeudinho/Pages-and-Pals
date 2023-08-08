@@ -9,7 +9,8 @@ import loggedAccountContext from "../context/loggedAccount.js";
 import alertContext from "../context/alert.js";
 import confirmContext from "../context/confirm.js";
 import overlayContext from "../context/overlay.js";
-import eventContext from "../context/event.js";
+import clickContext from "../context/click.js";
+import scrollContext from "../context/scroll.js";
 
 import "./application.css";
 
@@ -19,7 +20,8 @@ function Application ()
     const [alert, setAlert] = useState(null);
     const [confirm, setConfirm] = useState(null);
     const [overlay, setOverlay] = useState(false);
-    const [event, setEvent] = useState(null);
+    const [click, setClick] = useState(null);
+    const [scroll, setScroll] = useState(null);
     
     useEffect
     (
@@ -55,22 +57,23 @@ function Application ()
         []
     );
 
-    function handleChangeEvent(event)
+    function handleChangeClick(event)
     {
-        setEvent(event);
+        setClick(event);
     }
     
     return (
         <div
-        className = "area applicationArea"
-        onClick = {(event) => {handleChangeEvent(event)}}
+        className = "applicationArea"
+        onClick = {(event) => {handleChangeClick(event)}}
         >
             <BrowserRouter>
                 <loggedAccountContext.Provider value = {{loggedAccount, setLoggedAccount}}>
                 <alertContext.Provider value = {{alert, setAlert}}>
                 <confirmContext.Provider value = {{confirm, setConfirm}}>
                 <overlayContext.Provider value = {{overlay, setOverlay}}>
-                <eventContext.Provider value = {{event, setEvent}}>
+                <clickContext.Provider value = {{click, setClick}}>
+                <scrollContext.Provider value = {{scroll, setScroll}}>
                     {
                         loggedAccount?.id !== undefined || loggedAccount === null ?
                         <>
@@ -84,7 +87,8 @@ function Application ()
                         </> :
                         <></>
                     }
-                </eventContext.Provider>
+                </scrollContext.Provider>
+                </clickContext.Provider>
                 </overlayContext.Provider>
                 </confirmContext.Provider>
                 </alertContext.Provider>

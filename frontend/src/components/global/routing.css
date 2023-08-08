@@ -1,19 +1,37 @@
+.routingArea .total
+{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.background
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    background-color: #e5e5e5;
+    overflow-y: scroll;
+    overflow-x: auto;
+}
+
 .routingArea .enterBackground
 {
     padding-left: 400px;
     padding-right: 400px;
-    background-color: #e5e5e5;
 }
 
-.routingArea .otherBackground
+.routingArea .normalBackground
 {
     padding-left: 200px;
     padding-right: 200px;
-    background-color: #e5e5e5;
 }
 
 .routingArea .main
 {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     border-left: solid 1px #cccccc;
     border-right: solid 1px #cccccc;
     background-color: #ffffff;

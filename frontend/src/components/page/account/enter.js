@@ -131,7 +131,7 @@ function AccountEnter()
     }
 
     return (
-        <div className = "area accountEnterArea">
+        <div className = "page accountEnterArea">
             <div className = "topBox">
                 <div className = "text">Welcome to</div>
                 <div className = "text">Pages & Pals</div>

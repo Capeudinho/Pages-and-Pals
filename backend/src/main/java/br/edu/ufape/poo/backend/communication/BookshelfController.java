@@ -36,12 +36,12 @@ public class BookshelfController
 	private Facade facade;
 	
 	@PostMapping("create")
-	public ResponseEntity<?> create(@RequestBody Bookshelf bookshelf) throws Exception
+	public ResponseEntity<?> create(@RequestBody Bookshelf bookshelf, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
 		{
-			Bookshelf newBookshelf = facade.bookshelfCreate(bookshelf);
+			Bookshelf newBookshelf = facade.bookshelfCreate(bookshelf, email, password);
 			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.CREATED);
 		}
 		catch (InvalidNameBookshelfException exception)

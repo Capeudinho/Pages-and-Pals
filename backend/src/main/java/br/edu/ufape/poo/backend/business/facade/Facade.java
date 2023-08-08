@@ -32,6 +32,24 @@ public class Facade
 	public Account accountSignUp(Account account) throws Exception
 	{
 		Account newAccount = accountService.signUp(account);
+		Bookshelf read = new Bookshelf();
+		Bookshelf reading = new Bookshelf();
+		Bookshelf favorites = new Bookshelf();
+		read.setName("Read");
+		read.setDescription("Books I have read.");
+		read.setPrivacy(true);
+		read.setOwner(newAccount);
+		reading.setName("Reading");
+		reading.setDescription("Books I am reading.");
+		reading.setPrivacy(true);
+		reading.setOwner(newAccount);
+		favorites.setName("Favorites");
+		favorites.setDescription("Books I like the most.");
+		favorites.setPrivacy(true);
+		favorites.setOwner(newAccount);
+		bookshelfService.create(read);
+		bookshelfService.create(reading);
+		bookshelfService.create(favorites);
 		return newAccount;
 	}
 	
@@ -105,9 +123,10 @@ public class Facade
 	
 	// Bookshelf
 	
-	public Bookshelf bookshelfCreate(Bookshelf bookshelf) throws Exception
+	public Bookshelf bookshelfCreate(Bookshelf bookshelf, String email, String password) throws Exception
 	{
-		accountService.authenticate(bookshelf.getOwner().getEmail(), bookshelf.getOwner().getPassword());
+		Account requestingAccount = accountService.authenticate(email, password);
+		bookshelf.setOwner(requestingAccount);
 		Bookshelf newBookshelf = bookshelfService.create(bookshelf);
 		return newBookshelf;
 	}

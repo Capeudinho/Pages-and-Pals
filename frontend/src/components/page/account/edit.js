@@ -183,7 +183,7 @@ function AccountEdit()
     }
 
     return (
-        <div className = "area accountEditArea">
+        <div className = "page accountEditArea">
             <div className = "label">Name</div>
             <input
             className = "normalInput"

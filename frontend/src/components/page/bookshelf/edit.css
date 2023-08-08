@@ -1,15 +1,9 @@
-.bookshelfEditArea .mainBox
+.bookshelfEditArea
 {
     display: flex;
     flex-direction: column;
-    gap: 10px; 
-    min-height: 100vh;
+    gap: 10px;
     padding: 20px;
-}
-
-.bookshelfEditArea .label
-{
-    color: #7f7f7f;
 }
 
 .bookshelfEditArea input
@@ -21,6 +15,11 @@
     border-radius: 5px;
     background-color: #e5e5e5;
     color: #191919;
+}
+
+.bookshelfEditArea .label
+{
+    color: #7f7f7f;
 }
 
 .bookshelfEditArea .descriptionInput

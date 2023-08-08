@@ -48,12 +48,11 @@ button:hover
 .applicationArea
 {
     height: 100vh;
-    overflow: auto;
 }
 
-.area
+.page
 {
-    min-height: 100vh;
+    flex: 1;
 }
 
 .overlay
@@ -71,25 +70,28 @@ button:hover
 
 ::-webkit-scrollbar
 {
-    width: 10px;
+    width: 20px;
 }
 
 ::-webkit-scrollbar-track
 {
-    background: #e5e5e5;
+    background-color: rgba(0, 0, 0, 0.0);
 }
 
 ::-webkit-scrollbar-thumb
 {
-    background: #cccccc;
+    border: 5px solid rgba(0, 0, 0, 0);
+    border-radius: 100px;
+    background-color: #cccccc;
+    background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover
 {
-    background: #b3b3b3;
+    background-color: #bfbfbf;
 }
 
 ::-webkit-scrollbar-thumb:active
 {
-    background: #999999;
+    background-color: #b2b2b2;
 }
