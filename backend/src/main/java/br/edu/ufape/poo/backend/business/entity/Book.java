@@ -4,7 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Table
 @Entity
 public class Book
 {
@@ -14,6 +16,7 @@ public class Book
 	private String apiId;
 	private int scoreTotal;
 	private int reviewCount;
+	private int viewCount;
 	
 	public long getId()
 	{
@@ -53,6 +56,14 @@ public class Book
 	public void setReviewCount(int reviewCount)
 	{
 		this.reviewCount = reviewCount;
+	}
+
+	public int getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(int viewCount) {
+		this.viewCount = viewCount;
 	}
 	
 	

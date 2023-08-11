@@ -269,6 +269,22 @@ public class Facade
 		return bookshelfSelects;
 	}
 	
+	// Book
+	public double findScoreByApiId(String apiId) throws Exception{
+		return bookService.findScoreByApiId(apiId);
+
+	}
+	
+	public Map<String, Object>findBooksbyApiId(String apiId) throws Exception{
+		return googleBooksService.findByApiId(apiId);
+
+	}
+
+    public List<Object>searchBookByAuthor(String author, int maxResults, int startIndex) {
+        return googleBooksService.findByAuthor(author, maxResults, startIndex);
+   
+    }
+	
 	// Utility
 	
 	public Map<String, Object> bookshelfFindByIdUtility(Long id, boolean complete) throws Exception
