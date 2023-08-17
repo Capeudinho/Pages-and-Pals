@@ -16,8 +16,7 @@ import br.edu.ufape.poo.backend.business.service.GoogleBooksService;
 import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
 
 @Service
-public class Facade
-{
+public class Facade {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -26,11 +25,10 @@ public class Facade
 	private BookshelfService bookshelfService;
 	@Autowired
 	private GoogleBooksService googleBooksService;
-	
+
 	// Account
-	
-	public Account accountSignUp(Account account) throws Exception
-	{
+
+	public Account accountSignUp(Account account) throws Exception {
 		Account newAccount = accountService.signUp(account);
 		Bookshelf read = new Bookshelf();
 		Bookshelf reading = new Bookshelf();
@@ -52,41 +50,34 @@ public class Facade
 		bookshelfService.create(favorites);
 		return newAccount;
 	}
-	
-	public Account accountLogIn(String email, String password) throws Exception
-	{
+
+	public Account accountLogIn(String email, String password) throws Exception {
 		Account account = accountService.logIn(email, password);
 		return account;
 	}
-	
-	public Account accountUpdate(Account account, String email, String password) throws Exception
-	{
+
+	public Account accountUpdate(Account account, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
-		if (requestingAccount.getId() != account.getId())
-		{
+		if (requestingAccount.getId() != account.getId()) {
 			throw new AccessDeniedException();
 		}
 		Account newAccount = accountService.update(account);
 		return newAccount;
 	}
-	
-	public Account accountDeleteById(Long id, String email, String password) throws Exception
-	{
+
+	public Account accountDeleteById(Long id, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
-		if (requestingAccount.getId() != id)
-		{
+		if (requestingAccount.getId() != id) {
 			throw new AccessDeniedException();
 		}
 		Account oldAccount = accountService.deleteById(id);
 		// Delete other stuff
 		return oldAccount;
 	}
-	
-	public Map<String, Object> accountFindOwnById(Long id, String email, String password) throws Exception
-	{
+
+	public Map<String, Object> accountFindOwnById(Long id, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
-		if (requestingAccount.getId() != id)
-		{
+		if (requestingAccount.getId() != id) {
 			throw new AccessDeniedException();
 		}
 		Account account = accountService.findById(id);
@@ -102,17 +93,15 @@ public class Facade
 		accountProfile.put("bookshelfCount", bookshelfCount);
 		return accountProfile;
 	}
-	
-	public Map<String, Object> accountFindById(Long id) throws Exception
-	{
+
+	public Map<String, Object> accountFindById(Long id) throws Exception {
 		Account account = accountService.findById(id);
 		Map<String, Object> accountProfile = new HashMap<>();
 		accountProfile.put("id", account.getId());
 		accountProfile.put("name", account.getName());
 		accountProfile.put("picture", account.getPicture());
 		accountProfile.put("privacy", account.isPrivacy());
-		if (account.isPrivacy())
-		{
+		if (account.isPrivacy()) {
 			int bookshelfCount = bookshelfService.countByOwnerId(id);
 			accountProfile.put("email", account.getEmail());
 			accountProfile.put("biography", account.getBiography());
@@ -120,188 +109,165 @@ public class Facade
 		}
 		return accountProfile;
 	}
-	
+
 	// Bookshelf
-	
-	public Bookshelf bookshelfCreate(Bookshelf bookshelf, String email, String password) throws Exception
-	{
+
+	public Bookshelf bookshelfCreate(Bookshelf bookshelf, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
 		bookshelf.setOwner(requestingAccount);
 		Bookshelf newBookshelf = bookshelfService.create(bookshelf);
 		return newBookshelf;
 	}
-	
-	public Bookshelf bookshelfUpdate(Bookshelf bookshelf, String email, String password) throws Exception
-	{
+
+	public Bookshelf bookshelfUpdate(Bookshelf bookshelf, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
-		{
+		if (requestingAccount.getId() != bookshelf.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		Bookshelf newBookshelf = bookshelfService.update(bookshelf);
 		return newBookshelf;
 	}
-	
-	public Bookshelf bookshelfAddBookApiIdById(Long id, String apiId, String email, String password) throws Exception
-	{
+
+	public Bookshelf bookshelfAddBookApiIdById(Long id, String apiId, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
-		{
+		if (requestingAccount.getId() != bookshelf.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		Bookshelf newBookshelf = bookshelfService.addBookApiIdById(id, apiId);
 		return newBookshelf;
 	}
-	
-	public Bookshelf bookshelfRemoveBookApiIdById(Long id, String apiId, String email, String password) throws Exception
-	{
+
+	public Bookshelf bookshelfRemoveBookApiIdById(Long id, String apiId, String email, String password)
+			throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
-		{
+		if (requestingAccount.getId() != bookshelf.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		Bookshelf newBookshelf = bookshelfService.removeBookApiIdById(id, apiId);
 		return newBookshelf;
 	}
-	
-	public Bookshelf bookshelfDeleteById(Long id, String email, String password) throws Exception
-	{
+
+	public Bookshelf bookshelfDeleteById(Long id, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
-		{
+		if (requestingAccount.getId() != bookshelf.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		Bookshelf oldBookshelf = bookshelfService.deleteById(id);
 		return oldBookshelf;
 	}
-	
-	public Map<String, Object> bookshelfFindOwnById(Long id, String email, String password) throws Exception
-	{
+
+	public Map<String, Object> bookshelfFindOwnById(Long id, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
-		{
+		if (requestingAccount.getId() != bookshelf.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		Map<String, Object> bookshelfCard = bookshelfFindByIdUtility(id, true);
 		return bookshelfCard;
 	}
-	
-	public Map<String, Object> bookshelfFindById(Long id) throws Exception
-	{
+
+	public Map<String, Object> bookshelfFindById(Long id) throws Exception {
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (!bookshelf.getOwner().isPrivacy())
-		{
+		if (!bookshelf.getOwner().isPrivacy()) {
 			throw new AccessDeniedException();
 		}
 		Map<String, Object> bookshelfCard = bookshelfFindByIdUtility(id, false);
 		return bookshelfCard;
 	}
-	
-	public List<Map<String, Object>> bookshelfFindOwnByOwnerIdPaginate(Long ownerId, int offset, int limit, String email, String password) throws Exception
-	{
+
+	public List<Map<String, Object>> bookshelfFindOwnByOwnerIdPaginate(Long ownerId, int offset, int limit,
+			String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
-		if (requestingAccount.getId() != ownerId)
-		{
+		if (requestingAccount.getId() != ownerId) {
 			throw new AccessDeniedException();
 		}
 		List<Map<String, Object>> bookshelfCards = bookshelfFindByOwnerIdPaginateUtility(ownerId, offset, limit, true);
 		return bookshelfCards;
 	}
-	
-	public List<Map<String, Object>> bookshelfFindByOwnerIdPaginate(Long ownerId, int offset, int limit) throws Exception
-	{
+
+	public List<Map<String, Object>> bookshelfFindByOwnerIdPaginate(Long ownerId, int offset, int limit)
+			throws Exception {
 		Account account = accountService.findById(ownerId);
-		if (!account.isPrivacy())
-		{
+		if (!account.isPrivacy()) {
 			throw new AccessDeniedException();
 		}
 		List<Map<String, Object>> bookshelfCards = bookshelfFindByOwnerIdPaginateUtility(ownerId, offset, limit, false);
 		return bookshelfCards;
 	}
-	
-	public List<Map<String, Object>> bookshelfFindOwnBooksByIdPaginate(Long id, int offset, int limit, String email, String password) throws Exception
-	{
+
+	public List<Map<String, Object>> bookshelfFindOwnBooksByIdPaginate(Long id, int offset, int limit, String email,
+			String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
-		{
+		if (requestingAccount.getId() != bookshelf.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		List<Map<String, Object>> books = bookshelfFindBooksByIdPaginateUtility(id, offset, limit);
 		return books;
 	}
-	
-	public List<Map<String, Object>> bookshelfFindBooksByIdPaginate(Long id, int offset, int limit) throws Exception
-	{
+
+	public List<Map<String, Object>> bookshelfFindBooksByIdPaginate(Long id, int offset, int limit) throws Exception {
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (!bookshelf.isPrivacy() || !bookshelf.getOwner().isPrivacy())
-		{
+		if (!bookshelf.isPrivacy() || !bookshelf.getOwner().isPrivacy()) {
 			throw new AccessDeniedException();
 		}
 		List<Map<String, Object>> books = bookshelfFindBooksByIdPaginateUtility(id, offset, limit);
 		return books;
 	}
-	
-	public List<Map<String, Object>> bookshelfFindOwnSelectByOwnerId(Long ownerId, String apiId, String email, String password) throws Exception
-	{
+
+	public List<Map<String, Object>> bookshelfFindOwnSelectByOwnerId(Long ownerId, String apiId, String email,
+			String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
 		Bookshelf bookshelf = bookshelfService.findById(ownerId);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
-		{
+		if (requestingAccount.getId() != bookshelf.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		List<Map<String, Object>> bookshelfSelects = bookshelfFindSelectByOwnerIdUtility(ownerId, apiId);
 		return bookshelfSelects;
 	}
-	
-	public List<Map<String, Object>> bookshelfFindSelectByOwnerId(Long ownerId, String apiId) throws Exception
-	{
+
+	public List<Map<String, Object>> bookshelfFindSelectByOwnerId(Long ownerId, String apiId) throws Exception {
 		Bookshelf bookshelf = bookshelfService.findById(ownerId);
-		if (!bookshelf.getOwner().isPrivacy())
-		{
+		if (!bookshelf.getOwner().isPrivacy()) {
 			throw new AccessDeniedException();
 		}
 		List<Map<String, Object>> bookshelfSelects = bookshelfFindSelectByOwnerIdUtility(ownerId, apiId);
 		return bookshelfSelects;
 	}
-	
+
 	// Book
-	public double findScoreByApiId(String apiId) throws Exception{
+	public double findScoreByApiId(String apiId) throws Exception {
 		return bookService.findScoreByApiId(apiId);
 
 	}
-	
-	public Map<String, Object>findBooksbyApiId(String apiId) throws Exception{
-		return googleBooksService.findByApiId(apiId);
+
+	public Map<String, Object> findBookByApiId(String apiId, String extractInfo) throws Exception {
+		return googleBooksService.findByApiId(apiId, extractInfo);
 
 	}
 
-    public List<Object>searchBookByAuthor(String author, int maxResults, int startIndex) {
-        return googleBooksService.findByAuthor(author, maxResults, startIndex);
-   
-    }
-	
+	public List<Object> advancedSearch(String term, String title, String author, String subject, String publisher, String isbn, Integer maxResults, Integer startIndex, String complete) {
+		return googleBooksService.advancedSearchResults(term,title,author,subject,publisher,isbn,maxResults,startIndex,complete);
+
+	}
+
 	// Utility
-	
-	public Map<String, Object> bookshelfFindByIdUtility(Long id, boolean complete) throws Exception
-	{
+
+	public Map<String, Object> bookshelfFindByIdUtility(Long id, boolean complete) throws Exception {
 		Bookshelf bookshelf = bookshelfService.findById(id);
 		Map<String, Object> bookshelfCard = new HashMap<>();
 		bookshelfCard.put("id", bookshelf.getId());
 		bookshelfCard.put("name", bookshelf.getName());
 		bookshelfCard.put("privacy", bookshelf.isPrivacy());
 		bookshelfCard.put("owner", bookshelf.getOwner());
-		if (bookshelf.isPrivacy() || complete)
-		{
+		if (bookshelf.isPrivacy() || complete) {
 			List<String> covers = new ArrayList<String>();
 			Iterator<String> bookApiIdsIterator = bookshelf.getBookApiIds().listIterator();
 			int index = 0;
-			while (bookApiIdsIterator.hasNext() && index < 3)
-			{
+			while (bookApiIdsIterator.hasNext() && index < 3) {
 				String bookApiId = bookApiIdsIterator.next();
 				index++;
 				String cover = googleBooksService.findCoverByApiId(bookApiId);
@@ -314,46 +280,38 @@ public class Facade
 		}
 		return bookshelfCard;
 	}
-	
-	
-	private List<Map<String, Object>> bookshelfFindByOwnerIdPaginateUtility(Long ownerId, int offset, int limit, boolean complete) throws Exception
-	{
+
+	private List<Map<String, Object>> bookshelfFindByOwnerIdPaginateUtility(Long ownerId, int offset, int limit,
+			boolean complete) throws Exception {
 		int bookshelfCount = bookshelfService.countByOwnerId(ownerId);
-		if (offset < 0)
-		{
+		if (offset < 0) {
 			offset = 0;
 		}
-		if (limit < 0)
-		{
+		if (limit < 0) {
 			limit = 0;
 		}
-		if (offset > bookshelfCount)
-		{
+		if (offset > bookshelfCount) {
 			offset = bookshelfCount;
 		}
-		if (limit > bookshelfCount-offset)
-		{
-			limit = bookshelfCount-offset;
+		if (limit > bookshelfCount - offset) {
+			limit = bookshelfCount - offset;
 		}
 		List<Bookshelf> bookshelves = bookshelfService.findByOwnerIdPaginate(ownerId, offset, limit);
 		List<Map<String, Object>> bookshelfCards = new ArrayList<Map<String, Object>>();
 		Iterator<Bookshelf> bookshelvesIterator = bookshelves.listIterator();
 		int index = 0;
-		while (bookshelvesIterator.hasNext())
-		{
+		while (bookshelvesIterator.hasNext()) {
 			Bookshelf bookshelf = bookshelvesIterator.next();
 			Map<String, Object> bookshelfCard = new HashMap<>();
 			bookshelfCard.put("id", bookshelf.getId());
 			bookshelfCard.put("name", bookshelf.getName());
 			bookshelfCard.put("privacy", bookshelf.isPrivacy());
 			bookshelfCard.put("owner", bookshelf.getOwner());
-			if (bookshelf.isPrivacy() || complete)
-			{
+			if (bookshelf.isPrivacy() || complete) {
 				List<String> covers = new ArrayList<String>();
 				Iterator<String> bookApiIdsIterator = bookshelf.getBookApiIds().listIterator();
 				index = 0;
-				while (bookApiIdsIterator.hasNext() && index < 3)
-				{
+				while (bookApiIdsIterator.hasNext() && index < 3) {
 					String bookApiId = bookApiIdsIterator.next();
 					index++;
 					String cover = googleBooksService.findCoverByApiId(bookApiId);
@@ -368,66 +326,53 @@ public class Facade
 		}
 		return bookshelfCards;
 	}
-	
-	private List<Map<String, Object>> bookshelfFindBooksByIdPaginateUtility(Long id, int offset, int limit) throws Exception
-	{
+
+	private List<Map<String, Object>> bookshelfFindBooksByIdPaginateUtility(Long id, int offset, int limit)
+			throws Exception {
 		Bookshelf bookshelf = bookshelfService.findById(id);
-		if (offset < 0)
-		{
+		if (offset < 0) {
 			offset = 0;
 		}
-		if (limit < 0)
-		{
+		if (limit < 0) {
 			limit = 0;
 		}
-		if (offset > bookshelf.getBookApiIds().size())
-		{
+		if (offset > bookshelf.getBookApiIds().size()) {
 			offset = bookshelf.getBookApiIds().size();
 		}
-		if (limit > bookshelf.getBookApiIds().size()-offset)
-		{
-			limit = bookshelf.getBookApiIds().size()-offset;
+		if (limit > bookshelf.getBookApiIds().size() - offset) {
+			limit = bookshelf.getBookApiIds().size() - offset;
 		}
 		List<Map<String, Object>> books = new ArrayList<Map<String, Object>>();
-		List<String> bookApiIds = bookshelf.getBookApiIds().subList(offset, offset+limit);
+		List<String> bookApiIds = bookshelf.getBookApiIds().subList(offset, offset + limit);
 		Iterator<String> bookApiIdsIterator = bookApiIds.listIterator();
-		while (bookApiIdsIterator.hasNext())
-		{
+		while (bookApiIdsIterator.hasNext()) {
 			String bookApiId = bookApiIdsIterator.next();
-			Map<String, Object> book = googleBooksService.findByApiId(bookApiId);
+			Map<String, Object> book = googleBooksService.findByApiId(bookApiId, "incomplete");
 			book.put("apiId", bookApiId);
 			Double score = bookService.findScoreByApiId(bookApiId);
-			if (score != null)
-			{
-				score = ((double) Math.round(score*10d))/10d;
+			if (score != null) {
+				score = ((double) Math.round(score * 10d)) / 10d;
 				book.put("score", score);
-			}
-			else
-			{
+			} else {
 				book.put("score", null);
 			}
 			books.add(book);
 		}
 		return books;
 	}
-	
-	private List<Map<String, Object>> bookshelfFindSelectByOwnerIdUtility(Long id, String apiId) throws Exception
-	{
+
+	private List<Map<String, Object>> bookshelfFindSelectByOwnerIdUtility(Long id, String apiId) throws Exception {
 		List<Bookshelf> bookshelves = bookshelfService.findByOwnerId(id);
 		List<Map<String, Object>> bookshelfSelects = new ArrayList<Map<String, Object>>();
 		Iterator<Bookshelf> bookshelvesIterator = bookshelves.listIterator();
-		while (bookshelvesIterator.hasNext())
-		{
+		while (bookshelvesIterator.hasNext()) {
 			Bookshelf bookshelf = bookshelvesIterator.next();
 			Map<String, Object> bookshelfSelect = new HashMap<>();
 			bookshelfSelect.put("id", bookshelf.getId());
 			bookshelfSelect.put("name", bookshelf.getName());
-			if (bookshelf.getBookApiIds().contains(apiId))
-			{
+			if (bookshelf.getBookApiIds().contains(apiId)) {
 				bookshelfSelect.put("contains", true);
-			}
-			else
-			{
+			} else {
 				bookshelfSelect.put("contains", false);
 			}
 			bookshelfSelects.add(bookshelfSelect);

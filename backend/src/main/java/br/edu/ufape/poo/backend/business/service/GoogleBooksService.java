@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import com.google.gson.Gson;
@@ -16,63 +16,23 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class GoogleBooksService {
-	public Map<String, Object> findByApiId(String apiId) {
+	public Map<String, Object> findByApiId(String apiId, String extractInfo) {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
-		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + apiId).retrieve().bodyToMono(String.class).block();
+		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + apiId).retrieve()
+				.bodyToMono(String.class).block();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
-		String title = "";
-		String cover = "";
-		List<String> authors = new ArrayList<String>();
-		List<String> categories = new ArrayList<String>();
-		Map<String, Object> bookBasic = new HashMap<>();
-		
-		if (jsonObject != null && jsonObject.get("volumeInfo") != null) {
-			JsonObject volumeInfo = jsonObject.get("volumeInfo").getAsJsonObject();
-			if (volumeInfo.get("title") != null) {
-				title = volumeInfo.get("title").getAsString();
-			}
-			if (volumeInfo.get("imageLinks") != null
-					&& volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail") != null) {
-				cover = volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
-			}
-			if (volumeInfo.get("authors") != null) {
-				List<?> rawAuthors = gson.fromJson(volumeInfo.get("authors").getAsJsonArray(), ArrayList.class);
-				Iterator<?> rawAuthorsIterator = rawAuthors.listIterator();
-				while (rawAuthorsIterator.hasNext()) {
-					Object rawAuthor = rawAuthorsIterator.next();
-					if (rawAuthor instanceof String) {
-						authors.add((String) rawAuthor);
-					}
-				}
-			}
-			if (volumeInfo.get("categories") != null) {
-				List<?> rawCategoryGroups = gson.fromJson(volumeInfo.get("categories").getAsJsonArray(),ArrayList.class);
-				Iterator<?> rawCategoryGroupsIterator = rawCategoryGroups.listIterator();
-				while (rawCategoryGroupsIterator.hasNext()) {
-					Object rawCategoryGroup = rawCategoryGroupsIterator.next();
-					if (rawCategoryGroup instanceof String) {
-						String[] categoryParts = ((String) rawCategoryGroup).split(" / ");
-						for (int index = 0; index < categoryParts.length; index++) {
-							if (!categories.contains(categoryParts[index])) {
-								categories.add(categoryParts[index]);
-							}
-						}
-					}
-				}
-			}
-		}
-		bookBasic.put("title", title);
-		bookBasic.put("cover", cover);
-		bookBasic.put("authors", authors);
-		bookBasic.put("categories", categories);
-		return bookBasic;
+		Map<String, Object> bookInfo = new HashMap<>();
+		bookInfo = extractBookInformationUtility(jsonObject, extractInfo);
+
+		return bookInfo;
 	}
 
 	public String findCoverByApiId(String id) {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
-		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + id).retrieve().bodyToMono(String.class).block();
+		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + id).retrieve()
+				.bodyToMono(String.class).block();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		String cover = "";
 		if (jsonObject != null && jsonObject.get("volumeInfo") != null
@@ -84,65 +44,173 @@ public class GoogleBooksService {
 		return cover;
 	}
 
-	public List<Object> findByAuthor(String author, int maxResults, int startIndex) {
+	public List<Object> advancedSearchResults(String term, String title, String author, String subject,
+			String publisher, String isbn, Integer maxResults, Integer startIndex, String extractInfo) {
+		Map<String, Object> preview = new HashMap<>();
+		List<Object> previews = new ArrayList<Object>();
+		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, maxResults,
+				startIndex);
 		Gson gson = new Gson();
-		WebClient webClient = WebClient.create();
-		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes?q=inauthor:" + author
-				+ "&maxResults=" + maxResults + "&startIndex=" + startIndex).retrieve().bodyToMono(String.class)
-				.block();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
-		Map<String, Object> bookBasic;
-		List<Object> books = new ArrayList<>();
-		String title = "";
-		String cover = "";
-		List<String> authors;
-		List<String> categories;
 
 		if (jsonObject != null && jsonObject.get("items") != null) {
 			JsonArray items = jsonObject.get("items").getAsJsonArray();
 			for (int index = 0; index < items.size(); index++) {
-				bookBasic = new HashMap<>();
-				authors = new ArrayList<String>();
-				categories = new ArrayList<String>();
-				if (items.get(index) != null && items.get(index).getAsJsonObject().get("volumeInfo") != null) {
-					JsonObject volumeInfo = items.get(index).getAsJsonObject().get("volumeInfo").getAsJsonObject();
-					if (volumeInfo.get("title") != null) {
-						title = volumeInfo.get("title").getAsString();
-						bookBasic.put("title", title);
-					}
-					if (volumeInfo.get("imageLinks") != null
-							&& volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail") != null) {
-						cover = volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
-						bookBasic.put("cover", cover);
-					}
-					if (volumeInfo.get("authors") != null) {
-						JsonArray rawAuthors = volumeInfo.get("authors").getAsJsonArray();
-						for (int authorIndex = 0; authorIndex < rawAuthors.size(); authorIndex++) {
-							if (rawAuthors.get(authorIndex) != null) {
-								String rawAuthor = rawAuthors.get(authorIndex).getAsString();
-								authors.add(rawAuthor);
-							}
-						}
-					}
-					bookBasic.put("authors", authors);
-					if (volumeInfo.get("categories") != null) {
-						JsonArray rawCategories = volumeInfo.get("categories").getAsJsonArray();
-						for (int categoryIndex = 0; categoryIndex <  rawCategories.size(); categoryIndex++) {
-							if ( rawCategories.get(categoryIndex) != null) {
-								String[] categoryParts = rawCategories.get(categoryIndex).getAsString().split(" / ");
-								for (int categoryPartsIndex = 0; categoryPartsIndex < categoryParts.length; categoryPartsIndex++) {
-									if (!categories.contains(categoryParts[categoryPartsIndex])) {
-										categories.add(categoryParts[categoryPartsIndex]);
-									}
-								}
-							}
-						}
-					}
-					bookBasic.put("categories", categories);
-				}
-				books.add(bookBasic);
+				JsonObject bookObject = items.get(index).getAsJsonObject();
+				preview = extractBookInformationUtility(bookObject, extractInfo);
+				previews.add(preview);
 			}
 		}
-		return books;
+		return previews;
+	}
+
+	private String advancedSearchUtility(String term, String title, String author, String subject,
+			String publisher, String isbn, Integer maxResults, Integer startIndex) {
+		String filter = "";
+		String filters = "";
+		String response = "";
+		WebClient webClient = WebClient.create();
+		if (term != null && !term.isBlank()) {
+			filter = filter + term + "&";
+		}
+		if (title != null && !title.isBlank()) {
+			filter = filter + "intitle:" + title + "&";
+		}
+		if (author != null && !author.isBlank()) {
+			filter = filter + "inauthor:" + author + "&";
+		}
+
+		if (subject != null && !subject.isBlank()) {
+			filter = filter + "subject:" + subject + "&";
+		}
+		if (publisher != null && !publisher.isBlank()) {
+			filter = filter + "publisher" + publisher + "&";
+
+		}
+		if (isbn != null && !isbn.isBlank()) {
+			filter = filter + "isbn" + isbn + "&";
+		}
+		if (maxResults != null) {
+			filter = filter + "maxResults" + maxResults + "&";
+		}
+		if (startIndex != null) {
+			filter = filter + "startIndex" + startIndex + "&";
+		}
+
+		if (filter.length() > 0) {
+			filters = filter.substring(0, filter.length() - 1);
+		}
+
+		response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes?q=" + filters).retrieve()
+				.bodyToMono(String.class).block();
+
+		return response;
+	}
+
+	private Map<String, Object> extractBookInformationUtility(JsonObject jsonObject, String extractAllData) {
+		Map<String, Object> bookInfo;
+		String title = "";
+		String cover = "";
+		String language = "";
+		String publisher = "";
+		String publishedDate = "";
+		String description = "";
+		String identifier = "";
+		String type = "";
+		int pageCount = 0;
+		List<String> authors;
+		List<String> categories;
+		List<Map<String, Object>> industryIdentifiers;
+		Map<String, Object> industryId;
+		bookInfo = new HashMap<>();
+		authors = new ArrayList<String>();
+		categories = new ArrayList<String>();
+		industryIdentifiers = new ArrayList<Map<String, Object>>();
+
+		if (jsonObject.get("volumeInfo") != null) {
+			JsonObject volumeInfo = jsonObject.get("volumeInfo").getAsJsonObject();
+
+			if (volumeInfo.get("title") != null) {
+				title = volumeInfo.get("title").getAsString();
+				bookInfo.put("title", title);
+			}
+			if (volumeInfo.get("categories") != null) {
+				JsonArray rawCategories = volumeInfo.get("categories").getAsJsonArray();
+				for (int categoryIndex = 0; categoryIndex < rawCategories.size(); categoryIndex++) {
+					if (rawCategories.get(categoryIndex) != null) {
+						String[] categoryParts = rawCategories.get(categoryIndex).getAsString().split(" / ");
+						for (int categoryPartsIndex = 0; categoryPartsIndex < categoryParts.length; categoryPartsIndex++) {
+							if (!categories.contains(categoryParts[categoryPartsIndex])) {
+								categories.add(categoryParts[categoryPartsIndex]);
+							}
+						}
+					}
+				}
+				bookInfo.put("categories", categories);
+			}
+
+			if (volumeInfo.get("publishedDate") != null) {
+				publishedDate = volumeInfo.get("publishedDate").getAsString();
+				bookInfo.put("publishedDate", publishedDate);
+			}
+
+			if (volumeInfo.get("imageLinks") != null
+					&& volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail") != null) {
+				cover = volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
+				bookInfo.put("cover", cover);
+			}
+			if (volumeInfo.get("authors") != null) {
+				JsonArray rawAuthors = volumeInfo.get("authors").getAsJsonArray();
+				for (int authorIndex = 0; authorIndex < rawAuthors.size(); authorIndex++) {
+					if (rawAuthors.get(authorIndex) != null) {
+						String rawAuthor = rawAuthors.get(authorIndex).getAsString();
+						authors.add(rawAuthor);
+					}
+				}
+				bookInfo.put("authors", authors);
+			}
+
+			if (extractAllData.equals("complete")) {
+				if (volumeInfo.get("pageCount") != null) {
+					pageCount = volumeInfo.get("pageCount").getAsInt();
+					bookInfo.put("pageCount", pageCount);
+				}
+				if (volumeInfo.get("language") != null) {
+					language = volumeInfo.get("language").getAsString();
+					bookInfo.put("language", language);
+				}
+				if (volumeInfo.get("publisher") != null) {
+					publisher = volumeInfo.get("publisher").getAsString();
+					bookInfo.put("publisher", publisher);
+				}
+				if (volumeInfo.get("description") != null) {
+					description = volumeInfo.get("description").getAsString();
+					bookInfo.put("description", description);
+				}
+
+				if (volumeInfo.get("industryIdentifiers").getAsJsonArray() != null) {
+					JsonArray rawIndustryIdentifiers = volumeInfo.get("industryIdentifiers").getAsJsonArray();
+					for (int industryIdentifiersIndex = 0; industryIdentifiersIndex < rawIndustryIdentifiers
+							.size(); industryIdentifiersIndex++) {
+						industryId = new HashMap<>();
+						if (rawIndustryIdentifiers.get(industryIdentifiersIndex) != null) {
+							JsonObject rawIndustryIdentifier = rawIndustryIdentifiers.get(industryIdentifiersIndex)
+									.getAsJsonObject();
+							if (rawIndustryIdentifier.get("type") != null) {
+								type = rawIndustryIdentifier.get("type").getAsString();
+								industryId.put("type", type);
+							}
+							if (rawIndustryIdentifier.get("identifier") != null) {
+								identifier = rawIndustryIdentifier.get("identifier").getAsString();
+								industryId.put("identifier", identifier);
+							}
+							industryIdentifiers.add(industryId);
+						}
+					}
+					bookInfo.put("ISBNs", industryIdentifiers);
+				}
+			}
+		}
+		return bookInfo;
 	}
 }
