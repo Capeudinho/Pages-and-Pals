@@ -21,13 +21,18 @@ public abstract class Statement {
 	private long id;
 	@Column(columnDefinition = "TEXT")
 	private String text;
-	private int scoreTotal;
 	private LocalDate creationDate;
 	private LocalDate editionDate;
 	@ManyToOne
 	private Account owner;
 	
 	
+	public Account getOwner() {
+		return owner;
+	}
+	public void setOwner(Account owner) {
+		this.owner = owner;
+	}
 	public long getId() {
 		return id;
 	}
@@ -39,12 +44,6 @@ public abstract class Statement {
 	}
 	public void setText(String text) {
 		this.text = text;
-	}
-	public int getScoreTotal() {
-		return scoreTotal;
-	}
-	public void setScoreTotal(int scoreTotal) {
-		this.scoreTotal = scoreTotal;
 	}
 	public LocalDate getCreationDate() {
 		return creationDate;

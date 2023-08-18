@@ -8,7 +8,10 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>{
-	List<Review> findByOwnerIdOrderByCreationDateDesc(Long id);
-	List<Review> findByOwnerIdOrderByCreationDateDesc(Long id, Pageable pageable);
-    //List<Review> findByInOwnerIdOrderByCreationDateDesc(List<Long> ids);
+	public List<Review> findByOwnerIdOrderByCreationDateDesc(Long id);
+	public List<Review> findByOwnerIdOrderByCreationDateDesc(Long id, Pageable pageable);
+	public List<Review> findByOwnerIdInOrderByCreationDateDesc(List<Long> ids);
+	public List<Review> findByBookApiIdOrderByCreationDateDesc(String bookApiId, Pageable pageable);
+    public int countByOwnerId(Long id);
+    public int countByBookApiId(String id);
 }

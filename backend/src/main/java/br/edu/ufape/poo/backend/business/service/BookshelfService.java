@@ -117,12 +117,11 @@ public class BookshelfService
 	
 	public Bookshelf findById(Long id) throws Exception
 	{
-		Optional<Bookshelf> bookshelfOptional = bookshelfRepository.findById(id);
-		if (!bookshelfOptional.isPresent())
+		Bookshelf bookshelf = bookshelfRepository.findById(id).orElse(null);
+		if (bookshelf == null)
 		{
 			throw new IncorrectIdException();
 		}
-		Bookshelf bookshelf = bookshelfOptional.get();
 		return bookshelf;
 	}
 	
