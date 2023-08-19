@@ -21,10 +21,10 @@ public class BookController {
 	@Autowired
 	private Facade facade;
 
-	@GetMapping("findBooksbyApiId/{apiId}")
-	public ResponseEntity<Object> findBooksbyApiId(@PathVariable String apiId) {
+	@GetMapping("findBookbyApiId/{apiId}")
+	public ResponseEntity<Object> findBookByApiId(@PathVariable String apiId) {
 		try {
-			return new ResponseEntity<Object>(facade.findBooksbyApiId(apiId), HttpStatus.OK);
+			return new ResponseEntity<Object>(facade.findBookByApiId(apiId,"incomplete"), HttpStatus.OK);
 		} catch (Exception exception) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception);
 		}
@@ -39,12 +39,21 @@ public class BookController {
 		}
 	}
 
-	@GetMapping("findBookByAuthor/{author}/{maxResults}/{startIndex}")
-	public ResponseEntity<?> findBookByAuthor(@PathVariable String author, @PathVariable int maxResults,
-			@PathVariable int startIndex) {
+	@GetMapping("/advancedSearch")
+	public ResponseEntity<?> findBooksAdvancedSearch(
+			@RequestParam(required = false, name = "term") String term,
+			@RequestParam(required = false, name = "title") String title,
+			@RequestParam(required = false, name = "author") String author,
+			@RequestParam(required = false, name = "subject") String subject,
+			@RequestParam(required = false, name = "publisher") String publisher,
+			@RequestParam(required = false, name = "isbn") String isbn,
+			@RequestParam(required = false, name = "maxResults") Integer maxResults,
+			@RequestParam(required = false, name = "startIndex") Integer startIndex,
+			@RequestParam(required = false, name = "extractInfo") String extractInfo) {
 		ResponseEntity<?> responseEntity;
 		try {
-			List<Object> booksList = facade.searchBookByAuthor(author, maxResults, startIndex);
+			List<Object> booksList = facade.advancedSearch(term, title, author, subject, publisher, isbn, maxResults,
+					startIndex,extractInfo);
 			responseEntity = new ResponseEntity<List<Object>>(booksList, HttpStatus.OK);
 			return responseEntity;
 		} catch (Exception exception) {
@@ -53,4 +62,5 @@ public class BookController {
 		}
 
 	}
+
 }
