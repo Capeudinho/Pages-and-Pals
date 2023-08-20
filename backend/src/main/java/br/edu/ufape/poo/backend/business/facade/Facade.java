@@ -249,9 +249,9 @@ public class Facade {
 
 	}
 
-	public List<Object> advancedSearch(String term, String title, String author, String subject, String publisher, String isbn, Integer maxResults, Integer startIndex, String complete) {
-		return googleBooksService.advancedSearchResults(term,title,author,subject,publisher,isbn,maxResults,startIndex,complete);
-
+	public List<Object> advancedSearch(String term, String title, String author, String subject, String publisher, String isbn, Integer maxResults, Integer startIndex, String ownerName, String bookshelfName) {
+		//return googleBooksService.advancedSearchResults(term,title,author,subject,publisher,isbn,maxResults,startIndex, "incomplete");
+		return bookshelfService.findAdvanced(ownerName, bookshelfName);
 	}
 
 	// Utility

@@ -115,6 +115,13 @@ public class BookshelfService
 		return bookshelves;
 	}
 	
+	public List<Object> findAdvanced(String ownerName, String bookshelfName)
+	{
+		List<Object> bookshelves = bookshelfRepository.findByOwnerAndBookshelfName(ownerName, bookshelfName);
+		return bookshelves;
+	}
+	
+	
 	public Bookshelf findById(Long id) throws Exception
 	{
 		Optional<Bookshelf> bookshelfOptional = bookshelfRepository.findById(id);

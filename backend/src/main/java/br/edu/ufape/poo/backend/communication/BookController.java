@@ -49,12 +49,13 @@ public class BookController {
 			@RequestParam(required = false, name = "isbn") String isbn,
 			@RequestParam(required = false, name = "maxResults") Integer maxResults,
 			@RequestParam(required = false, name = "startIndex") Integer startIndex,
-			@RequestParam(required = false, name = "extractInfo") String extractInfo) {
+			@RequestParam(required = false, name = "ownerName") String ownerName,
+			@RequestParam(required = false, name = "bookshelfName") String bookshelfName
+			) {
 		ResponseEntity<?> responseEntity;
 		try {
-			List<Object> booksList = facade.advancedSearch(term, title, author, subject, publisher, isbn, maxResults,
-					startIndex,extractInfo);
-			responseEntity = new ResponseEntity<List<Object>>(booksList, HttpStatus.OK);
+			List<Object> resultsList = facade.advancedSearch(term, title, author, subject, publisher, isbn, maxResults,startIndex,ownerName,bookshelfName);
+			responseEntity = new ResponseEntity<List<Object>>(resultsList, HttpStatus.OK);
 			return responseEntity;
 		} catch (Exception exception) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception);

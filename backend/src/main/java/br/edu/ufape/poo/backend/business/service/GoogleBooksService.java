@@ -48,8 +48,7 @@ public class GoogleBooksService {
 			String publisher, String isbn, Integer maxResults, Integer startIndex, String extractInfo) {
 		Map<String, Object> preview = new HashMap<>();
 		List<Object> previews = new ArrayList<Object>();
-		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, maxResults,
-				startIndex);
+		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, maxResults,startIndex);
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 
@@ -63,7 +62,7 @@ public class GoogleBooksService {
 		}
 		return previews;
 	}
-
+	
 	private String advancedSearchUtility(String term, String title, String author, String subject,
 			String publisher, String isbn, Integer maxResults, Integer startIndex) {
 		String filter = "";
@@ -84,23 +83,23 @@ public class GoogleBooksService {
 			filter = filter + "subject:" + subject + "&";
 		}
 		if (publisher != null && !publisher.isBlank()) {
-			filter = filter + "publisher" + publisher + "&";
+			filter = filter + "inpublisher:" + publisher + "&";
 
 		}
 		if (isbn != null && !isbn.isBlank()) {
-			filter = filter + "isbn" + isbn + "&";
+			filter = filter + "isbn:" + isbn + "&";
 		}
 		if (maxResults != null) {
-			filter = filter + "maxResults" + maxResults + "&";
+			filter = filter + "maxResults=" + maxResults + "&";
 		}
 		if (startIndex != null) {
-			filter = filter + "startIndex" + startIndex + "&";
+			filter = filter + "startIndex=" + startIndex + "&";
 		}
 
 		if (filter.length() > 0) {
 			filters = filter.substring(0, filter.length() - 1);
 		}
-
+		
 		response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes?q=" + filters).retrieve()
 				.bodyToMono(String.class).block();
 
