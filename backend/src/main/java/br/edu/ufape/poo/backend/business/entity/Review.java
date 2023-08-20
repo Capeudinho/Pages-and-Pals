@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 @Entity
 public class Review extends Statement {
 	
-	private double bookScore;
+	private Double bookScore;
 	private boolean privacy;
 	private String bookApiId;
 	
@@ -16,11 +16,11 @@ public class Review extends Statement {
 	public void setBookApiId(String bookApiId) {
 		this.bookApiId = bookApiId;
 	}
-	public double getBookScore() {
+	public Double getBookScore() {
 		return bookScore;
 	}
-	public void setBookScore(double bookScore) {
-		this.bookScore = bookScore;
+	public void setBookScore(Double i) {
+		this.bookScore = i;
 	}
 	public boolean isPrivacy() {
 		return privacy;

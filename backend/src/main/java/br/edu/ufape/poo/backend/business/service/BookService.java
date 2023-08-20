@@ -9,7 +9,7 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class BookService
+public class BookService implements BookServiceInterface
 {
 	@Autowired
 	private BookRepository bookRepository;

@@ -4,7 +4,7 @@ import "./covers.css";
 
 function BookshelfCovers({covers})
 {
-    return(
+    return (
         <div className = "bookshelfCoversArea">
             <div
             className = "cover coverOne"

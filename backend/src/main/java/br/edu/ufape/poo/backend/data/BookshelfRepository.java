@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface BookshelfRepository extends JpaRepository<Bookshelf, Long>
 {
-	public List<Bookshelf> findByOwnerIdOrderByIdDesc(Long id);
-	public List<Bookshelf> findByOwnerIdOrderByIdDesc(Long id, Pageable pageable);
+	public List<Bookshelf> findByOwnerIdOrderByCreationDateDesc(Long id);
+	public List<Bookshelf> findByOwnerIdOrderByCreationDateDesc(Long id, Pageable pageable);
 	public int countByOwnerId(Long id);
 
 	@Query("SELECT bookshelf FROM Bookshelf bookshelf WHERE (:bookshelfName IS null OR bookshelf.name LIKE :bookshelfName) AND (:ownerName IS null OR bookshelf.owner.name LIKE :ownerName)")

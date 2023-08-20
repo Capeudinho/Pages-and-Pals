@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useRef} from "react";
+import React, {useState, useEffect, useContext} from "react";
 import {useParams, useNavigate, Link} from "react-router-dom";
 import api from "../../../services/api.js";
 
@@ -302,7 +302,12 @@ function AccountView()
                                 {
                                     loggedAccount instanceof Object && loggedAccount?.id === Number(id) ?
                                     <Link to = {"/bookshelf/create"}>
-                                        <button className = "createBookshelfButton">Create</button>
+                                        <button
+                                        className = "createBookshelfButton"
+                                        disabled = {overlay}
+                                        >
+                                            Create
+                                        </button>
                                     </Link> :
                                     <></>
                                 }

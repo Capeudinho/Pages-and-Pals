@@ -304,7 +304,7 @@ function BookshelfView()
         }
     }
 
-    return(
+    return (
         <div className = "page bookshelfViewArea">
             <div className = "topBox">
                 <BookshelfCovers covers = {[books?.[0]?.cover, books?.[1]?.cover, books?.[2]?.cover]}/>

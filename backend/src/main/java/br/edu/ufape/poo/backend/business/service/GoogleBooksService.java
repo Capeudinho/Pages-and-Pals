@@ -28,18 +28,22 @@ public class GoogleBooksService {
 		return bookInfo;
 	}
 
-	public String findCoverByApiId(String id) {
+	public String findCoverByApiId(String id)
+	{
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
-		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + id).retrieve()
-				.bodyToMono(String.class).block();
+		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + id).retrieve().bodyToMono(String.class).block();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		String cover = "";
-		if (jsonObject != null && jsonObject.get("volumeInfo") != null
-				&& jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks") != null
-				&& jsonObject.get("imageLinks").getAsJsonObject().get("thumbnail") != null) {
-			cover = jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail")
-					.getAsString();
+		if
+		(
+			jsonObject != null &&
+			jsonObject.get("volumeInfo") != null &&
+			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks") != null &&
+			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail") != null
+		)
+		{
+			cover = jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
 		}
 		return cover;
 	}

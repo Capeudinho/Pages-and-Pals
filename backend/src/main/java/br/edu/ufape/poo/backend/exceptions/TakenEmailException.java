@@ -1,20 +1,11 @@
 package br.edu.ufape.poo.backend.exceptions;
 
-import br.edu.ufape.poo.backend.business.entity.Account;
-
 public class TakenEmailException extends Exception
 {
 	private static final long serialVersionUID = 1L;
-	private final Account otherAccount;
 	
-	public TakenEmailException(Account otherAccount)
+	public TakenEmailException()
 	{
 		super ("email taken");
-		this.otherAccount = otherAccount;
-	}
-	
-	public Account getOtherAccount()
-	{
-		return this.otherAccount;
 	}
 }
