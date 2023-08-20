@@ -5,7 +5,7 @@ import "./card.css";
 
 function BookCard({book, bookIndex, remove, removeable})
 {
-    return(
+    return (
         <div className = "bookCardArea">
             <Link to = {"/book/view/"+book?.apiId}>
                 <div className = {"book "+(removeable? "spaced" : "")}>
@@ -14,44 +14,60 @@ function BookCard({book, bookIndex, remove, removeable})
                     style = {{backgroundImage: "url("+book?.cover+")"}}
                     />
                     <div className = "bookInfoBox">
-                        <div className = "title">{book?.title}</div>
-                        <div className = "authors">
-                            {
-                                book?.authors?.map
-                                (
-                                    (author, authorIndex) =>
-                                    {
-                                        return (
-                                            <div
-                                            className = "author"
-                                            key = {authorIndex}
-                                            >
-                                                {author}
-                                            </div>
-                                        );
-                                    }
-                                )
-                            }
-                        </div>
-                        <div className = "categories">
-                            {
-                                book?.categories?.map
-                                (
-                                    (category, categoryIndex) =>
-                                    {
-                                        return (
-                                            <div
-                                            className = "category"
-                                            key = {categoryIndex}
-                                            >
-                                                {category}
-                                            </div>
-                                        );
-                                    }
-                                )
-                            }
-                        </div>
-                        <div className = "score">{book?.score}</div>
+                        {
+                            book?.title !== "" ?
+                            <div className = "title">{book?.title}</div> :
+                            <></>
+                        }
+                        {
+                            book?.authors?.length > 0 ?
+                            <div className = "authors">
+                                {
+                                    book?.authors?.map
+                                    (
+                                        (author, authorIndex) =>
+                                        {
+                                            return (
+                                                <div
+                                                className = "author"
+                                                key = {authorIndex}
+                                                >
+                                                    {author}
+                                                </div>
+                                            );
+                                        }
+                                    )
+                                }
+                            </div> :
+                            <></>
+                        }
+                        {
+                            book?.categories?.length > 0 ?
+                            <div className = "categories">
+                                {
+                                    book?.categories?.map
+                                    (
+                                        (category, categoryIndex) =>
+                                        {
+                                            return (
+                                                <div
+                                                className = "category"
+                                                key = {categoryIndex}
+                                                >
+                                                    {category}
+                                                </div>
+                                            );
+                                        }
+                                    )
+                                }
+                            </div> :
+                            <></>
+                        }
+                        {
+                            book?.score !== null ?
+                            <div className = "score">{book?.score}</div> :
+                            <></>
+                        }
                     </div>
                 </div>
             </Link>

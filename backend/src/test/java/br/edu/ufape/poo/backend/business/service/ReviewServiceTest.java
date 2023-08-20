@@ -1,7 +1,6 @@
 package br.edu.ufape.poo.backend.business.service;
 
 import static org.junit.jupiter.api.Assertions.*;
-import br.edu.ufape.poo.backend.business.service.ReviewService;
 import br.edu.ufape.poo.backend.data.AccountRepository;
 import br.edu.ufape.poo.backend.data.ReviewRepository;
 import br.edu.ufape.poo.backend.exceptions.IncorrectIdReviewException;
@@ -10,7 +9,6 @@ import br.edu.ufape.poo.backend.exceptions.InvalidReviewException;
 import br.edu.ufape.poo.backend.exceptions.InvalidTextReviewException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.engine.TestEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

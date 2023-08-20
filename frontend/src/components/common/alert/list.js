@@ -3,6 +3,7 @@ import {useHref} from "react-router-dom";
 
 import alertContext from "../../context/alert.js";
 import confirmContext from "../../context/confirm.js";
+import overlayContext from "../../context/overlay.js";
 
 import "./list.css";
 
@@ -10,6 +11,7 @@ function AlertList()
 {
     const {alert, setAlert} = useContext(alertContext);
     const {confirm, setConfirm} = useContext(confirmContext);
+    const {overlay, setOverlay} = useContext(overlayContext);
     const [alertList, setAlertList] = useState([]);
     const [confirmList, setConfirmList] = useState([]);
     const href = useHref();
@@ -127,6 +129,7 @@ function AlertList()
                                                         className = "confirmButton"
                                                         key = {optionIndex}
                                                         onClick = {() => {respondConfirm(confirmIndex, optionIndex)}}
+                                                        disabled = {overlay}
                                                         >
                                                             {option?.text}
                                                         </button>

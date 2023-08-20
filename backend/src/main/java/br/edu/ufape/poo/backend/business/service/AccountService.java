@@ -11,36 +11,35 @@ import br.edu.ufape.poo.backend.exceptions.IncorrectEmailException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectPasswordException;
 import br.edu.ufape.poo.backend.exceptions.InvalidEmailException;
-import br.edu.ufape.poo.backend.exceptions.InvalidNameAccountException;
+import br.edu.ufape.poo.backend.exceptions.InvalidNameException;
 import br.edu.ufape.poo.backend.exceptions.InvalidPasswordException;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
 @Transactional
-public class AccountService
+public class AccountService implements AccountServiceInterface
 {
 	@Autowired
 	private AccountRepository accountRepository;
 	
 	public Account signUp(Account account) throws Exception
 	{
-		Optional<Account> accountOptional = accountRepository.findByEmail(account.getEmail());
-		if (account.getName().isBlank())
+		Account existingAccount = accountRepository.findByEmail(account.getEmail());
+		if (account.getName() == null || account.getName().isBlank())
 		{
-			throw new InvalidNameAccountException(account);
+			throw new InvalidNameException();
 		}
-		if (account.getEmail().isBlank() || !Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches())
+		if (account.getEmail() == null || account.getEmail().isBlank() || !Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches())
 		{
-			throw new InvalidEmailException(account);
+			throw new InvalidEmailException();
 		}
-		if (account.getPassword().isBlank())
+		if (account.getPassword() == null || account.getPassword().isBlank())
 		{
-			throw new InvalidPasswordException(account);
+			throw new InvalidPasswordException();
 		}
-		if (accountOptional.isPresent())
+		if (existingAccount != null)
 		{
-			throw new TakenEmailException(accountOptional.get());
+			throw new TakenEmailException();
 		}
 		account.setBiography("");
 		account.setPrivacy(true);
@@ -51,42 +50,41 @@ public class AccountService
 	
 	public Account logIn(String email, String password) throws Exception
 	{
-		Optional<Account> accountOptional = accountRepository.findByEmail(email);
-		if (!accountOptional.isPresent())
+		Account account = accountRepository.findByEmail(email);
+		if (account == null)
 		{
 			throw new IncorrectEmailException();
 		}
-		else if (!accountOptional.get().getPassword().equals(password))
+		else if (!account.getPassword().equals(password))
 		{
 			throw new IncorrectPasswordException();
 		}
-		Account account = accountOptional.get();
 		return account;
 	}
-
+	
 	public Account update(Account account) throws Exception
 	{
-		Optional<Account> accountOptional = accountRepository.findById(account.getId());
-		Optional<Account> otherAccountOptional = accountRepository.findByEmail(account.getEmail());
-		if (!accountOptional.isPresent())
+		Account oldAccount = accountRepository.findById(account.getId()).orElse(null);
+		Account existingAccount = accountRepository.findByEmail(account.getEmail());
+		if (oldAccount == null)
 		{
 			throw new IncorrectIdException();
 		}
-		if (otherAccountOptional.isPresent() && account.getId() != otherAccountOptional.get().getId())
+		if (existingAccount != null && account.getId() != existingAccount.getId())
 		{
-			throw new TakenEmailException(otherAccountOptional.get());
+			throw new TakenEmailException();
 		}
-		if (account.getName().isBlank())
+		if (account.getName() == null || account.getName().isBlank())
 		{
-			throw new InvalidNameAccountException(account);
+			throw new InvalidNameException();
 		}
-		if (account.getEmail().isBlank() || !Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches())
+		if (account.getEmail() == null || account.getEmail().isBlank() || !Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches())
 		{
-			throw new InvalidEmailException(account);
+			throw new InvalidEmailException();
 		}
-		if (account.getPassword().isBlank())
+		if (account.getPassword() == null || account.getPassword().isBlank())
 		{
-			throw new InvalidPasswordException(account);
+			throw new InvalidPasswordException();
 		}
 		Account newAccount = accountRepository.save(account);
 		return newAccount;
@@ -94,34 +92,32 @@ public class AccountService
 	
 	public Account deleteById(Long id) throws Exception
 	{
-		Optional<Account> accountOptional = accountRepository.findById(id);
-		if (!accountOptional.isPresent())
+		Account account = accountRepository.findById(id).orElse(null);
+		if (account == null)
 		{
 			throw new IncorrectIdException();
 		}
-		accountRepository.delete(accountOptional.get());
-		return accountOptional.get();
+		accountRepository.delete(account);
+		return account;
 	}
 	
 	public Account findById(Long id) throws Exception
 	{
-		Optional<Account> accountOptional = accountRepository.findById(id);
-		if (!accountOptional.isPresent())
+		Account account = accountRepository.findById(id).orElse(null);
+		if (account == null)
 		{
 			throw new IncorrectIdException();
 		}
-		Account account = accountOptional.get();
 		return account;
 	}
 	
 	public Account authenticate(String email, String password) throws Exception
 	{
-		Optional<Account> accountOptional = accountRepository.findByEmailAndPassword(email, password);
-		if (!accountOptional.isPresent())
+		Account account = accountRepository.findByEmailAndPassword(email, password);
+		if (account == null)
 		{
 			throw new AuthenticationFailedException();
 		}
-		Account account = accountOptional.get();
 		return account;
 	}
 }

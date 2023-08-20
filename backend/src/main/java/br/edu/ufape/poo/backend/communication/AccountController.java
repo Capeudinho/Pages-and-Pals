@@ -22,7 +22,7 @@ import br.edu.ufape.poo.backend.exceptions.IncorrectEmailException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectPasswordException;
 import br.edu.ufape.poo.backend.exceptions.InvalidEmailException;
-import br.edu.ufape.poo.backend.exceptions.InvalidNameAccountException;
+import br.edu.ufape.poo.backend.exceptions.InvalidNameException;
 import br.edu.ufape.poo.backend.exceptions.InvalidPasswordException;
 import br.edu.ufape.poo.backend.exceptions.TakenEmailException;
 
@@ -43,7 +43,7 @@ public class AccountController
 			Account newAccount = facade.accountSignUp(account);
 			responseEntity = new ResponseEntity<Object>(newAccount, HttpStatus.CREATED);
 		}
-		catch (InvalidNameAccountException exception)
+		catch (InvalidNameException exception)
 		{
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
 		}
@@ -66,7 +66,7 @@ public class AccountController
 		return responseEntity;
 	}
 	
-	@PostMapping("login/{email}/{password}")
+	@GetMapping("login/{email}/{password}")
 	public ResponseEntity<?> logIn(@PathVariable String email, @PathVariable String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
@@ -103,7 +103,7 @@ public class AccountController
 		{
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("taken email");
 		}
-		catch (InvalidNameAccountException exception)
+		catch (InvalidNameException exception)
 		{
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
 		}

@@ -25,7 +25,7 @@ import br.edu.ufape.poo.backend.exceptions.AuthenticationFailedException;
 import br.edu.ufape.poo.backend.exceptions.DuplicateApiIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectApiIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectIdException;
-import br.edu.ufape.poo.backend.exceptions.InvalidNameBookshelfException;
+import br.edu.ufape.poo.backend.exceptions.InvalidNameException;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -44,7 +44,7 @@ public class BookshelfController
 			Bookshelf newBookshelf = facade.bookshelfCreate(bookshelf, email, password);
 			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.CREATED);
 		}
-		catch (InvalidNameBookshelfException exception)
+		catch (InvalidNameException exception)
 		{
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
 		}
@@ -72,7 +72,7 @@ public class BookshelfController
 		{
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		}
-		catch (InvalidNameBookshelfException exception)
+		catch (InvalidNameException exception)
 		{
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
 		}

@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useContext} from "react";
+
+import overlayContext from "../../context/overlay.js";
 
 import "./group.css";
 
 function ButtonGroup({options})
 {
+    const {overlay, setOverlay} = useContext(overlayContext);
+
     return (
         <div className = "buttonGroupArea">
             {
@@ -13,9 +17,10 @@ function ButtonGroup({options})
                     {
                         return (
                             <button
-                            className = {"optionButton"}
+                            className = "optionButton"
                             key = {index}
                             onClick = {() => {option?.operation()}}
+                            disabled = {overlay}
                             >
                                 {option?.text}
                             </button>

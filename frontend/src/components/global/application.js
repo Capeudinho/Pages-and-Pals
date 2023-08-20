@@ -32,19 +32,21 @@ function Application ()
             {
                 if (localStorage.getItem("account") !== null)
                 {
-                    setOverlay(true);
                     try
                     {
                         var account = JSON.parse(localStorage.getItem("account"));
-                        var response = await api.post("/account/login/"+account?.email+"/"+account.password);
+                        setOverlay(true);
+                        var response = await api.get("/account/login/"+account?.email+"/"+account.password);
+                        setOverlay(false);
+                        localStorage.setItem("account", JSON.stringify(response?.data));
                         setLoggedAccount(response?.data);
                     }
                     catch (exception)
                     {
+                        setOverlay(false);
                         localStorage.clear();
                         setLoggedAccount(null);
                     }
-                    setOverlay(false);
                 }
                 else
                 {
@@ -77,11 +79,6 @@ function Application ()
                     {
                         loggedAccount?.id !== undefined || loggedAccount === null ?
                         <>
-                            {
-                                overlay ?
-                                <div className = "overlay"/> :
-                                <></>
-                            }
                             <AlertList/>
                             <Routing/>
                         </> :

@@ -20,7 +20,6 @@ function BookView()
     const [book, setBook] = useState(null);
     const [bookshelves, setBookshelves] = useState(null);
     const [showBookshelves, setShowBookshelves] = useState(false);
-    const [mode, setMode] = useState("???");
     const navigate = useNavigate();
     const {apiId} = useParams();
 
@@ -59,7 +58,12 @@ function BookView()
                         catch (exception)
                         {
                             setOverlay(false);
-                            // ...
+                            if (exception?.response?.data === "authentication failed")
+                            {
+                                localStorage.clear();
+                                setLoggedAccount(null);
+                            }
+                            navigate("/");
                         }
                     }
                     setShowBookshelves(true);
@@ -184,6 +188,7 @@ function BookView()
                                                     <button
                                                     className = "selectButton"
                                                     onClick = {() => {handleConfirmToggleBookApiId(bookshelfIndex)}}
+                                                    disabled = {overlay}
                                                     >
                                                         {bookshelf?.contains ? "R" : "A"}
                                                     </button>

@@ -70,8 +70,13 @@ function AccountEnter()
     {
         try
         {
+            if (logInEmail === "" || logInPassword === "")
+            {
+                setAlert([{type: "warning", text: "E-mail, or password is incorrect."}]);
+                return;
+            }
             setOverlay(true);
-            const response = await api.post("/account/login/"+logInEmail+"/"+logInPassword);
+            const response = await api.get("/account/login/"+logInEmail+"/"+logInPassword);
             setOverlay(false);
             localStorage.setItem("account", JSON.stringify(response?.data));
             setLoggedAccount(response?.data);
