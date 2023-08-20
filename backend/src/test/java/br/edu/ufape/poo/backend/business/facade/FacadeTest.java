@@ -190,6 +190,7 @@ public class FacadeTest
 		account.setEmail("a@a.a");
 		account.setPassword("a");
 		account = accountRepository.save(account);
+		bookshelf.setBookApiIds(new ArrayList<String>());
 		bookshelf.setOwner(account);
 		bookshelf = bookshelfRepository.save(bookshelf);
 		List<Map<String, Object>> bookshelves = facade.bookshelfFindOwnByOwnerIdPaginate(account.getId(), 0, 10, "a@a.a", "a");
