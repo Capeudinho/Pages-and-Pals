@@ -81,9 +81,10 @@ public class Facade
 		{
 			throw new AccessDeniedException();
 		}
-		Account oldAccount = accountService.deleteById(id);
+		bookshelfService.deleteByOwnerId(id);
 		// Delete other stuff
-		return oldAccount;
+		accountService.deleteById(id);
+		return requestingAccount;
 	}
 
 	public Map<String, Object> accountFindOwnById(Long id, String email, String password) throws Exception
@@ -117,7 +118,8 @@ public class Facade
 	public Bookshelf bookshelfUpdate(Bookshelf bookshelf, String email, String password) throws Exception
 	{
 		Account requestingAccount = accountService.authenticate(email, password);
-		if (requestingAccount.getId() != bookshelf.getOwner().getId())
+		Bookshelf oldBookshelf = bookshelfService.findById(bookshelf.getId());
+		if (requestingAccount.getId() != oldBookshelf.getOwner().getId())
 		{
 			throw new AccessDeniedException();
 		}

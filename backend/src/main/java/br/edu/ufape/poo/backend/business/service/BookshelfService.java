@@ -106,6 +106,12 @@ public class BookshelfService implements BookshelfServiceInterface
 		return bookshelf;
 	}
 	
+	public List<Bookshelf> deleteByOwnerId(Long ownerId) throws Exception
+	{
+		List<Bookshelf> bookshelves = bookshelfRepository.deleteByOwnerId(ownerId);
+		return bookshelves;
+	}
+	
 	public Bookshelf findById(Long id) throws Exception
 	{
 		Bookshelf bookshelf = bookshelfRepository.findById(id).orElse(null);

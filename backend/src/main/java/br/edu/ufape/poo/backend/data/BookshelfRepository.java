@@ -11,5 +11,6 @@ public interface BookshelfRepository extends JpaRepository<Bookshelf, Long>
 {
 	public List<Bookshelf> findByOwnerIdOrderByCreationDateDesc(Long id);
 	public List<Bookshelf> findByOwnerIdOrderByCreationDateDesc(Long id, Pageable pageable);
+	public List<Bookshelf> deleteByOwnerId(Long ownerId);
 	public int countByOwnerId(Long id);
 }
