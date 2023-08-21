@@ -140,4 +140,10 @@ public class BookshelfService implements BookshelfServiceInterface
 		int bookshelfCount = bookshelfRepository.countByOwnerId(id);
 		return bookshelfCount;
 	}
+
+	public List<Object> findAdvanced(String ownerName, String bookshelfName)
+	{
+		List<Object> bookshelves = bookshelfRepository.findByOwnerAndBookshelfName(ownerName, bookshelfName);
+		return bookshelves;
+	}
 }
