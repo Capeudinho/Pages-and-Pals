@@ -9,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import br.edu.ufape.poo.backend.business.entity.Account;
 import br.edu.ufape.poo.backend.business.entity.Bookshelf;
+import br.edu.ufape.poo.backend.business.entity.Review;
 import br.edu.ufape.poo.backend.data.AccountRepository;
+import br.edu.ufape.poo.backend.data.BookRepository;
 import br.edu.ufape.poo.backend.data.BookshelfRepository;
+import br.edu.ufape.poo.backend.data.ReviewRepository;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
@@ -23,7 +26,12 @@ public class FacadeTest
 	private AccountRepository accountRepository;
 	@Autowired
 	private BookshelfRepository bookshelfRepository;
+	@Autowired
+	private ReviewRepository reviewRepository;
+	@Autowired
+	private BookRepository bookRepository;
 	
+	//ACCOUNT
 	@Test
 	void accountSignUpValid() throws Exception
 	{
@@ -84,6 +92,7 @@ public class FacadeTest
 		facade.accountFindById(account.getId());
 	}
 	
+	//BOOKSHELF
 	@Test
 	void bookshelfCreateValid() throws Exception
 	{
@@ -277,4 +286,111 @@ public class FacadeTest
 		List<Map<String, Object>> selects = facade.bookshelfFindSelectByOwnerId(account.getId(), "u8w_DwAAQBAJ");
 		assertEquals(selects.size(), 1);
 	}
+	
+	//REVIEW
+	@Test
+	void reviewCreateValid() throws Exception
+	{
+		Account account = new Account();
+		Review review = new Review();
+		account.setEmail("a@a.a");
+		account.setPassword("a");
+		account = accountRepository.save(account);
+		review.setBookScore(3.5);
+		review.setText("aaaaaaaaaaaaa");
+		review.setBookApiId("u8w_DwAAQBAJ");
+		facade.reviewCreate(review, "a@a.a", "a");
+	}
+	
+	@Test
+	void reviewUpdateValid() throws Exception
+	{
+		Account account = new Account();
+		Review review = new Review();
+		account.setEmail("a@a.a");
+		account.setPassword("a");
+		account = accountRepository.save(account);
+		review.setBookScore(3.5);
+		review.setText("aaaaaaaaaaaaa");
+		review.setBookApiId("u8w_DwAAQBAJ");
+		review.setOwner(account);
+		review = facade.reviewCreate(review, "a@a.a", "a");
+		review.setText("bbbbbbbbbbbbbbb");
+		facade.reviewUpdate(review, "a@a.a", "a");
+	}
+	
+	@Test
+	void reviewDeleteByApiIdValid() throws Exception
+	{
+		Account account = new Account();
+		Review review = new Review();
+		account.setEmail("a@a.a");
+		account.setPassword("a");
+		account = accountRepository.save(account);
+		review.setBookScore(3.5);
+		review.setText("aaaaaaaaaaaaa");
+		review.setBookApiId("u8w_DwAAQBAJ");
+		review.setOwner(account);
+		review = facade.reviewCreate(review, "a@a.a", "a");
+		facade.reviewDeleteById(review.getId(), "a@a.a", "a");
+	}
+	
+	@Test
+	void reviewFindByOwnerIdPaginateValid() throws Exception
+	{
+		Account account = new Account();
+		Review review = new Review();
+		account.setPrivacy(true);
+		account = accountRepository.save(account);
+		review.setOwner(account);
+		review.setBookApiId("u8w_DwAAQBAJ");
+		review = reviewRepository.save(review);
+		List<Map<String, Object>> reviews = facade.reviewFindByOwnerIdPaginate(review.getOwner().getId(), 0, 10);
+		assertEquals(reviews.size(), 1);
+	}
+	
+	@Test
+	void reviewFindOwnByOwnerIdPaginateValid() throws Exception
+	{
+		Account account = new Account();
+		Review review = new Review();
+		account.setEmail("a@a.a");
+		account.setPassword("a");
+		account = accountRepository.save(account);
+		review.setOwner(account);
+		review.setBookApiId("u8w_DwAAQBAJ");
+		review = reviewRepository.save(review);
+		List<Map<String, Object>> reviews = facade.reviewFindOwnByOwnerIdPaginate(review.getOwner().getId(), 0, 10, "a@a.a", "a");
+		assertEquals(reviews.size(), 1);
+	}
+	
+	@Test
+	void reviewFindByBookApiIdPaginateValid() throws Exception
+	{
+		Account account = new Account();
+		Review review = new Review();
+		account.setPrivacy(true);
+		account = accountRepository.save(account);
+		review.setOwner(account);
+		review.setBookApiId("u8w_DwAAQBAJ");
+		review = reviewRepository.save(review);
+		List<Review> reviews = facade.reviewFindByBookApiIdPaginate(review.getBookApiId(), 0, 10);
+		assertEquals(reviews.size(), 1);
+	}
+	
+	@Test
+	void reviewFindByBookApiIdPaginateAutenticadedValid() throws Exception
+	{
+		Account account = new Account();
+		Review review = new Review();
+		account.setEmail("a@a.a");
+		account.setPassword("a");
+		account = accountRepository.save(account);
+		review.setOwner(account);
+		review.setBookApiId("u8w_DwAAQBAJ");
+		review = reviewRepository.save(review);
+		List<Review> reviews = facade.reviewFindByBookApiIdPaginateAutenticaded(review.getBookApiId(), 0, 10, "a@a.a", "a");
+		assertEquals(reviews.size(), 1);
+	}
+	
 }

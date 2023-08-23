@@ -11,12 +11,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import br.edu.ufape.poo.backend.exceptions.BookNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
 public class GoogleBooksService {
-	public Map<String, Object> findByApiId(String apiId, String extractInfo) {
+	public Map<String, Object> findByApiId(String apiId, String extractInfo) throws Exception {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
 		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + apiId).retrieve()
@@ -24,7 +25,10 @@ public class GoogleBooksService {
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		Map<String, Object> bookInfo = new HashMap<>();
 		bookInfo = extractBookInformationUtility(jsonObject, extractInfo);
-
+		if (bookInfo == null)
+		{
+			throw new BookNotFoundException();
+		}
 		return bookInfo;
 	}
 
@@ -213,6 +217,10 @@ public class GoogleBooksService {
 					bookInfo.put("ISBNs", industryIdentifiers);
 				}
 			}
+		}
+		if (bookInfo.isEmpty())
+		{
+			bookInfo = null;
 		}
 		return bookInfo;
 	}
