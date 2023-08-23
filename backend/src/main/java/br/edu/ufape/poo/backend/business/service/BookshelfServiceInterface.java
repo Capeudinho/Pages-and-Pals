@@ -15,4 +15,5 @@ public interface BookshelfServiceInterface
 	public List<Bookshelf> findByOwnerId(Long id);
 	public List<Bookshelf> findByOwnerIdPaginate(Long id, int offset, int limit);
 	public int countByOwnerId(Long id);
+	public List<Object> findByOwnerAndBookshelfName(String ownerName,String bookshelfName);
 }

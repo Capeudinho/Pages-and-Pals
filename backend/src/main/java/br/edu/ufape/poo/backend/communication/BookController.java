@@ -30,15 +30,6 @@ public class BookController {
 		}
 	}
 
-	@GetMapping("findScoreByApiId/{apiId}")
-	public ResponseEntity<Object> findScoreByApiId(@PathVariable String apiId) {
-		try {
-			return new ResponseEntity<Object>(facade.findScoreByApiId(apiId), HttpStatus.OK);
-		} catch (Exception exception) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception);
-		}
-	}
-
 	@GetMapping("/advancedSearch")
 	public ResponseEntity<?> findBooksAdvancedSearch(
 			@RequestParam(required = false, name = "term") String term,
@@ -54,7 +45,7 @@ public class BookController {
 			) {
 		ResponseEntity<?> responseEntity;
 		try {
-			List<Object> resultsList = facade.advancedSearch(term, title, author, subject, publisher, isbn, maxResults,startIndex,ownerName,bookshelfName);
+			List<Object> resultsList = facade.advancedSearch(term, title, author, subject, publisher, isbn, maxResults, startIndex, ownerName, bookshelfName);
 			responseEntity = new ResponseEntity<List<Object>>(resultsList, HttpStatus.OK);
 			return responseEntity;
 		} catch (Exception exception) {
