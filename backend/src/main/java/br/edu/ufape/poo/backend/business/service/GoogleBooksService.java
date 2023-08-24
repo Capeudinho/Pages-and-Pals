@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import br.edu.ufape.poo.backend.exceptions.BookNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,7 +34,10 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		bookInfo = extractBookInformationUtility(jsonObject, extractInfo);
-
+		if (bookInfo == null)
+		{
+			throw new BookNotFoundException();
+		}
 		return bookInfo;
 	}
 
@@ -229,6 +233,10 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 					bookInfo.put("ISBNs", industryIdentifiers);
 				}
 			}
+		}
+		if (bookInfo.isEmpty())
+		{
+			bookInfo = null;
 		}
 		return bookInfo;
 	}

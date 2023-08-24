@@ -99,9 +99,16 @@ public class BookshelfController
 		{
 			Gson gson = new Gson();
 			JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
-			String apiId = jsonObject.get("apiId").getAsString();
-			Bookshelf newBookshelf = facade.bookshelfAddBookApiIdById(id, apiId, email, password);
-			responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.OK);
+			if (jsonObject != null && jsonObject.get("apiId") != null)
+			{
+				String apiId = jsonObject.get("apiId").getAsString();
+				Bookshelf newBookshelf = facade.bookshelfAddBookApiIdById(id, apiId, email, password);
+				responseEntity = new ResponseEntity<Object>(newBookshelf, HttpStatus.OK);
+			}
+			else
+			{
+				responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid body");
+			}
 		}
 		catch (IncorrectIdException exception)
 		{

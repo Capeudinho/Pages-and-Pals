@@ -90,8 +90,15 @@ public class BookshelfService implements BookshelfServiceInterface {
 		bookshelfRepository.delete(bookshelf);
 		return bookshelf;
 	}
-
-	public Bookshelf findById(Long id) throws Exception {
+	
+	public List<Bookshelf> deleteByOwnerId(Long ownerId) throws Exception
+	{
+		List<Bookshelf> bookshelves = bookshelfRepository.deleteByOwnerId(ownerId);
+		return bookshelves;
+	}
+	
+	public Bookshelf findById(Long id) throws Exception
+	{
 		Bookshelf bookshelf = bookshelfRepository.findById(id).orElse(null);
 		if (bookshelf == null) {
 			throw new IncorrectIdException();
@@ -109,15 +116,17 @@ public class BookshelfService implements BookshelfServiceInterface {
 		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerIdOrderByCreationDateDesc(id, pageable);
 		return bookshelves;
 	}
-
-	public int countByOwnerId(Long id) {
-		int bookshelfCount = bookshelfRepository.countByOwnerId(id);
-		return bookshelfCount;
-	}
-
-	public List<Object> findByOwnerAndBookshelfName(String ownerName, String bookshelfName) {
+	
+	public List<Object> findAdvanced(String ownerName, String bookshelfName)
+	{
 		List<Object> bookshelves = bookshelfRepository.findByOwnerAndBookshelfName(ownerName, bookshelfName);
 		return bookshelves;
+	}
+	
+	public int countByOwnerId(Long id)
+	{
+		int bookshelfCount = bookshelfRepository.countByOwnerId(id);
+		return bookshelfCount;
 	}
 
 }

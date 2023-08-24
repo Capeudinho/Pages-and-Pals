@@ -11,9 +11,11 @@ public interface BookshelfServiceInterface
 	public Bookshelf addBookApiIdById(Long id, String bookApiId) throws Exception;
 	public Bookshelf removeBookApiIdById(Long id, String bookApiId) throws Exception;
 	public Bookshelf deleteById(Long id) throws Exception;
+	public List<Bookshelf> deleteByOwnerId(Long id) throws Exception;
 	public Bookshelf findById(Long id) throws Exception;
 	public List<Bookshelf> findByOwnerId(Long id);
 	public List<Bookshelf> findByOwnerIdPaginate(Long id, int offset, int limit);
+	public List<Object> findAdvanced(String ownerName, String bookshelfName);
 	public int countByOwnerId(Long id);
 	public List<Object> findByOwnerAndBookshelfName(String ownerName,String bookshelfName);
 }

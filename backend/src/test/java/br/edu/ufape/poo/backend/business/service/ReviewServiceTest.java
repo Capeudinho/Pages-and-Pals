@@ -29,21 +29,19 @@ class ReviewServiceTest {
 	private AccountRepository accountRepository;
 	
 	@Test
-	void test() {
+	void testCreate() {
 		Review r;
 		r = new Review();
 		
 		r.setBookScore(4.0);
 		r.setText("aaaaaaaaaa");
 		
-		Review teste;
-		teste = new Review();
 		try {
-			teste = reviewService.create(r);
+			r = reviewService.create(r);
 		} catch (Exception e) {
 			fail();
 		}
-		assertEquals(teste.getBookScore(), r.getBookScore());
+		assertEquals(4.0, r.getBookScore());
 	}
 	
 	@Test
@@ -133,24 +131,27 @@ class ReviewServiceTest {
 		r.setBookScore(4.5);
 		
 		reviewRepository.save(r);
-		
+	
 		r.setText("aaaaaaaa");
+		Review rUpdate = new Review();
+		
 		try {
-			r = reviewService.edit(r);
+			r = reviewService.update(r);
+			rUpdate = reviewService.findById(r.getId());
 		} catch (Exception e) {
 			fail();
 		}
 		
-		assertNotEquals(r.getText(), text);
+		assertNotEquals(rUpdate.getText(), text);
 	}
 	
 	@Test	
-	void testDeleteById () {
+	void testDeleteById() {
 		Review r;
 		r = new Review();
 		r.setBookScore(4.0);
 		r.setText("aaaaaaa");
-		Long id = r.getId();
+		long id = r.getId();
 		
 		reviewRepository.save(r);
 		

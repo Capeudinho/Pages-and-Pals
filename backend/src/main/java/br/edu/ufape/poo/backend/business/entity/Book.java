@@ -14,7 +14,7 @@ public class Book
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String apiId;
-	private int scoreTotal;
+	private Double scoreTotal;
 	private int reviewCount;
 	private int viewCount;
 	
@@ -38,12 +38,12 @@ public class Book
 		this.apiId = apiId;
 	}
 	
-	public int getScoreTotal()
+	public Double getScoreTotal()
 	{
 		return this.scoreTotal;
 	}
 	
-	public void setScoreTotal(int scoreTotal)
+	public void setScoreTotal(Double scoreTotal)
 	{
 		this.scoreTotal = scoreTotal;
 	}

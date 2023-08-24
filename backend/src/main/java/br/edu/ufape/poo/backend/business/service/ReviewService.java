@@ -37,7 +37,7 @@ public class ReviewService implements ReviewServiceInterface {
 		return newReview;
 	}
 
-	public Review findById(Long id) throws Exception {
+	public Review findById(long id) throws Exception {
 
 		Review review = reviewRepository.findById(id).orElse(null);
 
@@ -49,7 +49,7 @@ public class ReviewService implements ReviewServiceInterface {
 	}
 	
 	//Buscar por Reviews de um usuário
-	public List<Review> findByOwnerIdPaginate(Long id, int offset, int limit) {
+	public List<Review> findByOwnerIdPaginate(long id, int offset, int limit) {
 		Pageable pageable = new OffsetPageRequest(offset, limit);
 		List<Review> reviews = reviewRepository.findByOwnerIdOrderByCreationDateDesc(id, pageable);
 		
@@ -64,7 +64,7 @@ public class ReviewService implements ReviewServiceInterface {
 		return reviews;
 	}
 	
-	public Review edit(Review review) throws Exception {
+	public Review update(Review review) throws Exception {
 
 		Review oldReview = findById(review.getId());
 
@@ -88,7 +88,7 @@ public class ReviewService implements ReviewServiceInterface {
 
 	}
 
-	public Review deleteById(Long id) throws Exception {
+	public Review deleteById(long id) throws Exception {
 
 		Review review = reviewRepository.findById(id).orElse(null);
 
@@ -99,9 +99,8 @@ public class ReviewService implements ReviewServiceInterface {
 		reviewRepository.delete(review);
 		return review;
 	}
-
-	// Testar
-	public int countByOwnerId(Long id) {
+	
+	public int countByOwnerId(long id) {
 		int reviewCount = reviewRepository.countByOwnerId(id);
 		return reviewCount;
 	}
