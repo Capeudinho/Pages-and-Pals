@@ -20,8 +20,15 @@ public class GoogleBooksService {
 	public Map<String, Object> findByApiId(String apiId, String extractInfo) throws Exception {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
-		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + apiId).retrieve()
+		String response;
+		try {
+			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + apiId).retrieve()
 				.bodyToMono(String.class).block();
+		}
+		catch (Exception exception)
+		{
+			throw new BookNotFoundException();	
+		}
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		Map<String, Object> bookInfo = new HashMap<>();
 		bookInfo = extractBookInformationUtility(jsonObject, extractInfo);

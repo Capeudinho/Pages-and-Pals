@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import br.edu.ufape.poo.backend.business.entity.Account;
 import br.edu.ufape.poo.backend.business.entity.Book;
 import br.edu.ufape.poo.backend.business.entity.Bookshelf;
@@ -17,7 +18,6 @@ import br.edu.ufape.poo.backend.business.service.BookshelfServiceInterface;
 import br.edu.ufape.poo.backend.business.service.GoogleBooksService;
 import br.edu.ufape.poo.backend.business.service.ReviewServiceInterface;
 import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
-import br.edu.ufape.poo.backend.exceptions.BookNotFoundException;
 
 @Service
 public class Facade {
@@ -251,23 +251,27 @@ public class Facade {
 
 		Account requestingAccount = accountService.authenticate(email, password);
 		review.setOwner(requestingAccount);
-		
+		// Renomear depois
 		Book book = bookService.findByApiId(review.getBookApiId());
-		
-		if(book == null) {
+
+		if (book == null && review.getBookScore() != null) {
 			googleBooksService.findByApiId(review.getBookApiId(), "incomplete");
-			book = new Book();
-			book = bookService.create(book);
 		}
-		
 		Review newReview = reviewService.create(review);
-		Double bookScore = book.getScoreTotal() + review.getBookScore();
-		book.setScoreTotal(bookScore);
-		int reviewsCount = book.getReviewCount() + 1;
-		book.setReviewCount(reviewsCount);
-		book.setApiId(review.getBookApiId());
-		bookService.update(book);
-		
+
+		if (newReview.getBookScore() != null) {
+			if (book == null) {
+				book = new Book();
+				book.setApiId(newReview.getBookApiId());
+				book = bookService.create(book);
+			}
+			Double bookScore = book.getScoreTotal() + newReview.getBookScore();
+			book.setScoreTotal(bookScore);
+			int reviewsCount = book.getReviewCount() + 1;
+			book.setReviewCount(reviewsCount);
+			bookService.update(book);
+		}
+
 		return newReview;
 	}
 
@@ -275,48 +279,73 @@ public class Facade {
 	public Review reviewUpdate(Review review, String email, String password) throws Exception {
 
 		Account requestingAccount = accountService.authenticate(email, password);
-		if (requestingAccount.getId() != review.getOwner().getId()) {
+		Review oldReview = reviewService.findById(review.getId());
+
+		if (requestingAccount.getId() != oldReview.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
-		
-		Review oldReview = reviewService.findById(review.getId());
-		Book book = bookService.findByApiId(review.getBookApiId());
-		
-		Double bookScore = book.getScoreTotal() - oldReview.getBookScore();
-		bookScore = bookScore + review.getBookScore();
-		book.setScoreTotal(bookScore);
-		bookService.update(book);
-		
 		Review newReview = reviewService.update(review);
-		
+		Book book = bookService.findByApiId(oldReview.getBookApiId());
+		Double bookScore;
+		int reviewsCount;
+
+		if (oldReview.getBookScore() != null) {
+			bookScore = book.getScoreTotal() - oldReview.getBookScore();
+			book.setScoreTotal(bookScore);
+			reviewsCount = book.getReviewCount() - 1;
+			book.setReviewCount(reviewsCount);
+			if (book.getReviewCount() == 0 && newReview.getBookScore() == null) {
+				bookService.deleteByApiId(book.getApiId());
+			} else {
+				bookService.update(book);
+			}
+		}
+
+		if (newReview.getBookScore() != null) {
+			if (book == null) {
+				book = new Book();
+				book.setApiId(newReview.getBookApiId());
+				book = bookService.create(book);
+			}
+
+			bookScore = book.getScoreTotal() + newReview.getBookScore();
+			book.setScoreTotal(bookScore);
+			reviewsCount = book.getReviewCount() + 1;
+			book.setReviewCount(reviewsCount);
+
+			bookService.update(book);
+		}
+
 		return newReview;
 	}
 
 	// Verificando se a conta que quer deletar existe e se é criadora da Review
-	public Review reviewDeleteById(Long id, String email, String password) throws Exception {
-		
-		//Testar se quando lança a exeção desfaz a exclusão da review no controller
+	public Review reviewDeleteById(long id, String email, String password) throws Exception {
 
 		Account requestingAccount = accountService.authenticate(email, password);
-		Review oldReview = reviewService.deleteById(id);
-		
+		Review oldReview = reviewService.findById(id);
+
 		if (requestingAccount.getId() != oldReview.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
-		
+
 		Book book = bookService.findByApiId(oldReview.getBookApiId());
-		Double bookScore = book.getScoreTotal() - oldReview.getBookScore();
-		book.setScoreTotal(bookScore);
-		
-		int reviewsCount = book.getReviewCount() - 1;
-		book.setReviewCount(reviewsCount);
-		
-		
-		if(book.getReviewCount() == 0) {
-			bookService.deleteByApiId(book.getApiId());
-		}else {
-			bookService.update(book);
+		Double bookScore;
+		int reviewsCount;
+
+		if (oldReview.getBookScore() != null) {
+			bookScore = book.getScoreTotal() - oldReview.getBookScore();
+			book.setScoreTotal(bookScore);
+			reviewsCount = book.getReviewCount() - 1;
+			book.setReviewCount(reviewsCount);
+			if (book.getReviewCount() == 0) {
+				bookService.deleteByApiId(book.getApiId());
+			} else {
+				bookService.update(book);
+			}
 		}
+
+		oldReview = reviewService.deleteById(id);
 
 		return oldReview;
 	}
@@ -351,22 +380,23 @@ public class Facade {
 
 	// Bucar lista de reviews pelo Id do livro sem autenticação
 	public List<Review> reviewFindByBookApiIdPaginate(String bookApiId, int offset, int limit) {
+		System.out.println(1);
 
 		List<Review> reviews = reviewFindByBookApiIdPaginateUtility(bookApiId, 0L, offset, limit, false);
-		
+		System.out.println(2);
 		return reviews;
 	}
-	
-	// Bucar lista de reviews pelo Id do livro com autenticação
-		public List<Review> reviewFindByBookApiIdPaginateAutenticaded(String bookApiId, int offset, int limit, String email,
-				String password) throws Exception {
-			
-			Account account = accountService.authenticate(email, password);
 
-			List<Review> reviews = reviewFindByBookApiIdPaginateUtility(bookApiId, account.getId() , offset, limit, true);
-			
-			return reviews;
-		}
+	// Bucar lista de reviews pelo Id do livro com autenticação
+	public List<Review> reviewFindByBookApiIdPaginateAutenticaded(String bookApiId, int offset, int limit, String email,
+			String password) throws Exception {
+
+		Account account = accountService.authenticate(email, password);
+
+		List<Review> reviews = reviewFindByBookApiIdPaginateUtility(bookApiId, account.getId(), offset, limit, true);
+
+		return reviews;
+	}
 
 	// Utility
 
@@ -412,8 +442,8 @@ public class Facade {
 		if (offset < 0) {
 			offset = 0;
 		}
-		if (limit < 0) {
-			limit = 0;
+		if (limit < 1) {
+			limit = 1;
 		}
 		if (offset > bookshelfCount) {
 			offset = bookshelfCount;
@@ -453,8 +483,8 @@ public class Facade {
 		if (offset < 0) {
 			offset = 0;
 		}
-		if (limit < 0) {
-			limit = 0;
+		if (limit < 1) {
+			limit = 1;
 		}
 		if (offset > bookshelf.getBookApiIds().size()) {
 			offset = bookshelf.getBookApiIds().size();
@@ -509,8 +539,8 @@ public class Facade {
 		if (offset < 0) {
 			offset = 0;
 		}
-		if (limit < 0) {
-			limit = 0;
+		if (limit < 1) {
+			limit = 1;
 		}
 		if (offset > reviewCount) {
 			offset = reviewCount;
@@ -518,7 +548,15 @@ public class Facade {
 		if (limit > reviewCount - offset) {
 			limit = reviewCount - offset;
 		}
-		List<Review> reviews = reviewService.findByBookApiIdPaginate(bookApiId, offset, limit);
+		
+		List<Review> reviews;
+		
+		if(complete) {
+			reviews = reviewService.findByBookApiIdAndPublicOrOwnerIdPaginate(bookApiId, ownerId, offset, limit);
+		} else {
+			reviews = reviewService.findByBookApiIdAndPublicPaginate(bookApiId, offset, limit);
+		}
+		
 		Iterator<Review> reviewsIterator = reviews.listIterator();
 		List<Review> reviewList;
 		reviewList = new ArrayList<Review>();
@@ -526,11 +564,7 @@ public class Facade {
 		while (reviewsIterator.hasNext()) {
 
 			Review review = reviewsIterator.next();
-
-			if (!review.isPrivacy() || (complete && review.getOwner().getId() == ownerId)) {
-
-				reviewList.add(review);
-			}
+			reviewList.add(review);
 
 		}
 		return reviewList;
@@ -545,8 +579,8 @@ public class Facade {
 		if (offset < 0) {
 			offset = 0;
 		}
-		if (limit < 0) {
-			limit = 0;
+		if (limit < 1) {
+			limit = 1;
 		}
 		if (offset > reviewCount) {
 			offset = reviewCount;
@@ -554,7 +588,13 @@ public class Facade {
 		if (limit > reviewCount - offset) {
 			limit = reviewCount - offset;
 		}
-		List<Review> reviews = reviewService.findByOwnerIdPaginate(ownerId, offset, limit);
+		List<Review> reviews;
+		if (complete) {
+			reviews = reviewService.findByOwnerIdPaginate(ownerId, offset, limit);
+		} else {
+			reviews = reviewService.findByOwnerIdAndPublicPaginate(ownerId, offset, limit);
+		}
+
 		List<Map<String, Object>> reviewsCards = new ArrayList<Map<String, Object>>();
 		Iterator<Review> reviewsIterator = reviews.listIterator();
 
@@ -562,22 +602,19 @@ public class Facade {
 
 			Review review = reviewsIterator.next();
 			Map<String, Object> reviewCard = new HashMap<>();
+			reviewCard.put("id", review.getId());
+			reviewCard.put("bookApiId", review.getBookApiId());
+			reviewCard.put("text", review.getText());
+			reviewCard.put("bookScore", review.getBookScore());
+			reviewCard.put("creationDate", review.getCreationDate());
+			reviewCard.put("editionDate", review.getEditionDate());
+			reviewCard.put("bookScore", review.getOwner());
+			reviewCard.put("privacy", review.isPrivacy());
 
-			if (!review.isPrivacy() || complete) {
-				reviewCard.put("id", review.getId());
-				reviewCard.put("bookApiId", review.getBookApiId());
-				reviewCard.put("text", review.getText());
-				reviewCard.put("bookScore", review.getBookScore());
-				reviewCard.put("creationDate", review.getCreationDate());
-				reviewCard.put("editionDate", review.getEditionDate());
-				reviewCard.put("bookScore", review.getOwner());
-				reviewCard.put("privacy", review.isPrivacy());
+			String cover = googleBooksService.findCoverByApiId(review.getBookApiId());
+			reviewCard.put("cover", cover);
 
-				String cover = googleBooksService.findCoverByApiId(review.getBookApiId());
-				reviewCard.put("cover", cover);
-
-				reviewsCards.add(reviewCard);
-			}
+			reviewsCards.add(reviewCard);
 
 		}
 		return reviewsCards;
