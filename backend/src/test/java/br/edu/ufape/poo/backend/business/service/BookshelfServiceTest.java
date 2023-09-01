@@ -128,7 +128,7 @@ public class BookshelfServiceTest {
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
 
-		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(user1.getName(), "Bookshelf 1");
+		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(user1.getName(), "Bookshelf 1", null);
 		assertEquals(results.size(), 1);
 	}
 
@@ -145,7 +145,7 @@ public class BookshelfServiceTest {
 		bookshelf2.setName("Bookshelf 2");
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(null, null);
+		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(null, null, null);
 		assertEquals(results.size(), 0);
 	}
 
@@ -162,7 +162,7 @@ public class BookshelfServiceTest {
 		bookshelf2.setName("Bookshelf 2");
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(null, "Bookshelf 1");
+		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(null, "Bookshelf 1", null);
 		assertEquals(results.size(), 1);
 	}
 
@@ -179,7 +179,7 @@ public class BookshelfServiceTest {
 		bookshelf2.setName("Bookshelf 2");
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(user1.getName(), null);
+		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(user1.getName(), null, null);
 		assertEquals(results.size(), 2);
 	}
 
@@ -196,7 +196,7 @@ public class BookshelfServiceTest {
 		bookshelf2.setName("Bookshelf 2");
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName("Nonexistent User", "Bookshelf 1");
+		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName("Nonexistent User", "Bookshelf 1", null);
 		assertEquals(0, results.size());
 	}
 
@@ -213,7 +213,7 @@ public class BookshelfServiceTest {
 		bookshelf2.setName("Bookshelf 2");
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(user1.getName(),"Nonexistent Bookshelf");
+		List<Object> results = bookshelfRepository.findByOwnerAndBookshelfName(user1.getName(),"Nonexistent Bookshelf", null);
 		assertEquals(0, results.size());
 	}
 

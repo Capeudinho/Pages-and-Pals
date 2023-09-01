@@ -117,9 +117,16 @@ public class BookshelfService implements BookshelfServiceInterface {
 		return bookshelves;
 	}
 	
-	public List<Object> findAdvanced(String ownerName, String bookshelfName)
-	{
-		List<Object> bookshelves = bookshelfRepository.findByOwnerAndBookshelfName(ownerName, bookshelfName);
+	public List<Object> findByOwnerAndBookshelfName(String ownerName, String bookshelfName, Integer offset, Integer limit)
+	{	
+		if (limit == null || limit < 1) {
+			limit = 1;
+		}
+		if (offset == null || offset < 0) {
+			offset = 0;
+		}
+		Pageable pageable = new OffsetPageRequest(offset, limit);
+		List<Object> bookshelves = bookshelfRepository.findByOwnerAndBookshelfName(ownerName, bookshelfName, pageable);
 		return bookshelves;
 	}
 	

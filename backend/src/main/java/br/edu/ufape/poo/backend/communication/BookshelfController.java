@@ -253,7 +253,7 @@ public class BookshelfController
 	}
 	
 	@GetMapping("findownbyowneridpaginate/{ownerId}")
-	public ResponseEntity<?> bookshelfFindOwnByOwnerIdPaginate(@PathVariable Long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	public ResponseEntity<?> bookshelfFindOwnByOwnerIdPaginate(@PathVariable Long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
@@ -281,7 +281,7 @@ public class BookshelfController
 	}
 	
 	@GetMapping("findbyowneridpaginate/{ownerId}")
-	public ResponseEntity<?> bookshelfFindByOwnerIdPaginate(@PathVariable Long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit) throws Exception
+	public ResponseEntity<?> bookshelfFindByOwnerIdPaginate(@PathVariable Long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
@@ -305,7 +305,7 @@ public class BookshelfController
 	}
 	
 	@GetMapping("findownbooksbyidpaginate/{id}")
-	public ResponseEntity<?> findOwnBooksByIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
+	public ResponseEntity<?> findOwnBooksByIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
@@ -333,7 +333,7 @@ public class BookshelfController
 	}
 	
 	@GetMapping("findbooksbyidpaginate/{id}")
-	public ResponseEntity<?> findBooksByIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit) throws Exception
+	public ResponseEntity<?> findBooksByIdPaginate(@PathVariable Long id, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit) throws Exception
 	{
 		ResponseEntity<Object> responseEntity;
 		try
