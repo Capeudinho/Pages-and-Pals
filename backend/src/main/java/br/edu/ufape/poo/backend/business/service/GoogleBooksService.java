@@ -21,6 +21,7 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
 		String response;
+		Map<String, Object> bookInfo = new HashMap<>();
 		try {
 			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + apiId).retrieve()
 				.bodyToMono(String.class).block();
