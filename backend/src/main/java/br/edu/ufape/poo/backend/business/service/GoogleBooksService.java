@@ -16,8 +16,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 @Transactional
-public class GoogleBooksService {
-	public Map<String, Object> findByApiId(String apiId, String extractInfo) throws Exception {
+public class GoogleBooksService implements GoogleBooksServiceInterface {
+	public Map<String, Object> findByApiId(String apiId, String extractInfo) throws Exception{
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
 		String response;
@@ -30,7 +30,6 @@ public class GoogleBooksService {
 			throw new BookNotFoundException();	
 		}
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
-		Map<String, Object> bookInfo = new HashMap<>();
 		bookInfo = extractBookInformationUtility(jsonObject, extractInfo);
 		if (bookInfo == null)
 		{
@@ -39,31 +38,35 @@ public class GoogleBooksService {
 		return bookInfo;
 	}
 
-	public String findCoverByApiId(String id)
-	{
+	public String findCoverByApiId(String id) {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
-		String response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + id).retrieve().bodyToMono(String.class).block();
+		String response = "";
+		try
+		{
+			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + id).retrieve()
+				.bodyToMono(String.class).block();
+		}
+		catch(Exception e)
+		{
+			response = "";
+		}
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		String cover = "";
-		if
-		(
-			jsonObject != null &&
-			jsonObject.get("volumeInfo") != null &&
-			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks") != null &&
-			jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail") != null
-		)
-		{
-			cover = jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
+		if (jsonObject != null && jsonObject.get("volumeInfo") != null
+				&& jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks") != null
+				&& jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject()
+						.get("thumbnail") != null) {
+			cover = jsonObject.get("volumeInfo").getAsJsonObject().get("imageLinks").getAsJsonObject().get("thumbnail")
+					.getAsString();
 		}
 		return cover;
 	}
 
-	public List<Object> advancedSearchResults(String term, String title, String author, String subject,
-			String publisher, String isbn, Integer maxResults, Integer startIndex, String extractInfo) {
+	public List<Object> advancedSearchResults(String term, String title, String author, String subject,String publisher, String isbn, Integer maxResults, Integer startIndex, String extractInfo) {
 		Map<String, Object> preview = new HashMap<>();
 		List<Object> previews = new ArrayList<Object>();
-		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, maxResults,startIndex);
+		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, maxResults, startIndex);
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 
@@ -77,9 +80,8 @@ public class GoogleBooksService {
 		}
 		return previews;
 	}
-	
-	private String advancedSearchUtility(String term, String title, String author, String subject,
-			String publisher, String isbn, Integer maxResults, Integer startIndex) {
+
+	private String advancedSearchUtility(String term, String title, String author, String subject, String publisher,String isbn, Integer maxResults, Integer startIndex) {
 		String filter = "";
 		String filters = "";
 		String response = "";
@@ -105,18 +107,29 @@ public class GoogleBooksService {
 			filter = filter + "isbn:" + isbn + "&";
 		}
 		if (maxResults != null) {
+			if (maxResults < 1) {
+				maxResults = 1;
+			}
 			filter = filter + "maxResults=" + maxResults + "&";
 		}
 		if (startIndex != null) {
+			if (startIndex < 0) {
+				startIndex = 0;
+			}
 			filter = filter + "startIndex=" + startIndex + "&";
 		}
-
+		
 		if (filter.length() > 0) {
 			filters = filter.substring(0, filter.length() - 1);
 		}
-		
-		response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes?q=" + filters).retrieve()
-				.bodyToMono(String.class).block();
+		try
+		{
+			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes?q=" + filters).retrieve().bodyToMono(String.class).block();
+		}
+		catch(Exception e)
+		{
+			response = "";
+		}
 
 		return response;
 	}
@@ -184,7 +197,7 @@ public class GoogleBooksService {
 				bookInfo.put("authors", authors);
 			}
 
-			if (extractAllData.equals("complete")) {
+			if ("complete".equals(extractAllData)) {
 				if (volumeInfo.get("pageCount") != null) {
 					pageCount = volumeInfo.get("pageCount").getAsInt();
 					bookInfo.put("pageCount", pageCount);

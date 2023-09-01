@@ -15,7 +15,7 @@ import br.edu.ufape.poo.backend.business.entity.Review;
 import br.edu.ufape.poo.backend.business.service.AccountServiceInterface;
 import br.edu.ufape.poo.backend.business.service.BookServiceInterface;
 import br.edu.ufape.poo.backend.business.service.BookshelfServiceInterface;
-import br.edu.ufape.poo.backend.business.service.GoogleBooksService;
+import br.edu.ufape.poo.backend.business.service.GoogleBooksServiceInterface;
 import br.edu.ufape.poo.backend.business.service.ReviewServiceInterface;
 import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
 
@@ -28,11 +28,11 @@ public class Facade {
 	@Autowired
 	private BookshelfServiceInterface bookshelfService;
 	@Autowired
-	private GoogleBooksService googleBooksService;
+	private GoogleBooksServiceInterface googleBooksService;
 	@Autowired
 	private ReviewServiceInterface reviewService;
 
-	// Account
+	// ACCOUNT
 
 	public Account accountSignUp(Account account) throws Exception {
 		Account newAccount = accountService.signUp(account);
@@ -97,7 +97,7 @@ public class Facade {
 		return accountProfile;
 	}
 
-	// Bookshelf
+	// BOOKSHELF
 
 	public Bookshelf bookshelfCreate(Bookshelf bookshelf, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
@@ -224,34 +224,40 @@ public class Facade {
 		return bookshelfSelects;
 	}
 
-	// Book
-
-	public double findScoreByApiId(String apiId) throws Exception {
-		return bookService.findScoreByApiId(apiId);
-
-	}
+	// BOOK
 
 	public Map<String, Object> findBookByApiId(String apiId, String extractInfo) throws Exception {
 		return googleBooksService.findByApiId(apiId, extractInfo);
 
 	}
 
-	public List<Object> advancedSearch(String term, String title, String author, String subject, String publisher,
-			String isbn, Integer maxResults, Integer startIndex, String ownerName, String bookshelfName) {
-		// return
-		// googleBooksService.advancedSearchResults(term,title,author,subject,publisher,isbn,maxResults,startIndex,
-		// "incomplete");
-		return bookshelfService.findAdvanced(ownerName, bookshelfName);
+	public List<Object> advancedSearch(String term, String title, String author, String subject, String publisher, String isbn, Integer maxResults, Integer startIndex, String ownerName, String bookshelfName,String resultType) {
+		List<Object> results = new ArrayList<>();
+		List<Object> bookResults = new ArrayList<>();
+		List<Object> bookshelfResults = new ArrayList<>();
+
+		if ("all".equals(resultType) || "book".equals(resultType)) {
+			bookResults = googleBooksService.advancedSearchResults(term, title, author, subject, publisher, isbn, maxResults, startIndex, "incomplete");
+			results.addAll(bookResults);
+
+		}
+
+		if ("all".equals(resultType) || "bookshelf".equals(resultType)) {
+			bookshelfResults = bookshelfService.findByOwnerAndBookshelfName(ownerName, bookshelfName, startIndex, maxResults);
+			results.addAll(bookshelfResults);
+		}
+
+		return results;
 	}
 
-	// Review
+	// REVIEW
 
 	// Verificando se a conta criadora da Review existe
 	public Review reviewCreate(Review review, String email, String password) throws Exception {
 
 		Account requestingAccount = accountService.authenticate(email, password);
 		review.setOwner(requestingAccount);
-		// Renomear depois
+// Renomear depois
 		Book book = bookService.findByApiId(review.getBookApiId());
 
 		if (book == null && review.getBookScore() != null) {
@@ -383,7 +389,7 @@ public class Facade {
 		System.out.println(1);
 
 		List<Review> reviews = reviewFindByBookApiIdPaginateUtility(bookApiId, 0L, offset, limit, false);
-		System.out.println(2);
+
 		return reviews;
 	}
 
