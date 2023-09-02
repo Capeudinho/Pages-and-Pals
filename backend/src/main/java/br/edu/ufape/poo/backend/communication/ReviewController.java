@@ -2,7 +2,6 @@ package br.edu.ufape.poo.backend.communication;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +22,12 @@ import br.edu.ufape.poo.backend.exceptions.AccessDeniedException;
 import br.edu.ufape.poo.backend.exceptions.AuthenticationFailedException;
 import br.edu.ufape.poo.backend.exceptions.BookNotFoundException;
 import br.edu.ufape.poo.backend.exceptions.DuplicateReviewException;
-import br.edu.ufape.poo.backend.exceptions.IncorrectIdBookException;
+import br.edu.ufape.poo.backend.exceptions.IncorrectBookIdException;
 import br.edu.ufape.poo.backend.exceptions.IncorrectIdException;
-import br.edu.ufape.poo.backend.exceptions.InvalidBookScoreReviewException;
-import br.edu.ufape.poo.backend.exceptions.InvalidReviewCountBookException;
+import br.edu.ufape.poo.backend.exceptions.InvalidBookScoreException;
+import br.edu.ufape.poo.backend.exceptions.InvalidReviewCountException;
 import br.edu.ufape.poo.backend.exceptions.InvalidReviewException;
-import br.edu.ufape.poo.backend.exceptions.InvalidTextReviewException;
-import br.edu.ufape.poo.backend.exceptions.IncorrectIdReviewException;
+import br.edu.ufape.poo.backend.exceptions.InvalidTextException;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -37,11 +35,11 @@ import br.edu.ufape.poo.backend.exceptions.IncorrectIdReviewException;
 public class ReviewController {
 	@Autowired
 	private Facade facade;
-	
+
 	@PostMapping("create")
-	public ResponseEntity<?> create (@RequestBody Review review, @RequestHeader("email") String email, @RequestHeader("password") String password ){
+	public ResponseEntity<?> create(@RequestBody Review review, @RequestHeader("email") String email,
+			@RequestHeader("password") String password) {
 		ResponseEntity<Object> responseEntity;
-		
 		try {
 			Review newReview = facade.reviewCreate(review, email, password);
 			responseEntity = new ResponseEntity<Object>(newReview, HttpStatus.CREATED);
@@ -49,84 +47,79 @@ public class ReviewController {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid review");
 		} catch (DuplicateReviewException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("duplicate review");
-		} catch (InvalidBookScoreReviewException exception) {
+		} catch (InvalidBookScoreException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid book score");
-		} catch (InvalidTextReviewException exception) {
+		} catch (InvalidTextException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid text");
 		} catch (BookNotFoundException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("book not found");
-		} catch (InvalidReviewCountBookException exception) {
+		} catch (InvalidReviewCountException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body("invalid review count");
 		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		} catch (Exception exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");	
-		}		
-		
-		
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
 		return responseEntity;
 	}
-	
-	
+
 	@PatchMapping("update")
-	public ResponseEntity<?> update(@RequestBody Review review, @RequestHeader("email") String email, @RequestHeader("password") String password){
+	public ResponseEntity<?> update(@RequestBody Review review, @RequestHeader("email") String email,
+			@RequestHeader("password") String password) {
 		ResponseEntity<Object> responseEntity;
-		
 		try {
 			Review newReview = facade.reviewUpdate(review, email, password);
 			responseEntity = new ResponseEntity<Object>(newReview, HttpStatus.OK);
-		} catch (IncorrectIdReviewException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect review id");
-		} catch (InvalidReviewCountBookException exception) {
-				responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body("invalid review count");
+		} catch (IncorrectIdException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		} catch (InvalidReviewException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid review");
-		} catch (InvalidBookScoreReviewException exception) {
+		} catch (InvalidBookScoreException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid book score");
-		} catch (InvalidTextReviewException exception) {
+		} catch (InvalidTextException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid text");
-		} catch (AuthenticationFailedException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
-		} catch (AccessDeniedException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
-		} catch (Exception exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");	
-		}		
-		
-		return responseEntity;
-	}
-	
-	@DeleteMapping("deletebyid/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable long id, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
-	{
-		ResponseEntity<Object> responseEntity;
-		
-		try {
-			Review oldReview = facade.reviewDeleteById(id, email, password);
-			responseEntity = new ResponseEntity<Object>(oldReview, HttpStatus.OK);
-		} catch (IncorrectIdReviewException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect review id");
-		} catch (IncorrectIdBookException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect book id");
-		} catch (DuplicateReviewException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("duplicate review");
-		} catch (InvalidReviewCountBookException exception) {
+		} catch (InvalidReviewCountException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body("invalid review count");
 		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
 		} catch (Exception exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");	
-		}		
-		
-	return responseEntity;
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
 	}
-	
-	@GetMapping("findbyowneridpaginate/{ownerId}")
-	public ResponseEntity<?> findByOwnerIdPaginate(@PathVariable long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit) throws Exception{
+
+	@DeleteMapping("deletebyid/{id}")
+	public ResponseEntity<?> deleteById(@PathVariable long id, @RequestHeader("email") String email,
+			@RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		
+		try {
+			Review oldReview = facade.reviewDeleteById(id, email, password);
+			responseEntity = new ResponseEntity<Object>(oldReview, HttpStatus.OK);
+		} catch (IncorrectIdException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		} catch (IncorrectBookIdException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect book id");
+		} catch (DuplicateReviewException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("duplicate review");
+		} catch (InvalidReviewCountException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body("invalid review count");
+		} catch (AuthenticationFailedException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		} catch (AccessDeniedException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
+		} catch (Exception exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+
+	@GetMapping("findbyowneridpaginate/{ownerId}")
+	public ResponseEntity<?> findByOwnerIdPaginate(@PathVariable long ownerId,
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit)
+			throws Exception {
+		ResponseEntity<Object> responseEntity;
 		try {
 			List<Map<String, Object>> reviewList = facade.reviewFindByOwnerIdPaginate(ownerId, offset, limit);
 			responseEntity = new ResponseEntity<Object>(reviewList, HttpStatus.OK);
@@ -135,18 +128,19 @@ public class ReviewController {
 		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
 		} catch (Exception exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");	
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
-		
 		return responseEntity;
 	}
-	
+
 	@GetMapping("findownbyowneridpaginate/{ownerId}")
-	public ResponseEntity<?> findOwnByOwnerIdPaginate(@PathVariable long ownerId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0")int limit,  @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception{
+	public ResponseEntity<?> findOwnByOwnerIdPaginate(@PathVariable long ownerId,
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit,
+			@RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		
 		try {
-			List<Map<String, Object>> reviewList = facade.reviewFindOwnByOwnerIdPaginate(ownerId, offset, limit, email, password);
+			List<Map<String, Object>> reviewList = facade.reviewFindOwnByOwnerIdPaginate(ownerId, offset, limit, email,
+					password);
 			responseEntity = new ResponseEntity<Object>(reviewList, HttpStatus.OK);
 		} catch (IncorrectIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
@@ -155,41 +149,39 @@ public class ReviewController {
 		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
 		} catch (Exception exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");	
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
-		
 		return responseEntity;
 	}
-	
+
 	@GetMapping("findbybookapiidpaginate/{bookApiId}")
-	public ResponseEntity<?> reviewFindByBookApiIdPaginate(@PathVariable String bookApiId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0")int limit) throws Exception{
+	public ResponseEntity<?> reviewFindByBookApiIdPaginate(@PathVariable String bookApiId,
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit)
+			throws Exception {
 		ResponseEntity<Object> responseEntity;
-		
 		try {
 			List<Review> reviewList = facade.reviewFindByBookApiIdPaginate(bookApiId, offset, limit);
 			responseEntity = new ResponseEntity<Object>(reviewList, HttpStatus.OK);
-		}catch (Exception exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");	
+		} catch (Exception exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
-		
 		return responseEntity;
 	}
-	
+
 	@GetMapping("findbybookapiispaginateautenticaded/{bookApiId}")
-	public ResponseEntity<?> reviewFindByBookApiIdPaginateAutenticaded(@PathVariable String bookApiId, @RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0")int limit,  @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception{
+	public ResponseEntity<?> reviewFindByBookApiIdPaginateAutenticaded(@PathVariable String bookApiId,
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit,
+			@RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		
 		try {
-			List<Review> reviewList = facade.reviewFindByBookApiIdPaginateAutenticaded(bookApiId, offset, limit, email, password);
+			List<Review> reviewList = facade.reviewFindByBookApiIdPaginateAutenticaded(bookApiId, offset, limit, email,
+					password);
 			responseEntity = new ResponseEntity<Object>(reviewList, HttpStatus.OK);
 		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		} catch (Exception exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");	
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
-		
 		return responseEntity;
 	}
-
-	
 }

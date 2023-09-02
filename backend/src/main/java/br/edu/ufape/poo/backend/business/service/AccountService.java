@@ -17,28 +17,23 @@ import java.util.regex.Pattern;
 
 @Service
 @Transactional
-public class AccountService implements AccountServiceInterface
-{
+public class AccountService implements AccountServiceInterface {
 	@Autowired
 	private AccountRepository accountRepository;
-	
-	public Account signUp(Account account) throws Exception
-	{
+
+	public Account signUp(Account account) throws Exception {
 		Account existingAccount = accountRepository.findByEmail(account.getEmail());
-		if (account.getName() == null || account.getName().isBlank())
-		{
+		if (account.getName() == null || account.getName().isBlank()) {
 			throw new InvalidNameException();
 		}
-		if (account.getEmail() == null || account.getEmail().isBlank() || !Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches())
-		{
+		if (account.getEmail() == null || account.getEmail().isBlank() || !Pattern
+				.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches()) {
 			throw new InvalidEmailException();
 		}
-		if (account.getPassword() == null || account.getPassword().isBlank())
-		{
+		if (account.getPassword() == null || account.getPassword().isBlank()) {
 			throw new InvalidPasswordException();
 		}
-		if (existingAccount != null)
-		{
+		if (existingAccount != null) {
 			throw new TakenEmailException();
 		}
 		account.setBiography("");
@@ -47,75 +42,60 @@ public class AccountService implements AccountServiceInterface
 		Account newAccount = accountRepository.save(account);
 		return newAccount;
 	}
-	
-	public Account logIn(String email, String password) throws Exception
-	{
+
+	public Account logIn(String email, String password) throws Exception {
 		Account account = accountRepository.findByEmail(email);
-		if (account == null)
-		{
+		if (account == null) {
 			throw new IncorrectEmailException();
-		}
-		else if (!account.getPassword().equals(password))
-		{
+		} else if (!account.getPassword().equals(password)) {
 			throw new IncorrectPasswordException();
 		}
 		return account;
 	}
-	
-	public Account update(Account account) throws Exception
-	{
+
+	public Account update(Account account) throws Exception {
 		Account oldAccount = accountRepository.findById(account.getId()).orElse(null);
 		Account existingAccount = accountRepository.findByEmail(account.getEmail());
-		if (oldAccount == null)
-		{
+		if (oldAccount == null) {
 			throw new IncorrectIdException();
 		}
-		if (existingAccount != null && account.getId() != existingAccount.getId())
-		{
+		if (existingAccount != null && account.getId() != existingAccount.getId()) {
 			throw new TakenEmailException();
 		}
-		if (account.getName() == null || account.getName().isBlank())
-		{
+		if (account.getName() == null || account.getName().isBlank()) {
 			throw new InvalidNameException();
 		}
-		if (account.getEmail() == null || account.getEmail().isBlank() || !Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches())
-		{
+		if (account.getEmail() == null || account.getEmail().isBlank() || !Pattern
+				.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$").matcher(account.getEmail()).matches()) {
 			throw new InvalidEmailException();
 		}
-		if (account.getPassword() == null || account.getPassword().isBlank())
-		{
+		if (account.getPassword() == null || account.getPassword().isBlank()) {
 			throw new InvalidPasswordException();
 		}
 		Account newAccount = accountRepository.save(account);
 		return newAccount;
 	}
-	
-	public Account deleteById(Long id) throws Exception
-	{
+
+	public Account deleteById(Long id) throws Exception {
 		Account account = accountRepository.findById(id).orElse(null);
-		if (account == null)
-		{
+		if (account == null) {
 			throw new IncorrectIdException();
 		}
 		accountRepository.delete(account);
 		return account;
 	}
-	
-	public Account findById(Long id) throws Exception
-	{
+
+	public Account findById(Long id) throws Exception {
 		Account account = accountRepository.findById(id).orElse(null);
-		if (account == null)
-		{
+		if (account == null) {
 			throw new IncorrectIdException();
 		}
 		return account;
 	}
-	
-	public Account authenticate(String email, String password) throws Exception
-	{
+
+	public Account authenticate(String email, String password) throws Exception {
 		Account account = accountRepository.findByEmailAndPassword(email, password);
-		if (account == null)
-		{
+		if (account == null) {
 			throw new AuthenticationFailedException();
 		}
 		return account;

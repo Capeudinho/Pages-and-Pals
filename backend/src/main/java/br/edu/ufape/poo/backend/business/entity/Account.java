@@ -1,5 +1,8 @@
 package br.edu.ufape.poo.backend.business.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,8 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Account
-{
+public class Account {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
@@ -19,74 +21,62 @@ public class Account
 	private String biography;
 	private boolean privacy;
 	private String picture;
-	
-	public long getId()
-	{
+
+	public long getId() {
 		return this.id;
 	}
-	
-	public void setId(long id)
-	{
+
+	public void setId(long id) {
 		this.id = id;
 	}
-	
-	public String getName()
-	{
+
+	public String getName() {
 		return this.name;
 	}
-	
-	public void setName(String name)
-	{
+
+	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public String getEmail()
-	{
+
+	public String getEmail() {
 		return this.email;
 	}
-	
-	public void setEmail(String email)
-	{
+
+	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	public String getPassword()
-	{
+
+	@JsonIgnore
+	public String getPassword() {
 		return this.password;
 	}
 	
-	public void setPassword(String password)
-	{
+	@JsonProperty
+	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	public String getBiography()
-	{
+
+	public String getBiography() {
 		return this.biography;
 	}
-	
-	public void setBiography(String biography)
-	{
+
+	public void setBiography(String biography) {
 		this.biography = biography;
 	}
-	
-	public boolean isPrivacy()
-	{
+
+	public boolean isPrivacy() {
 		return this.privacy;
 	}
-	
-	public void setPrivacy(boolean privacy)
-	{
+
+	public void setPrivacy(boolean privacy) {
 		this.privacy = privacy;
 	}
-	
-	public String getPicture()
-	{
+
+	public String getPicture() {
 		return this.picture;
 	}
-	
-	public void setPicture(String picture)
-	{
+
+	public void setPicture(String picture) {
 		this.picture = picture;
 	}
 }
