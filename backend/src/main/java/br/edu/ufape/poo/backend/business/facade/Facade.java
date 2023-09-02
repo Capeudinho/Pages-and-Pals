@@ -242,6 +242,9 @@ public class Facade {
 	public List<Map<String, Object>> bookshelfFindOwnSelectByOwnerId(long ownerId, String apiId, String email,
 			String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
+		if (requestingAccount.getId() != ownerId) {
+			throw new AccessDeniedException();
+		}
 		List<Map<String, Object>> bookshelfSelects = bookshelfFindSelectByOwnerIdUtility(requestingAccount, apiId,
 				true);
 		return bookshelfSelects;
