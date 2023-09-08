@@ -67,6 +67,13 @@
     gap: 10px;
 }
 
+.accountViewArea .reviewsBox
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .accountViewArea .biography
 {
     margin-top: -5px;

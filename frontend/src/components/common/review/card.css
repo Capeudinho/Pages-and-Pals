@@ -1,0 +1,72 @@
+.reviewCardArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    border: solid 1px #e5e5e5;
+    border-radius: 5px;
+}
+
+.reviewCardArea .cover
+{
+    height: 150px;
+    width: 100px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e5e5e5;
+}
+
+.reviewCardArea .info
+{   
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 10px;
+
+}
+.reviewCardArea .title
+{
+    font-size: 20.25px;
+    line-height: 15px;
+}
+
+.reviewCardArea .middleBox
+{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.reviewCardArea .ownerLink
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: fit-content;
+    align-items: center;
+}
+
+.reviewCardArea .ownerPicture
+{
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e5e5e5;
+}
+
+.reviewCardArea .bookScore
+{
+    margin-left: auto;
+}
+
+.reviewCardArea .text
+{
+    margin-top: -5px;
+    margin-bottom: -5px;
+    line-height: 20px;
+}

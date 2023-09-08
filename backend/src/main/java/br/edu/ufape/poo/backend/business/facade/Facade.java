@@ -569,7 +569,7 @@ public class Facade {
 
 	// Buscando pelas reviews de um usuário com capa
 	private List<Map<String, Object>> reviewFindByOwnerIdPaginateUtility(long ownerId, int offset, int limit,
-			boolean complete) {
+			boolean complete) throws Exception {
 		if (offset < 0) {
 			offset = 0;
 		}
@@ -587,16 +587,17 @@ public class Facade {
 		while (reviewsIterator.hasNext()) {
 			Review review = reviewsIterator.next();
 			Map<String, Object> reviewCard = new HashMap<>();
-			String cover = googleBooksService.findCoverByApiId(review.getBookApiId());
+			Map<String, Object> bookInfo = googleBooksService.findByApiId(review.getBookApiId(), "incomplete");
 			reviewCard.put("id", review.getId());
 			reviewCard.put("bookApiId", review.getBookApiId());
 			reviewCard.put("text", review.getText());
 			reviewCard.put("bookScore", review.getBookScore());
 			reviewCard.put("creationDate", review.getCreationDate());
 			reviewCard.put("editionDate", review.getEditionDate());
-			reviewCard.put("bookScore", review.getOwner());
+			reviewCard.put("owner", review.getOwner());
 			reviewCard.put("privacy", review.isPrivacy());
-			reviewCard.put("cover", cover);
+			reviewCard.put("title", bookInfo.get("title"));
+			reviewCard.put("cover", bookInfo.get("cover"));
 			reviewsCards.add(reviewCard);
 		}
 		return reviewsCards;

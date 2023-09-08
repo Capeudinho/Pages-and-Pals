@@ -168,7 +168,7 @@ public class ReviewController {
 		return responseEntity;
 	}
 
-	@GetMapping("findbybookapiispaginateautenticaded/{bookApiId}")
+	@GetMapping("findbybookapiidpaginateautenticaded/{bookApiId}")
 	public ResponseEntity<?> reviewFindByBookApiIdPaginateAutenticaded(@PathVariable String bookApiId,
 			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit,
 			@RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception {

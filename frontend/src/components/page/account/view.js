@@ -11,6 +11,7 @@ import scrollContext from "../../context/scroll.js";
 import ButtonGroup from "../../common/button/group.js";
 import ButtonMode from "../../common/button/mode.js";
 import BookshelfCard from "../../common/bookshelf/card.js";
+import ReviewCard from "../../common/review/card.js";
 
 import "./view.css";
 
@@ -21,8 +22,9 @@ function AccountView()
     const {confirm, setConfirm} = useContext(confirmContext);
     const {overlay, setOverlay} = useContext(overlayContext);
     const {scroll, setScroll} = useContext(scrollContext);
-    const [account, setAccount] = useState (null);
+    const [account, setAccount] = useState(null);
     const [bookshelves, setBookshelves] = useState(null);
+    const [reviews, setReviews] = useState(null);
     const [mode, setMode] = useState("bookshelves");
     const navigate = useNavigate();
     const {id} = useParams();
@@ -61,6 +63,10 @@ function AccountView()
                     if (response?.data?.bookshelfCount > 0)
                     {
                         await loadBookshelves(true);
+                    }
+                    if (response?.data?.reviewCount > 0)
+                    {
+                        await loadReviews(true);
                     }
                 }
                 catch (exception)
@@ -101,6 +107,29 @@ function AccountView()
             return (() => {mounted = false});
         },
         [scroll, bookshelves]
+    );
+
+    useEffect
+    (
+        () =>
+        {
+            let mounted = true;
+            const runEffect = async () =>
+            {
+                if
+                (
+                    !overlay &&
+                    reviews?.length < account?.reviewCount &&
+                    scroll?.target?.scrollHeight-scroll?.target?.scrollTop <= scroll?.target?.offsetHeight+100
+                )
+                {
+                    await loadReviews(false);
+                }
+            }
+            runEffect();
+            return (() => {mounted = false});
+        },
+        [scroll, reviews]
     );
 
     useEffect
@@ -185,6 +214,79 @@ function AccountView()
                 else
                 {
                     setBookshelves([...bookshelves, ...response?.data]);
+                }
+            }
+            catch (exception)
+            {
+                setOverlay(false);
+                if (exception?.response?.data === "authentication failed")
+                {
+                    localStorage.clear();
+                    setLoggedAccount(null);
+                }
+                navigate("/");
+            }
+        }
+    }
+
+    async function loadReviews(overwrite)
+    {
+        if (overwrite || reviews?.length < account?.reviewCount)
+        {
+            var offset;
+            if (overwrite)
+            {
+                offset = 0;
+            }
+            else
+            {
+                offset = reviews?.length;
+            }
+            try
+            {
+                var response;
+                setOverlay(true);
+                if (loggedAccount?.id !== undefined && loggedAccount?.id === Number(id))
+                {
+                    response = await api.get
+                    (
+                        "review/findownbyowneridpaginate/"+id,
+                        {
+                            params:
+                            {
+                                offset: offset,
+                                limit: 20
+                            },
+                            headers:
+                            {
+                                email: loggedAccount?.email,
+                                password: loggedAccount?.password
+                            }
+                        }
+                    );
+                }
+                else
+                {
+                    response = await api.get
+                    (
+                        "/review/findbyowneridpaginate/"+id,
+                        {
+                            params:
+                            {
+                                offset: offset,
+                                limit: 20
+                            }
+                        }
+                    );
+                }
+                setOverlay(false);
+                if (overwrite)
+                {
+                    setReviews(response?.data);
+                }
+                else
+                {
+                    setReviews([...bookshelves, ...response?.data]);
                 }
             }
             catch (exception)
@@ -327,7 +429,22 @@ function AccountView()
                                 }
                             </div> :
                             <div className = "innerInfoBox reviewsBox">
-                                
+                                {
+                                    reviews?.map
+                                    (
+                                        (review, index) =>
+                                        {
+                                            return (
+                                                <ReviewCard
+                                                review = {review}
+                                                page = "account"
+                                                key = {index}
+                                                />
+                                            );
+                                        }
+                                    )
+
+                                }
                             </div>
                         }
                     </div>
