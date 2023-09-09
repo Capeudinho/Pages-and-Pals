@@ -1,0 +1,23 @@
+.accountLinkArea
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: fit-content;
+    align-items: center;
+}
+
+.accountLinkArea .accountPicture
+{
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    background-color: #e5e5e5;
+}
+
+.accountLinkArea .accountName
+{
+    color: #191919;
+}

@@ -398,6 +398,7 @@ function AccountView() {
                                                             return (
                                                                 <BookshelfCard
                                                                     bookshelf={bookshelf}
+                                                                    linkable={false}
                                                                     key={index}
                                                                 />
                                                             );
@@ -412,9 +413,9 @@ function AccountView() {
                                                         (review, index) => {
                                                             return (
                                                                 <ReviewCard
-                                                                    review={review}
-                                                                    page="account"
-                                                                    key={index}
+                                                                review={review}
+                                                                linkable={false}
+                                                                key={index}
                                                                 />
                                                             );
                                                         }

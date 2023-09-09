@@ -277,14 +277,14 @@ public class FacadeTest {
 	@Test
 	void findBookByApiIdValid() throws Exception {
 		String bookApiId = "u8w_DwAAQBAJ";
-		Map<String, Object> results = facade.findBookByApiId(bookApiId, "complete");
+		Map<String, Object> results = facade.bookFindByApiId(bookApiId, "complete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	void advancedSearchBook() throws Exception {
-		List<Object> results = new ArrayList<>();
-		results = facade.advancedSearch(null, null, "shakespeare", null, null, null, 0, 1, "Jane", null, "book");
+		List<Map<String, Object>> results = new ArrayList<>();
+		results = facade.bookFindByAdvanced(null, null, "shakespeare", null, null, null, 0, 1, "Jane", null, "book");
 		assertFalse(results.isEmpty());
 	}
 
@@ -297,7 +297,7 @@ public class FacadeTest {
 		bookshelf.setName("Favorites");
 		bookshelf.setOwner(account);
 		bookshelfRepository.save(bookshelf);
-		List<Object> results = facade.advancedSearch(null, null, null, null, null, null, 0, 1, "Jane", "Favorites", "bookshelf");
+		List<Map<String, Object>> results = facade.bookFindByAdvanced(null, null, null, null, null, null, 0, 1, "Jane", "Favorites", "bookshelf");
 		assertFalse(results.isEmpty());
 		assertEquals(results.size(), 1);
 
@@ -314,19 +314,19 @@ public class FacadeTest {
 
 	@Test
 	void advancedSearchAll() throws Exception {
-		List<Object> results = facade.advancedSearch(null, "Hamlet", "Shakespeare", null, null, null, 0, 1,"Jane", "Favorites", "all");
+		List<Map<String, Object>> results = facade.bookFindByAdvanced(null, "Hamlet", "Shakespeare", null, null, null, 0, 1,"Jane", "Favorites", "all");
 		assertFalse(results.isEmpty());
 
 		for (int i = 0; i < results.size(); i++) {
-			Object result = results.get(i);
-			if (result instanceof Bookshelf) {
+			Map<String, Object> result = results.get(i);
+			if (result.containsKey("name")) {
 				Bookshelf bookshelf = (Bookshelf) result;
 				assertNotNull(bookshelf.getName());
 				assertNotNull(bookshelf.getOwner());
 				assertTrue(bookshelf.getOwner().getName().contains("Jane"));
 				assertEquals("Favorites", bookshelf.getName());
 
-			} else if (result instanceof Map) {
+			} else if (result.containsKey("title")) {
 				Map<?, ?> book = (Map<?, ?>) result;
 				Object title = book.get("title");
 				if (title instanceof String) {

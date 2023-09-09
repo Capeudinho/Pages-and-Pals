@@ -8,6 +8,7 @@ import confirmContext from "../../context/confirm.js";
 import overlayContext from "../../context/overlay.js";
 import scrollContext from "../../context/scroll.js";
 
+import AccountLink from "../../common/account/link.js";
 import ButtonGroup from "../../common/button/group.js";
 import ButtonMode from "../../common/button/mode.js";
 import BookshelfCovers from "../../common/bookshelf/covers.js";
@@ -310,16 +311,7 @@ function BookshelfView()
                 <BookshelfCovers covers = {[books?.[0]?.cover, books?.[1]?.cover, books?.[2]?.cover]}/>
                 <div className = "headBox">
                     <div className = "name">{bookshelf?.name}</div>
-                    <Link
-                    className = "ownerLink"
-                    to = {"/account/view/"+bookshelf?.owner?.id}
-                    >
-                        <div
-                        className = "ownerPicture"
-                        style = {{backgroundImage: "url("+bookshelf?.owner?.picture+")"}}
-                        />
-                        <div className = "ownerName">{bookshelf?.owner?.name}</div>
-                    </Link>
+                    <AccountLink account = {bookshelf?.owner}/>
                     <div className = "creationDate">Created in {handleFormatDate(bookshelf?.creationDate)}</div>
                 </div>
                 {
@@ -352,6 +344,7 @@ function BookshelfView()
                                                 bookIndex = {bookIndex}
                                                 remove = {handleConfirmRemoveBook}
                                                 removeable = {loggedAccount?.id !== undefined && loggedAccount?.id === bookshelf?.owner?.id}
+                                                manageable = {false}
                                                 />
                                             );
                                         }

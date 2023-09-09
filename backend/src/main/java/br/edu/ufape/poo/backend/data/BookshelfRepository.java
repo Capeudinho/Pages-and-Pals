@@ -13,7 +13,10 @@ public interface BookshelfRepository extends JpaRepository<Bookshelf, Long> {
 	public List<Bookshelf> findByOwnerIdOrderByCreationDateDesc(long id);
 	public List<Bookshelf> findByOwnerIdOrderByCreationDateDesc(long id, Pageable pageable);
 	public int countByOwnerId(long id);
-	@Query("SELECT bookshelf FROM Bookshelf bookshelf WHERE (:bookshelfName IS NOT null OR :ownerName IS NOT null) AND (:bookshelfName IS null OR bookshelf.name LIKE %:bookshelfName%) AND (:ownerName IS null OR bookshelf.owner.name LIKE %:ownerName%)")
-	public List<Object> findByOwnerNameAndBookshelfName(@Param("ownerName") String ownerName,
+	@Query("SELECT bookshelf FROM Bookshelf bookshelf WHERE (bookshelf.owner.privacy = true OR bookshelf.owner.id = :ownerId) AND (:bookshelfName IS NOT null OR :ownerName IS NOT null) AND (:bookshelfName IS null OR LOWER(bookshelf.name) LIKE LOWER(CONCAT('%', :bookshelfName, '%'))) AND (:ownerName IS null OR LOWER(bookshelf.owner.name) LIKE LOWER(CONCAT('%', :ownerName, '%')))")
+	public List<Bookshelf> findByPublicOrOwnerIdAndOwnerNameAndBookshelfName(@Param("ownerName") String ownerName,
+			@Param("bookshelfName") String bookshelfName, @Param("ownerId") long ownerId, Pageable pageable);
+@Query("SELECT bookshelf FROM Bookshelf bookshelf WHERE bookshelf.owner.privacy = true AND (:bookshelfName IS NOT null OR :ownerName IS NOT null) AND (:bookshelfName IS null OR LOWER(bookshelf.name) LIKE LOWER(CONCAT('%', :bookshelfName, '%'))) AND (:ownerName IS null OR LOWER(bookshelf.owner.name) LIKE LOWER(CONCAT('%', :ownerName, '%')))")
+	public List<Bookshelf> findByPublicAndOwnerNameAndBookshelfName(@Param("ownerName") String ownerName,
 			@Param("bookshelfName") String bookshelfName, Pageable pageable);
 }

@@ -1,0 +1,41 @@
+.bookshelfManageArea .selects
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    z-index: 1;
+    padding: 10px;
+    border: solid 1px #cccccc;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+.bookshelfManageArea .bookshelfName
+{
+    flex: 1;
+}
+  
+.bookshelfManageArea .select
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.bookshelfManageArea button
+{
+    height: 30px;
+    width: 30px;
+    padding: 10px;
+    background-color: #e5e5e5;
+    border-radius: 5px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.bookshelfManageArea button:hover
+{
+    background-color: #cccccc;
+}

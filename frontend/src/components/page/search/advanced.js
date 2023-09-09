@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import "./advanced.css";
 
-function AdvancedSearch() {
+function SearchAdvanced() {
 
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useState({
@@ -39,19 +39,19 @@ function AdvancedSearch() {
             newSearch = newSearch + "isbn=" + searchParams.isbn + "&";
         }
         if (searchParams.bookshelfName !== "") {
-            newSearch = newSearch + "bookshelfName=" + searchParams.bookshelfName + "&";
+            newSearch = newSearch + "bookshelfname=" + searchParams.bookshelfName + "&";
         }
         if (searchParams.ownerName !== "") {
-            newSearch = newSearch + "ownerName=" + searchParams.ownerName + "&";
+            newSearch = newSearch + "ownername=" + searchParams.ownerName + "&";
         }
 
-        newSearch = newSearch + "resultType=" + searchParams.resultType;
+        newSearch = newSearch + "resulttype=" + searchParams.resultType;
 
         navigate("/search/results" + newSearch);
     }
 
     return (
-        <div className="advancedArea">
+        <div className="searchAdvancedArea">
             <select
                 value={searchParams.resultType}
                 onChange={(e) => setSearchParams({ ...searchParams, resultType: e.target.value })}
@@ -139,7 +139,7 @@ function AdvancedSearch() {
     );
 }
 
-export default AdvancedSearch;
+export default SearchAdvanced;
 
 
 

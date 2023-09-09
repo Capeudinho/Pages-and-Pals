@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import ButtonGroup from "../../common/button/group.js";
 import loggedAccountContext from "../../context/loggedAccount.js";
+import AccountLink from "../account/link.js";
 import confirmContext from "../../context/confirm.js";
 import overlayContext from "../../context/overlay.js";
 import alertContext from "../../context/alert.js";
@@ -9,7 +10,7 @@ import deletedReviewContext from "../../context/deletedReview.js";
 import api from "../../../services/api.js";
 import "./card.css";
 
-function ReviewCard({ review, page }) {
+function ReviewCard({ review, linkable }) {
 
     const { loggedAccount, setLoggedAccount } = useContext(loggedAccountContext);
     const navigate = useNavigate();
@@ -92,7 +93,7 @@ function ReviewCard({ review, page }) {
     return (
         <div className="reviewCardArea">
             {
-                page === "account" ?
+                !linkable ?
                     <div
                         className="cover"
                         style={{ backgroundImage: "url(" + review?.cover + ")" }}
@@ -100,7 +101,7 @@ function ReviewCard({ review, page }) {
             }
             <div className="info">
                 {
-                    page === "account" ?
+                    !linkable ?
                         <div className="title">
                             {review?.title}
                         </div> : <></>
@@ -108,36 +109,24 @@ function ReviewCard({ review, page }) {
 
                 <div className="middleBox">
                     {
-                        page === "book" ?
-                            <Link
-                                className="ownerLink"
-                                to={"/account/view/" + review?.owner?.id}
-                            >
-                                <div
-                                    className="ownerPicture"
-                                    style={{ backgroundImage: "url(" + review?.owner?.picture + ")" }}
-                                />
-                                <div className="ownerName">{review?.owner?.name}</div>
-                            </Link> : <></>
+                        linkable ?
+                            <AccountLink account={review?.owner}/> : <></>
                     }
                     <div className="creationDate">
                         Created in {handleFormatDate(review?.creationDate)}
                     </div>
-
                     {
                         review?.editionDate !== null ?
                             <div className="editionDate">
                                 Edited in {handleFormatDate(review?.editionDate)}
                             </div> : <></>
                     }
-
                     {
                         review?.bookScore !== null ?
                             <div className="bookScore">
                                 {review?.bookScore} ★
                             </div> : <></>
                     }
-
                 </div>
                 <div className="text">
                     {review?.text}
@@ -147,7 +136,6 @@ function ReviewCard({ review, page }) {
                         <ButtonGroup options={[{ text: "Edit", operation: handleEdit }, { text: "Delete", operation: handleConfirmDelete }]} /> :
                         <></>
                 }
-
             </div>
         </div>
     );

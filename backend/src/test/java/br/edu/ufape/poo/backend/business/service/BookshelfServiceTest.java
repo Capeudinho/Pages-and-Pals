@@ -125,10 +125,12 @@ public class BookshelfServiceTest {
 		bookshelf2.setOwner(user1);
 		bookshelf1.setName("Bookshelf 1");
 		bookshelf2.setName("Bookshelf 2");
+		bookshelf1.setPrivacy(true);
+		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
 
-		List<Object> results = bookshelfRepository.findByOwnerNameAndBookshelfName(user1.getName(), "Bookshelf 1", null);
+		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(user1.getName(), "Bookshelf 1", null);
 		assertEquals(results.size(), 1);
 	}
 
@@ -143,9 +145,11 @@ public class BookshelfServiceTest {
 		bookshelf2.setOwner(user1);
 		bookshelf1.setName("Bookshelf 1");
 		bookshelf2.setName("Bookshelf 2");
+		bookshelf1.setPrivacy(true);
+		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerNameAndBookshelfName(null, null, null);
+		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(null, null, null);
 		assertEquals(results.size(), 0);
 	}
 
@@ -160,9 +164,11 @@ public class BookshelfServiceTest {
 		bookshelf2.setOwner(user1);
 		bookshelf1.setName("Bookshelf 1");
 		bookshelf2.setName("Bookshelf 2");
+		bookshelf1.setPrivacy(true);
+		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerNameAndBookshelfName(null, "Bookshelf 1", null);
+		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(null, "Bookshelf 1", null);
 		assertEquals(results.size(), 1);
 	}
 
@@ -177,9 +183,11 @@ public class BookshelfServiceTest {
 		bookshelf2.setOwner(user1);
 		bookshelf1.setName("Bookshelf 1");
 		bookshelf2.setName("Bookshelf 2");
+		bookshelf1.setPrivacy(true);
+		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerNameAndBookshelfName(user1.getName(), null, null);
+		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(user1.getName(), null, null);
 		assertEquals(results.size(), 2);
 	}
 
@@ -194,9 +202,11 @@ public class BookshelfServiceTest {
 		bookshelf2.setOwner(user1);
 		bookshelf1.setName("Bookshelf 1");
 		bookshelf2.setName("Bookshelf 2");
+		bookshelf1.setPrivacy(true);
+		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerNameAndBookshelfName("Nonexistent User", "Bookshelf 1", null);
+		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName("Nonexistent User", "Bookshelf 1", null);
 		assertEquals(0, results.size());
 	}
 
@@ -211,9 +221,11 @@ public class BookshelfServiceTest {
 		bookshelf2.setOwner(user1);
 		bookshelf1.setName("Bookshelf 1");
 		bookshelf2.setName("Bookshelf 2");
+		bookshelf1.setPrivacy(true);
+		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Object> results = bookshelfRepository.findByOwnerNameAndBookshelfName(user1.getName(),"Nonexistent Bookshelf", null);
+		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(user1.getName(),"Nonexistent Bookshelf", null);
 		assertEquals(0, results.size());
 	}
 
