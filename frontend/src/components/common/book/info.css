@@ -1,46 +1,53 @@
-.bookInfoArea .book
-{
+.bookInfoArea {
     display: flex;
     flex-direction: row;
     gap: 10px;
     padding: 9px;
-    border: solid 1px #e5e5e5;
-    border-radius: 5px;
 }
 
-.bookInfoArea .cover
-{
-    height: 90px;
-    width: 60px;
+.bookInfoArea .cover {
+    height: 130px;
+    width: 100px;
     border-radius: 5px;
     background-size: cover;
     background-position: center;
     background-color: #e5e5e5;
 }
 
-.bookInfoArea .title
-{
-    font-size: 20.25px;
-    line-height: 15px;
+.bookInfoArea .rateArea {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
 }
 
-.bookInfoArea .authors
-{
+.bookInfoArea .rest {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
 }
 
-.bookInfoArea .categories
-{
+.bookInfoArea .title {
+    font-size: 20.25px;
+    line-height: 15px;
+    font-weight: bold;
+}
+
+.bookInfoArea .authors {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 10px;
+    gap: 10px;
+}
+
+.bookInfoArea .categories {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.bookInfoArea .category
-{
+.bookInfoArea .category {
     padding: 5px;
     border-radius: 5px;
     background-color: #e5e5e5;
@@ -48,21 +55,41 @@
     white-space: nowrap;
 }
 
-.bookInfoArea .description
-{
-    text-align: justify; 
-    text-indent: 20px;  
+.bookInfoArea .description {
+    text-align: left;
     display: flex;
     flex-direction: row;
     gap: 15px;
-    line-height: 1.0;
-    margin: 10px;
+    line-height: 1.5;
+
 }
 
-.bookInfoArea .additionalInfoArea
-{
+.bookInfoArea .additionalInfoArea {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin: 10px;
     gap: 10px;
+}
+
+.rest button {
+    margin-top: 20px;
+    background-color: #cccccc;
+    font-weight: bold;
+    color: #333333;
+}
+
+.additionalInfoArea {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.additionalInfoArea .ISBNs{
+     display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bookInfoArea .score{
+    margin-left: auto;
 }

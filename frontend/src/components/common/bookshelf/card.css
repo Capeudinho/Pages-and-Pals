@@ -1,10 +1,8 @@
-.bookshelfCardArea
-{
+.bookshelfCardArea {
     color: #191919;
 }
 
-.bookshelfCardArea .bookshelf
-{
+.bookshelfCardArea .bookshelf {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -13,27 +11,27 @@
     border-radius: 5px;
 }
 
-.bookshelfCardArea .bookshelf:hover
-{
+.bookshelfCardArea .bookshelf:hover {
     background-color: #f2f2f2;
 }
 
-.bookshelfCardArea .info
-{
+.bookshelfCardArea .info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
 }
 
-.bookshelfCardArea .name
-{
+.bookshelfCardArea .name {
     font-size: 20.25px;
     line-height: 15px;
     margin-bottom: 10px;
 }
 
-.bookshelfCardArea .description
-{
+.bookshelfCardArea .description {
     overflow: hidden;
     height: 60px;
     margin-top: -5px;
     line-height: 20px;
 }
+

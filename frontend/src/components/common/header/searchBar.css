@@ -20,11 +20,10 @@
 
 .searchBarArea input[type="text"] {
     height: 30px;
-    width: 350px;
-    padding-left: 10px;
-    padding-right: 10px;
+    width: 200px;
     border-radius: 5px;
-    margin-left: 150px;
+    padding: 10px;
+    /*margin-left: 150px;*/
     flex: 1;
     background-color: #e5e5e5;
     color: #191919;
@@ -47,6 +46,7 @@
     padding: 10px;
     font-weight: bold;
     text-decoration: none;
+    text-align: center;
 }
 
 .searchBarArea .logOut {
@@ -67,6 +67,22 @@
     padding: 10px;
     font-weight: bold;
     text-decoration: none;
+    text-align: center;
+}
+
+.searchBarArea button:hover
+{
+    background-color: #cccccc;
+}
+
+.searchBarArea .account:hover
+{
+    background-color: #cccccc;
+}
+
+.searchBarArea .advanced:hover
+{
+    background-color: #cccccc;
 }
 
 .searchBarArea .profileContainer {

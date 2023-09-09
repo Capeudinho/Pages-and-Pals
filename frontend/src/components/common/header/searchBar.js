@@ -16,7 +16,6 @@ function SearchBar() {
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
 
-
     useEffect
         (
             () => {

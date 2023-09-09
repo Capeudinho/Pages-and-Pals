@@ -63,16 +63,16 @@ function ResultsList() {
             navigate("/");
         }
     }
-    console.log('searchResults:', searchResults);
+    
     return (
         <div className="resultsArea">
             {
                 searchResults?.map
-                    (
-                        (searchResult, searchResultIndex) => {
-                            return (
-                                searchResult?.title !== undefined ?
-                                <BookCard
+                (
+                    (searchResult, searchResultIndex) => {
+                        return (
+                            searchResult?.title !== undefined ?
+                               <BookCard
                                     key={searchResultIndex}
                                     book={searchResult}
                                     bookIndex={0}
@@ -83,9 +83,9 @@ function ResultsList() {
                                 bookshelf={searchResult}
                                 key={searchResultIndex}
                             />
-                            );
-                        }
-                    )
+                        );
+                    }
+                )
             }
 
         </div>

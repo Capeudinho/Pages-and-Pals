@@ -134,8 +134,7 @@ function AdvancedSearch() {
                     />
                 </> : <></>
             }
-
-            <button onClick={handleSearch}>Search</button>
+            <button className="search" onClick={handleSearch}>Search</button>
         </div>
     );
 }

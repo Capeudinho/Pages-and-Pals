@@ -17,18 +17,14 @@ function BookView() {
     const { confirm, setConfirm } = useContext(confirmContext);
     const { overlay, setOverlay } = useContext(overlayContext);
     const { click, setClick } = useContext(clickContext);
-    const [showDetails, setShowDetails] = useState(false);
     const [book, setBook] = useState(null);
     const [bookshelves, setBookshelves] = useState(null);
     const [showBookshelves, setShowBookshelves] = useState(false);
     const navigate = useNavigate();
     const { apiId } = useParams();
     const { id } = useParams();
-    const cache = new Map();
-    const [isFetchingFromCache, setIsFetchingFromCache] = useState(false);
 
     async function fetchBookByApiId(apiId) {
-        console.log('Fetching book for apiId:', apiId);
         try {
             setOverlay(true);
             var response = await api.get
@@ -53,10 +49,6 @@ function BookView() {
             () => {
                 fetchBookByApiId(apiId);
             }, [apiId]);
-
-    const toggleDetails = () => {
-        setShowDetails(!showDetails);
-    };
 
     useEffect
         (
@@ -178,37 +170,9 @@ function BookView() {
     }
     return (
         <div className="page bookViewArea">
-            <div className="First Column">
-                {book && <BookInfo book={book} />}
 
-                <Link to="/review/create">
-                    <button className="add-review-button">Add a Review</button>
-                </Link>
-            </div>
+            {book && <BookInfo book={book} />}
 
-            <div className="Second Column">
-                <button onClick={toggleDetails}>
-                    {showDetails ? "Hide Details" : "View Details"}
-                </button>
-
-                {showDetails ?
-                    <div>
-                        <div>Published in {book.publishedDate}</div>
-                        <div>Published by {book.publisher}</div>
-                        <div>Language: {book.language}</div>
-                        <div>Pages: {book.pageCount}</div>
-                        <div>
-                            ISBNs:
-                            <div>
-                                {book.ISBNs.map((isbn, index) => (
-                                    <div> {index}
-                                        {isbn.identifier} ({isbn.type})
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div> : <></>
-                }
                 {
                     loggedAccount?.id !== undefined ?
                         <div className="manageBox" style={{ padding: "20px" }}>
@@ -250,7 +214,7 @@ function BookView() {
                         </div> :
                         <></>
                 }
-            </div>
+            
         </div>
     );
 }
