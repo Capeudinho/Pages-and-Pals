@@ -11,6 +11,7 @@ import confirmContext from "../context/confirm.js";
 import overlayContext from "../context/overlay.js";
 import clickContext from "../context/click.js";
 import scrollContext from "../context/scroll.js";
+import deletedReviewContext from "../context/deletedReview.js";
 
 import "./application.css";
 
@@ -22,6 +23,7 @@ function Application ()
     const [overlay, setOverlay] = useState(false);
     const [click, setClick] = useState(null);
     const [scroll, setScroll] = useState(null);
+    const [deletedReview, setDeletedReview] = useState(null);
     
     useEffect
     (
@@ -76,6 +78,7 @@ function Application ()
                 <overlayContext.Provider value = {{overlay, setOverlay}}>
                 <clickContext.Provider value = {{click, setClick}}>
                 <scrollContext.Provider value = {{scroll, setScroll}}>
+                <deletedReviewContext.Provider value = {{deletedReview, setDeletedReview}}>
                     {
                         loggedAccount?.id !== undefined || loggedAccount === null ?
                         <>
@@ -84,6 +87,7 @@ function Application ()
                         </> :
                         <></>
                     }
+                </deletedReviewContext.Provider>
                 </scrollContext.Provider>
                 </clickContext.Provider>
                 </overlayContext.Provider>
