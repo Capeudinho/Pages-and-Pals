@@ -8,6 +8,7 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
+    height: 112px;
     padding: 10px;
     border: solid 1px #e5e5e5;
     border-radius: 5px;
@@ -20,20 +21,22 @@
 
 .bookshelfCardArea .info
 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     flex: 1;
+    overflow: hidden;
 }
 
-.bookshelfCardArea .name
+.bookshelfCardArea .bookshelfName
 {
     font-size: 20.25px;
     line-height: 15px;
-    margin-bottom: 10px;
 }
 
 .bookshelfCardArea .description
 {
-    overflow: hidden;
-    height: 60px;
     margin-top: -5px;
+    margin-bottom: -5px;
     line-height: 20px;
 }

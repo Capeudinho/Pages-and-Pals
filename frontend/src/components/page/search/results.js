@@ -11,11 +11,11 @@ import loggedAccountContext from "../../context/loggedAccount.js";
 
 import "./results.css";
 
-function ResultsList() {
+function SearchResults() {
     const { overlay, setOverlay } = useContext(overlayContext);
     const { scroll, setScroll } = useContext(scrollContext);
-    const [searchResults, setSearchResults] = useState([]);
-    const { setLoggedAccount } = useContext(loggedAccountContext);
+    const [results, setResults] = useState([]);
+    const { loggedAccount, setLoggedAccount } = useContext(loggedAccountContext);
     const navigate = useNavigate();
     const { search } = useLocation();
     const moreResults = useRef(true);
@@ -36,22 +36,37 @@ function ResultsList() {
                 runEffect();
                 return (() => { mounted = false });
             },
-            [scroll, searchResults, search]
+            [scroll, results, search]
         );
 
 
     async function loadResults() {
         try {
             setOverlay(true);
-            var newSearch = search + "&maxResults=20&startIndex=" + searchResults.length;
-            const response = await api.get(
-                "/book/advancedsearch"+newSearch,
-            );
-
+            var newSearch = search + "&limit=20&offset=" + results.length;
+            var response;
+            if (loggedAccount?.id !== undefined)
+            {
+                response = await api.get
+                (
+                    "/book/findownbyadvanced"+newSearch,
+                    {
+                        headers:
+                        {
+                            email: loggedAccount?.email,
+                            password: loggedAccount?.password
+                        }
+                    }
+                );
+            }
+            else
+            {
+                response = await api.get("/book/findbyadvanced"+newSearch);
+            }
             if (response.data.length < 20) {
                 moreResults.current = false;
             }
-            setSearchResults([...searchResults, ...response?.data]);
+            setResults([...results, ...response?.data]);
             setOverlay(false);
         }
         catch (exception) {
@@ -63,24 +78,25 @@ function ResultsList() {
             navigate("/");
         }
     }
-    console.log('searchResults:', searchResults);
     return (
-        <div className="resultsArea">
+        <div className="searchResultsArea">
             {
-                searchResults?.map
+                results?.map
                     (
                         (searchResult, searchResultIndex) => {
                             return (
                                 searchResult?.title !== undefined ?
                                 <BookCard
-                                    key={searchResultIndex}
-                                    book={searchResult}
-                                    bookIndex={0}
-                                    remove={() => {}}
-                                    removeable={false}
+                                key={searchResultIndex}
+                                book={searchResult}
+                                bookIndex={null}
+                                remove={null}
+                                removeable={false}
+                                manageable={true}
                                 /> : 
                                 <BookshelfCard
                                 bookshelf={searchResult}
+                                linkable={true}
                                 key={searchResultIndex}
                             />
                             );
@@ -91,4 +107,4 @@ function ResultsList() {
         </div>
     );
 }
-export default ResultsList;
+export default SearchResults;

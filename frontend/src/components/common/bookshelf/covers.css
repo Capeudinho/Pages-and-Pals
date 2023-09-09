@@ -4,6 +4,7 @@
     flex-direction: row-reverse;
     border-radius: 5px;
     overflow: hidden;
+    height: 90px;
 }
 
 .bookshelfCoversArea .cover
@@ -14,7 +15,7 @@
     background-size: cover;
     background-position: center;
     background-color: #e5e5e5;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3)
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.33)
 }
 
 .bookshelfCoversArea .coverOne

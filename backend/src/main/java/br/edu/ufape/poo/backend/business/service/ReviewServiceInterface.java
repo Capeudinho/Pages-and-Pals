@@ -11,8 +11,7 @@ public interface ReviewServiceInterface {
 	public Review findById(long id) throws Exception;
 	public List<Review> findByOwnerIdPaginate(long id, int offset, int limit);
 	public List<Review> findByOwnerIdAndPublicPaginate(long id, int offset, int limit);
-	public List<Review> findByBookApiIdAndPublicOrOwnerIdPaginate(String bookApiId, long ownerId, int offset,
-			int limit);
+	public List<Review> findByBookApiIdAndPublicOrOwnerIdPaginate(String bookApiId, long ownerId, int offset, int limit);
 	public List<Review> findByBookApiIdAndPublicPaginate(String bookApiId, int offset, int limit);
 	public int countByOwnerId(long id);
 	public int countByBookApiId(String id);

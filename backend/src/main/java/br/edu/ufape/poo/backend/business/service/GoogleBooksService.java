@@ -58,10 +58,10 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		return cover;
 	}
 
-	public List<Object> advancedSearchResults(String term, String title, String author, String subject,
+	public List<Map<String, Object>> advancedSearchResults(String term, String title, String author, String subject,
 			String publisher, String isbn, int startIndex, int maxResults, String extractInfo) {
 		Map<String, Object> preview = new HashMap<>();
-		List<Object> previews = new ArrayList<Object>();
+		List<Map<String, Object>> previews = new ArrayList<>();
 		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, startIndex, maxResults);
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
@@ -124,6 +124,7 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 
 	private Map<String, Object> extractBookInformationUtility(JsonObject jsonObject, String extractAllData) {
 		Map<String, Object> bookInfo;
+		String apiId = "";
 		String title = "";
 		String cover = "";
 		String language = "";
@@ -141,6 +142,11 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		authors = new ArrayList<String>();
 		categories = new ArrayList<String>();
 		industryIdentifiers = new ArrayList<Map<String, Object>>();
+		if (jsonObject.get("id") != null)
+		{
+			apiId = jsonObject.get("id").getAsString();
+			bookInfo.put("apiId", apiId);
+		}
 		if (jsonObject.get("volumeInfo") != null) {
 			JsonObject volumeInfo = jsonObject.get("volumeInfo").getAsJsonObject();
 			if (volumeInfo.get("title") != null) {

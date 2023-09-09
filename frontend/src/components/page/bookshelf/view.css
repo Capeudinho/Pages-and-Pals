@@ -33,30 +33,6 @@
     color: #191919;
 }
 
-.bookshelfViewArea .ownerLink
-{
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: fit-content;
-    align-items: center;
-}
-
-.bookshelfViewArea .ownerPicture
-{
-    height: 30px;
-    width: 30px;
-    border-radius: 5px;
-    background-size: cover;
-    background-position: center;
-    background-color: #e5e5e5;
-}
-
-.bookshelfViewArea .ownerName
-{
-    color: #191919;
-}
-
 .bookshelfViewArea .books
 {
     display: flex;

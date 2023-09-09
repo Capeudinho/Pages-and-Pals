@@ -1,4 +1,4 @@
-.advancedArea
+.searchAdvancedArea
 {
     display: flex;
     flex-direction: column;
@@ -6,7 +6,7 @@
     padding: 20px;
 }
 
-.advancedArea input
+.searchAdvancedArea input
 {
     height: 30px;
     width: 100%;
@@ -17,18 +17,18 @@
     color: #191919;
 }
 
-.advancedArea .label
+.searchAdvancedArea .label
 {
     color: #7f7f7f;
 }
 
-.advancedArea .input[placeholder]:empty::before
+.searchAdvancedArea .input[placeholder]:empty::before
 {
     content: attr(placeholder);
     color: #7f7f7f; 
 }
 
-.advancedArea .button
+.searchAdvancedArea .button
 {
     padding: 10px;
     border-radius: 5px;

@@ -1,55 +1,23 @@
-.bookViewArea .selects {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: absolute;
-  z-index: 1;
-  padding: 10px;
-  border: solid 1px #cccccc;
-  border-radius: 5px;
+.bookViewArea button
+{
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #cccccc;
+    font-weight: bold;
+    color: #333333;
 }
 
-.bookViewArea .bookshelfName {
-  flex: 1;
-}
-
-.bookViewArea .select {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-}
-
-.bookViewArea button {
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #cccccc;
-  font-weight: bold;
-  color: #333333;
-}
-
-.bookViewArea .manageButton {
-  position: relative;
-  height: 30px;
-  align-self: flex-start;
-}
-
-.bookViewArea .selectButton {
-  width: 30px;
-}
-
-.bookDetails {
+.bookViewArea .bookDetails {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.bookViewArea{
+.bookViewArea {
   display: flex;
   flex-direction: row;
 }
-
 
 .bookViewArea .FirstColumn {
   display: flex;
@@ -63,41 +31,14 @@
   gap: 10px;
 }
 
-/*
-
-.bookViewArea {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-  }
-  
-  .page {
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .manageButton {
-    align-self: flex-start;
-    background-color: #3498db;
-    color: #fff;
-  }
-  
-  .add-review-button {
-    background-color: #27ae60;
-    color: #fff;
-  }
-  
-  /* Rest of your CSS remains the same */
-
-.bookDetails {
+.bookViewArea .bookDetails {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.bookDetails button {
+.bookViewArea .bookDetails button {
   margin-top: 20px;
   background-color: #3498db;
   color: #fff;

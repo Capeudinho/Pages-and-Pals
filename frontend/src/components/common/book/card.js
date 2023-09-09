@@ -1,14 +1,16 @@
 import React from "react";
 import {Link} from "react-router-dom";
 
+import BookshelfManage from "../bookshelf/manage";
+
 import "./card.css";
 
-function BookCard({book, bookIndex, remove, removeable})
+function BookCard({book, bookIndex, remove, removeable, manageable})
 {
     return (
         <div className = "bookCardArea">
             <Link to = {"/book/view/"+book?.apiId}>
-                <div className = {"book "+(removeable? "spaced" : "")}>
+                <div className = {"book"+(removeable? " spacedRemove" : "")+(manageable? " spacedManage" : "")}>
                     <div
                     className = "cover"
                     style = {{backgroundImage: "url("+book?.cover+")"}}
@@ -65,7 +67,7 @@ function BookCard({book, bookIndex, remove, removeable})
                         }
                         {
                             book?.score !== null ?
-                            <div className = "score">{book?.score}</div> :
+                            <div className = "score">{book?.score} ★</div> :
                             <></>
                         }
                     </div>
@@ -79,6 +81,11 @@ function BookCard({book, bookIndex, remove, removeable})
                 >
                     X
                 </button> :
+                <></>
+            }
+            {
+                manageable ?
+                <BookshelfManage book = {book}/> :
                 <></>
             }
         </div>

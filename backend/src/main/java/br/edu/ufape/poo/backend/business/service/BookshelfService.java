@@ -114,11 +114,20 @@ public class BookshelfService implements BookshelfServiceInterface {
 		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerIdOrderByCreationDateDesc(id, pageable);
 		return bookshelves;
 	}
-
-	public List<Object> findByOwnerNameAndBookshelfName(String ownerName, String bookshelfName, int offset, int limit) {
+	
+	public List<Bookshelf> findByPublicOrOwnerIdAndOwnerNameAndBookshelfName(String ownerName, String bookshelfName,
+			long ownerId, int offset, int limit) {
 		Pageable pageable = new OffsetPageRequest(offset, limit);
-		List<Object> bookshelves = bookshelfRepository.findByOwnerNameAndBookshelfName(ownerName, bookshelfName,
-				pageable);
+		List<Bookshelf> bookshelves = bookshelfRepository.findByPublicOrOwnerIdAndOwnerNameAndBookshelfName(ownerName,
+				bookshelfName, ownerId, pageable);
+		return bookshelves;
+	}
+
+	public List<Bookshelf> findByPublicAndOwnerNameAndBookshelfName(String ownerName, String bookshelfName, int offset,
+			int limit) {
+		Pageable pageable = new OffsetPageRequest(offset, limit);
+		List<Bookshelf> bookshelves = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(ownerName,
+				bookshelfName, pageable);
 		return bookshelves;
 	}
 

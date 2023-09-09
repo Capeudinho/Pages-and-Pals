@@ -261,32 +261,26 @@ public class Facade {
 
 	// BOOK
 
-	public Map<String, Object> findBookByApiId(String apiId, String extractInfo) throws Exception {
+	public Map<String, Object> bookFindByApiId(String apiId, String extractInfo) throws Exception {
 		return googleBooksService.findByApiId(apiId, extractInfo);
-
 	}
 
-	public List<Object> advancedSearch(String term, String title, String author, String subject, String publisher,
-			String isbn, int offset, int limit, String ownerName, String bookshelfName, String resultType) {
-		List<Object> results = new ArrayList<>();
-		List<Object> bookResults = new ArrayList<>();
-		List<Object> bookshelfResults = new ArrayList<>();
-		if (offset < 0) {
-			offset = 0;
-		}
-		if (limit < 1) {
-			limit = 1;
-		}
-		if ("all".equals(resultType) || "book".equals(resultType)) {
-			bookResults = googleBooksService.advancedSearchResults(term, title, author, subject, publisher, isbn,
-					offset, limit, "incomplete");
-			results.addAll(bookResults);
-		}
-		if ("all".equals(resultType) || "bookshelf".equals(resultType)) {
-			bookshelfResults = bookshelfService.findByOwnerNameAndBookshelfName(ownerName, bookshelfName, offset,
-					limit);
-			results.addAll(bookshelfResults);
-		}
+	public List<Map<String, Object>> bookFindOwnByAdvanced(String term, String title, String author, String subject,
+			String publisher, String isbn, int offset, int limit, String ownerName, String bookshelfName,
+			String resultType, String email, String password) throws Exception {
+		Account requestingAccount = accountService.authenticate(email, password);
+		List<Map<String, Object>> results = new ArrayList<>();
+		results = bookFindByAdvancedUtility(term, title, author, subject, publisher, isbn, offset, limit, ownerName,
+				bookshelfName, resultType, requestingAccount);
+		return results;
+	}
+
+	public List<Map<String, Object>> bookFindByAdvanced(String term, String title, String author, String subject,
+			String publisher, String isbn, int offset, int limit, String ownerName, String bookshelfName,
+			String resultType) throws Exception {
+		List<Map<String, Object>> results = new ArrayList<>();
+		results = bookFindByAdvancedUtility(term, title, author, subject, publisher, isbn, offset, limit, ownerName,
+				bookshelfName, resultType, null);
 		return results;
 	}
 
@@ -463,29 +457,7 @@ public class Facade {
 			limit = 1;
 		}
 		List<Bookshelf> bookshelves = bookshelfService.findByOwnerIdPaginate(account.getId(), offset, limit);
-		List<Map<String, Object>> bookshelfCards = new ArrayList<Map<String, Object>>();
-		for (int bookshelfIndex = 0; bookshelfIndex < bookshelves.size(); bookshelfIndex++) {
-			Bookshelf bookshelf = bookshelves.get(bookshelfIndex);
-			Map<String, Object> bookshelfCard = new HashMap<>();
-			bookshelfCard.put("id", bookshelf.getId());
-			bookshelfCard.put("name", bookshelf.getName());
-			bookshelfCard.put("privacy", bookshelf.isPrivacy());
-			bookshelfCard.put("owner", bookshelf.getOwner());
-			if (bookshelf.isPrivacy() || complete) {
-				List<String> covers = new ArrayList<String>();
-				for (int coverIndex = 0; coverIndex < bookshelf.getBookApiIds().size()
-						&& coverIndex < 3; coverIndex++) {
-					String bookApiId = bookshelf.getBookApiIds().get(coverIndex);
-					String cover = googleBooksService.findCoverByApiId(bookApiId);
-					covers.add(cover);
-				}
-				bookshelfCard.put("description", bookshelf.getDescription());
-				bookshelfCard.put("bookApiIds", bookshelf.getBookApiIds());
-				bookshelfCard.put("creationDate", bookshelf.getCreationDate());
-				bookshelfCard.put("covers", covers);
-			}
-			bookshelfCards.add(bookshelfCard);
-		}
+		List<Map<String, Object>> bookshelfCards = bookshelfExtractCards(bookshelves, account);
 		return bookshelfCards;
 	}
 
@@ -540,6 +512,74 @@ public class Facade {
 			}
 		}
 		return bookshelfSelects;
+	}
+
+	private List<Map<String, Object>> bookshelfExtractCards(List<Bookshelf> bookshelves, Account account) {
+		List<Map<String, Object>> bookshelfCards = new ArrayList<Map<String, Object>>();
+		for (int bookshelfIndex = 0; bookshelfIndex < bookshelves.size(); bookshelfIndex++) {
+			Bookshelf bookshelf = bookshelves.get(bookshelfIndex);
+			Map<String, Object> bookshelfCard = new HashMap<>();
+			bookshelfCard.put("id", bookshelf.getId());
+			bookshelfCard.put("name", bookshelf.getName());
+			bookshelfCard.put("privacy", bookshelf.isPrivacy());
+			bookshelfCard.put("owner", bookshelf.getOwner());
+			if (bookshelf.isPrivacy() || (account != null && bookshelf.getOwner().getId() == account.getId())) {
+				List<String> covers = new ArrayList<String>();
+				for (int coverIndex = 0; coverIndex < bookshelf.getBookApiIds().size()
+						&& coverIndex < 3; coverIndex++) {
+					String bookApiId = bookshelf.getBookApiIds().get(coverIndex);
+					String cover = googleBooksService.findCoverByApiId(bookApiId);
+					covers.add(cover);
+				}
+				bookshelfCard.put("description", bookshelf.getDescription());
+				bookshelfCard.put("bookApiIds", bookshelf.getBookApiIds());
+				bookshelfCard.put("creationDate", bookshelf.getCreationDate());
+				bookshelfCard.put("covers", covers);
+			}
+			bookshelfCards.add(bookshelfCard);
+		}
+		return bookshelfCards;
+	}
+
+	private List<Map<String, Object>> bookFindByAdvancedUtility(String term, String title, String author, String subject,
+			String publisher, String isbn, int offset, int limit, String ownerName, String bookshelfName,
+			String resultType, Account account) throws Exception {
+		List<Map<String, Object>> results = new ArrayList<>();
+		List<Map<String, Object>> bookResults = new ArrayList<>();
+		List<Map<String, Object>> bookshelfCards = new ArrayList<>();
+		List<Bookshelf> bookshelfResults = new ArrayList<>();
+		if (offset < 0) {
+			offset = 0;
+		}
+		if (limit < 1) {
+			limit = 1;
+		}
+		if ("all".equals(resultType) || "book".equals(resultType)) {
+			bookResults = googleBooksService.advancedSearchResults(term, title, author, subject, publisher, isbn,
+					offset, limit, "incomplete");
+			for (int index = 0; index < bookResults.size(); index++) {
+				Double score = bookService.findScoreByApiId((String) bookResults.get(index).get("apiId"));
+				if (score != null) {
+					score = ((double) Math.round(score * 10d)) / 10d;
+					bookResults.get(index).put("score", score);
+				} else {
+					bookResults.get(index).put("score", null);
+				}
+			}
+			results.addAll(bookResults);
+		}
+		if ("all".equals(resultType) || "bookshelf".equals(resultType)) {
+			if (account == null) {
+				bookshelfResults = bookshelfService.findByPublicAndOwnerNameAndBookshelfName(ownerName, bookshelfName,
+						offset, limit);
+			} else {
+				bookshelfResults = bookshelfService.findByPublicOrOwnerIdAndOwnerNameAndBookshelfName(ownerName,
+						bookshelfName, account.getId(), offset, limit);
+			}
+			bookshelfCards = bookshelfExtractCards(bookshelfResults, account);
+			results.addAll(bookshelfCards);
+		}
+		return results;
 	}
 
 	// Função de utilidade para buscar por reviews sem capa, pelo Id do livro
