@@ -35,7 +35,7 @@ function SearchBar() {
     const handleSearch = async () => {
         var newSearch = "?";
         if (searchTerm !== "") {
-            newSearch = newSearch + "term=" + searchTerm + "&resultType=book";
+            newSearch = newSearch + "term=" + searchTerm + "&resulttype=book";
             navigate("/search/results" + newSearch);
         }
     }
@@ -53,41 +53,58 @@ function SearchBar() {
 
     return (
         <div className="searchBarArea">
-
-            <input type="text" placeholder="Search books"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                spellCheck={false}
-            />
-            <button onClick={handleSearch}>Search</button>
-
-            <div className="profileContainer"
-                onMouseEnter={() => setShowProfileOptions(true)}
-                onMouseLeave={() => setShowProfileOptions(false)}
-            >
-                <div
-                    className="ownerPicture"
-                    style={{ backgroundImage: `url(${loggedAccount?.picture})` }}
+            <div className="logoArea">
+            <Link
+                to={`/`}>
+                <img
+                    className="logo"
+                    src={process.env.PUBLIC_URL + "/large logo.svg"}
                 />
-                {showProfileOptions && (
-                    <div className="profileOptions">
-                        <Link
-                            className="advanced"
-                            to="/search/advanced"
-                        >
-                            Advanced Search
-                        </Link>
-
-                        <Link
-                            className="account"
-                            to={`/account/view/${loggedAccount?.id}`}>
-                            Your Profile
-                        </Link>
-
-                        <button className= "logOut" onClick={handleConfirmLogOut}>Log Out</button>
-                    </div>
-                )}
+                  </Link>
             </div>
+
+            <div className="inputGroup">
+                <input type="text" placeholder="Search books"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    spellCheck={false}
+                />
+                <button onClick={handleSearch}><img
+                    className="search"
+                    src={process.env.PUBLIC_URL + "/search-icon.svg"}
+                /></button>
+            </div>
+
+            <div className="rightArea">
+                <div className="profileContainer"
+                    onMouseEnter={() => setShowProfileOptions(true)}
+                    onMouseLeave={() => setShowProfileOptions(false)}
+                >
+                    <div
+                        className="ownerPicture"
+                        style={{ backgroundImage: `url(${loggedAccount?.picture})` }}
+                    />
+                    {showProfileOptions && (
+                        <div className="profileOptions">
+                            <Link
+                                className="advanced"
+                                to="/search/advanced"
+                            >
+                                Advanced Search
+                            </Link>
+
+                            <Link
+                                className="account"
+                                to={`/account/view/${loggedAccount?.id}`}>
+                                Your Profile
+                            </Link>
+
+                            <button className="logOut" onClick={handleConfirmLogOut}>Log Out</button>
+                        </div>
+                    )}
+                </div>
+            </div>
+
 
         </div>
     );

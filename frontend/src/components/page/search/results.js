@@ -19,6 +19,7 @@ function SearchResults() {
     const navigate = useNavigate();
     const { search } = useLocation();
     const moreResults = useRef(true);
+    const oldSearch = useRef("");
 
     useEffect
         (
@@ -27,10 +28,14 @@ function SearchResults() {
                 const runEffect = async () => {
                     if
                         (
-                        !overlay && moreResults.current &&
+                        !overlay && moreResults.current && 
                         scroll?.target?.scrollHeight - scroll?.target?.scrollTop <= scroll?.target?.offsetHeight + 100
-                    ) {
-                        await loadResults();
+                    ) 
+                    {
+                        await loadResults(false);
+                    }
+                    else if(oldSearch.current !== search){
+                        await loadResults(true);
                     }
                 }
                 runEffect();
@@ -40,10 +45,16 @@ function SearchResults() {
         );
 
 
-    async function loadResults() {
+    async function loadResults(overwrite) {
         try {
             setOverlay(true);
-            var newSearch = search + "&limit=20&offset=" + results.length;
+            var newSearch;
+            if(overwrite){
+                newSearch = search + "&limit=20&offset=0";
+            }else{
+                newSearch = search + "&limit=20&offset=" + results.length;
+            }
+           
             var response;
             if (loggedAccount?.id !== undefined)
             {
@@ -66,7 +77,12 @@ function SearchResults() {
             if (response.data.length < 20) {
                 moreResults.current = false;
             }
-            setResults([...results, ...response?.data]);
+            if(overwrite){
+                setResults(response?.data);
+            }else{
+                setResults([...results, ...response?.data]);
+            }
+            oldSearch.current = search;
             setOverlay(false);
         }
         catch (exception) {

@@ -262,7 +262,15 @@ public class Facade {
 	// BOOK
 
 	public Map<String, Object> bookFindByApiId(String apiId, String extractInfo) throws Exception {
-		return googleBooksService.findByApiId(apiId, extractInfo);
+		Map<String, Object> result = googleBooksService.findByApiId(apiId, extractInfo);
+		Double score = bookService.findScoreByApiId((String) result.get("apiId"));
+		if (score != null) {
+			score = ((double) Math.round(score * 10d)) / 10d;
+			result.put("score", score);
+		} else {
+			result.put("score", null);
+		}
+		return result;
 	}
 
 	public List<Map<String, Object>> bookFindOwnByAdvanced(String term, String title, String author, String subject,

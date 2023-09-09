@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useRef} from "react";
-import {Routes, Route, Link} from "react-router-dom";
+import React, { useContext, useEffect, useRef } from "react";
+import { Routes, Route, Link } from "react-router-dom";
 
 import scrollContext from "../context/scroll.js";
 
@@ -18,82 +18,85 @@ import SearchResults from "../page/search/results.js";
 import "./routing.css";
 
 
-function Routing()
-{
-    const {scroll, setScroll} = useContext(scrollContext);
+function Routing() {
+    const { scroll, setScroll } = useContext(scrollContext);
     const background = useRef();
 
     useEffect
-    (
-        () =>
-        {
-            setScroll({target: background?.current});
-        },
-        []
-    );
+        (
+            () => {
+                setScroll({ target: background?.current });
+            },
+            []
+        );
 
-    function handleChangeScroll(event)
-    {
+    function handleChangeScroll(event) {
         setScroll(event);
     }
 
     return (
-        <div className = "routingArea">
+        <div className="routingArea">
             <Routes>
                 <Route
-                exact
-                path = "/"
-                element =
-                {
-                    <div>
-                        <SearchBar/>
-                        <Link to = "/account/enter">Enter </Link>
-                        <Link to = "/account/view/156">Account 1 </Link>
-                        <Link to = "/book/view/yjUQCwAAQBAJ"> Book Page </Link>
-                    </div>
-                }
-                />
-                <Route
-                exact
-                path = "/account/enter"
-                element =
-                {
-                    <div className = "total">
-                        <div className = "background enterBackground">
-                            <div className = "main">
-                                <AccountEnter/>
+                    exact
+                    path="/"
+                    element=
+                    {
+                        <div className="total">
+                            <SearchBar />
+                            <div
+                                className="background normalBackground"
+                            >
+                                <div className="main">
+                                    <div className="firstPage">
+                                        Welcome to Pages & Pals!
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        </div>
-                }
+                    }
                 />
                 <Route
-                path = "/*"
-                element =
-                {
-                    <div className = "total">
-                        <SearchBar/>
-                        <div
-                        className = "background normalBackground"
-                        ref = {background}
-                        onScroll = {(event) => {handleChangeScroll(event)}}
-                        >
-                            <div className = "main">
-                                <Routes>
-                                    <Route exact path = "/account/view/:id" element = {<AccountView/>}/>
-                                    <Route exact path = "/account/edit" element = {<AccountEdit/>}/>
-                                    <Route exact path = "/bookshelf/from/:ownerId/view/:id" element = {<BookshelfView/>}/>
-                                    <Route exact path = "/bookshelf/create" element = {<BookshelfCreate/>}/>
-                                    <Route exact path = "/bookshelf/edit/:id" element = {<BookshelfEdit/>}/>
-                                    <Route exact path = "/book/view/:apiId" element = {<BookView/>}/>
-                                    <Route exact path = "/review/create" element = {<ReviewCreate/>}/>
-                                    <Route exact path = "/search/advanced" element = {<SearchAdvanced/>}/>
-                                    <Route exact path = "/search/results" element = {<SearchResults/>}/>
-                                </Routes>
+                    exact
+                    path="/account/enter"
+                    element=
+                    {
+                        <div className="total">
+                            <div className="background enterBackground">
+                                <div className="main">
+                                    <AccountEnter />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
+                />
+                <Route
+                    path="/*"
+                    element=
+                    {
+                        <div className="total">
+                            <SearchBar />
+                            <div
+                                className="background normalBackground"
+                                ref={background}
+                                onScroll={(event) => { handleChangeScroll(event) }}
+                            >
+                                <div className="main">
+                                    <Routes>
+                                        <Route exact path="/account/view/:id" element={<AccountView />} />
+                                        <Route exact path="/account/edit" element={<AccountEdit />} />
+                                        <Route exact path="/bookshelf/from/:ownerId/view/:id" element={<BookshelfView />} />
+                                        <Route exact path="/bookshelf/create" element={<BookshelfCreate />} />
+                                        <Route exact path="/bookshelf/edit/:id" element={<BookshelfEdit />} />
+                                        <Route exact path="/book/view/:apiId" element={<BookView />} />
+                                        <Route exact path="/review/create" element={<ReviewCreate />} />
+                                        <Route exact path="/search/advanced" element={<SearchAdvanced />} />
+                                        <Route exact path="/search/results" element={<SearchResults />} />
+                                    </Routes>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 />
             </Routes>
         </div>

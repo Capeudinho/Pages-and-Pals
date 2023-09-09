@@ -36,3 +36,12 @@
     border-right: solid 1px #cccccc;
     background-color: #ffffff;
 }
+
+.routingArea .main .firstPage{
+    padding: 30px;
+    font-size: 40px;
+    font-family: 'Times New Roman', Times, serif;
+    width: fit-content;
+    align-self: center;
+    color: #666666;
+}

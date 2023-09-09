@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
+import ButtonMode from "../../common/button/mode.js";
+
 import "./advanced.css";
 
 function SearchAdvanced() {
@@ -52,14 +54,13 @@ function SearchAdvanced() {
 
     return (
         <div className="searchAdvancedArea">
-            <select
-                value={searchParams.resultType}
-                onChange={(e) => setSearchParams({ ...searchParams, resultType: e.target.value })}
-            >
-                <option value="book">Book</option>
-                <option value="bookshelf">Bookshelf</option>
-                <option value="all">All</option>
-            </select>
+
+            <ButtonMode
+                modes={[{ text: "Book", type: "book" }, { text: "Bookshelf", type: "bookshelf" }, { text: "All", type: "all" }]}
+                currentMode={searchParams.resultType}
+                setMode={(newMode) => setSearchParams({ ...searchParams, resultType: newMode })}
+                appearance={"switch"}
+            />
 
             {searchParams.resultType === "book" || searchParams.resultType === "all" ?
                 <>
