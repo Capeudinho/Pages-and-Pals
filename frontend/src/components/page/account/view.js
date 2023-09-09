@@ -21,7 +21,7 @@ function AccountView()
     const {confirm, setConfirm} = useContext(confirmContext);
     const {overlay, setOverlay} = useContext(overlayContext);
     const {scroll, setScroll} = useContext(scrollContext);
-    const [account, setAccount] = useState (null);
+    const [account, setAccount] = useState(null);
     const [bookshelves, setBookshelves] = useState(null);
     const [mode, setMode] = useState("bookshelves");
     const navigate = useNavigate();

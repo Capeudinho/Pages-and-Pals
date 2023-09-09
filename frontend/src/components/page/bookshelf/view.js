@@ -196,7 +196,7 @@ function BookshelfView()
                     localStorage.clear();
                     setLoggedAccount(null);
                 }
-                navigate("/");
+                //navigate("/");
             }
         }
     }

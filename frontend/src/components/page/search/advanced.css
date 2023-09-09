@@ -1,0 +1,39 @@
+.bookSearchArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+}
+
+.bookSearchArea input
+{
+    height: 30px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    color: #191919;
+}
+
+.bookSearchArea .label
+{
+    color: #7f7f7f;
+}
+
+.bookSearchArea .input[placeholder]:empty::before
+{
+    content: attr(placeholder);
+    color: #7f7f7f; 
+}
+
+.bookSearchArea .button
+{
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    height: 30px;
+    font-weight: bold;
+    color: #191919;
+}

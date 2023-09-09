@@ -1,0 +1,43 @@
+.reviewCreateArea
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+}
+
+.reviewCreateArea input
+{
+    height: 30px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    color: #191919;
+}
+
+.reviewCreateArea .label
+{
+    color: #7f7f7f;
+}
+
+.reviewCreateArea .bodyInput
+{
+    flex: 1;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    color: #191919;
+    line-height: 20px;
+    cursor: text;
+}
+
+.reviewCreateArea .bodyInput[placeholder]:empty::before
+{
+    content: attr(placeholder);
+    color: #7f7f7f; 
+}

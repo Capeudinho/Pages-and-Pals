@@ -21,16 +21,16 @@ public class BookController {
 	@Autowired
 	private Facade facade;
 
-	@GetMapping("findBookbyApiId/{apiId}")
+	@GetMapping("findbookbyapiid/{apiId}")
 	public ResponseEntity<Object> findBookByApiId(@PathVariable String apiId) {
 		try {
-			return new ResponseEntity<Object>(facade.findBookByApiId(apiId,"incomplete"), HttpStatus.OK);
+			return new ResponseEntity<Object>(facade.findBookByApiId(apiId,"complete"), HttpStatus.OK);
 		} catch (Exception exception) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception);
 		}
 	}
 
-	@GetMapping("/advancedSearch")
+	@GetMapping("/advancedsearch")
 	public ResponseEntity<?> findBooksAdvancedSearch(
 			@RequestParam(required = false, name = "term") String term,
 			@RequestParam(required = false, name = "title") String title,

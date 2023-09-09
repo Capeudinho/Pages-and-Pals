@@ -11,6 +11,8 @@ import BookshelfCreate from "../page/bookshelf/create.js";
 import BookshelfEdit from "../page/bookshelf/edit.js";
 import BookView from "../page/book/view.js";
 import SearchBar from "../common/header/searchBar.js";
+import ReviewCreate from "../page/review/create.js";
+import AdvancedSearch from "../page/search/advanced.js";
 
 import "./routing.css";
 
@@ -44,7 +46,7 @@ function Routing()
                     <div>
                         <Link to = "/account/enter">Enter </Link>
                         <Link to = "/account/view/156">Account 1 </Link>
-                        <Link to = "/account/view/2">Account 2 </Link>
+                        <Link to = "/book/view/yjUQCwAAQBAJ"> Book Page </Link>
                     </div>
                 }
                 />
@@ -81,6 +83,8 @@ function Routing()
                                     <Route exact path = "/bookshelf/create" element = {<BookshelfCreate/>}/>
                                     <Route exact path = "/bookshelf/edit/:id" element = {<BookshelfEdit/>}/>
                                     <Route exact path = "/book/view/:apiId" element = {<BookView/>}/>
+                                    <Route exact path = "/review/create" element = {<ReviewCreate/>}/>
+                                    <Route exact path = "/search/advanced" element = {<AdvancedSearch/>}/>
                                 </Routes>
                             </div>
                         </div>

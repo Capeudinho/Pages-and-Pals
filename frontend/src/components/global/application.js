@@ -4,6 +4,7 @@ import Routing from "./routing.js";
 import api from "../../services/api.js";
 
 import AlertList from "../common/alert/list.js";
+import AdvancedSearch from "../page/search/advanced.js";
 
 import loggedAccountContext from "../context/loggedAccount.js";
 import alertContext from "../context/alert.js";
@@ -11,6 +12,8 @@ import confirmContext from "../context/confirm.js";
 import overlayContext from "../context/overlay.js";
 import clickContext from "../context/click.js";
 import scrollContext from "../context/scroll.js";
+import searchContext from "../context/search.js";
+import ResultsList from "../page/search/list.js";
 
 import "./application.css";
 
@@ -22,6 +25,7 @@ function Application ()
     const [overlay, setOverlay] = useState(false);
     const [click, setClick] = useState(null);
     const [scroll, setScroll] = useState(null);
+    const [search, setSearch] = useState(null);
     
     useEffect
     (
@@ -75,8 +79,10 @@ function Application ()
                 <confirmContext.Provider value = {{confirm, setConfirm}}>
                 <overlayContext.Provider value = {{overlay, setOverlay}}>
                 <clickContext.Provider value = {{click, setClick}}>
+                <searchContext.Provider value = {{search, setSearch}}>
                 <scrollContext.Provider value = {{scroll, setScroll}}>
-                    {
+                
+                {
                         loggedAccount?.id !== undefined || loggedAccount === null ?
                         <>
                             <AlertList/>
@@ -85,6 +91,7 @@ function Application ()
                         <></>
                     }
                 </scrollContext.Provider>
+                </searchContext.Provider>
                 </clickContext.Provider>
                 </overlayContext.Provider>
                 </confirmContext.Provider>

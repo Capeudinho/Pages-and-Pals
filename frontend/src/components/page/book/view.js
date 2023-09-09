@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useContext, useRef} from "react";
-import {useParams, useNavigate} from "react-router-dom";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../../../services/api.js";
 
 import loggedAccountContext from "../../context/loggedAccount.js";
@@ -7,205 +7,250 @@ import alertContext from "../../context/alert.js";
 import confirmContext from "../../context/confirm.js";
 import overlayContext from "../../context/overlay.js";
 import clickContext from "../../context/click.js";
+import BookInfo from "../../common/book/info.js";
 
 import "./view.css";
 
-function BookView()
-{
-    const {loggedAccount, setLoggedAccount} = useContext(loggedAccountContext);
-    const {alert, setAlert} = useContext(alertContext);
-    const {confirm, setConfirm} = useContext(confirmContext);
-    const {overlay, setOverlay} = useContext(overlayContext);
-    const {click, setClick} = useContext(clickContext);
+function BookView() {
+    const { loggedAccount, setLoggedAccount } = useContext(loggedAccountContext);
+    const { alert, setAlert } = useContext(alertContext);
+    const { confirm, setConfirm } = useContext(confirmContext);
+    const { overlay, setOverlay } = useContext(overlayContext);
+    const { click, setClick } = useContext(clickContext);
+    const [showDetails, setShowDetails] = useState(false);
     const [book, setBook] = useState(null);
     const [bookshelves, setBookshelves] = useState(null);
     const [showBookshelves, setShowBookshelves] = useState(false);
     const navigate = useNavigate();
-    const {apiId} = useParams();
+    const { apiId } = useParams();
+    const { id } = useParams();
+    const cache = new Map();
+    const [isFetchingFromCache, setIsFetchingFromCache] = useState(false);
 
-    useEffect
-    (
-        () =>
-        {
-            let mounted = true;
-            const runEffect = async () =>
-            {
-                if (showBookshelves && click?.target?.closest(".clickSensitive") === null)
-                {
-                    setShowBookshelves(false);
-                }
-                else if (!showBookshelves && click?.target?.closest(".clickResponsive") !== undefined && click?.target?.closest(".clickResponsive") !== null)
-                {
-                    if (bookshelves?.length === undefined)
-                    {
-                        try
-                        {
-                            setOverlay(true);
-                            var response = await api.get
-                            (
-                                "/bookshelf/findownselectbyowneridandapiid/"+loggedAccount?.id+"/"+apiId,
-                                {
-                                    headers:
-                                    {
-                                        email: loggedAccount?.email,
-                                        password: loggedAccount?.password
-                                    }
-                                }
-                            );
-                            setOverlay(false);
-                            setBookshelves(response?.data);
-                        }
-                        catch (exception)
-                        {
-                            setOverlay(false);
-                            if (exception?.response?.data === "authentication failed")
-                            {
-                                localStorage.clear();
-                                setLoggedAccount(null);
-                            }
-                            navigate("/");
-                        }
-                    }
-                    setShowBookshelves(true);
-                }
+    async function fetchBookByApiId(apiId) {
+        console.log('Fetching book for apiId:', apiId);
+        try {
+            setOverlay(true);
+            var response = await api.get
+                (
+                    "book/findbookbyapiid/" + apiId
+                )
+
+            setOverlay(false);
+            setBook(response?.data);
+
+        } catch (exception) {
+            setOverlay(false);
+            if (exception?.response?.data === "authentication failed") {
+                localStorage.clear();
+                setLoggedAccount(null);
             }
-            runEffect();
-            return (() => {mounted = false});
-        },
-        [click]
-    );
-
-    useEffect
-    (
-        () =>
-        {
-            let mounted = true;
-            const runEffect = async () =>
-            {
-                if (confirm?.response === "remove")
-                {
-                    setConfirm(null);
-                    await handleToggleBookApiId(confirm?.index);
-                }
-            }
-            runEffect();
-        },
-        [confirm]
-    );
-
-    async function handleConfirmToggleBookApiId(index)
-    {
-        if (bookshelves?.[index]?.contains)
-        {
-            setConfirm([{identifier: "remove"+bookshelves?.[index]?.id, text: "Remove book from "+bookshelves?.[index]?.name+"?", options: [{type: {response: "remove", index: index}, text: "Remove"}, {type: "cancel", text: "Cancel"}]}]);
+            //navigate("/");
         }
-        else
-        {
+    }
+    useEffect
+        (
+            () => {
+                fetchBookByApiId(apiId);
+            }, [apiId]);
+
+    const toggleDetails = () => {
+        setShowDetails(!showDetails);
+    };
+
+    useEffect
+        (
+            () => {
+                let mounted = true;
+                const runEffect = async () => {
+                    if (showBookshelves && click?.target?.closest(".clickSensitive") === null) {
+                        setShowBookshelves(false);
+                    }
+                    else if (!showBookshelves && click?.target?.closest(".clickResponsive") !== undefined && click?.target?.closest(".clickResponsive") !== null) {
+                        if (bookshelves?.length === undefined) {
+                            try {
+                                setOverlay(true);
+                                var response = await api.get
+                                    (
+                                        "/bookshelf/findownselectbyowneridandapiid/" + loggedAccount?.id + "/" + apiId,
+                                        {
+                                            headers:
+                                            {
+                                                email: loggedAccount?.email,
+                                                password: loggedAccount?.password
+                                            }
+                                        }
+                                    );
+                                setOverlay(false);
+                                setBookshelves(response?.data);
+                            }
+                            catch (exception) {
+                                setOverlay(false);
+                                if (exception?.response?.data === "authentication failed") {
+                                    localStorage.clear();
+                                    setLoggedAccount(null);
+                                }
+                                navigate("/");
+                            }
+                        }
+                        setShowBookshelves(true);
+                    }
+                }
+                runEffect();
+                return (() => { mounted = false });
+            },
+            [click]
+        );
+
+    useEffect
+        (
+            () => {
+                let mounted = true;
+                const runEffect = async () => {
+                    if (confirm?.response === "remove") {
+                        setConfirm(null);
+                        await handleToggleBookApiId(confirm?.index);
+                    }
+                }
+                runEffect();
+            },
+            [confirm]
+        );
+
+    async function handleConfirmToggleBookApiId(index) {
+        if (bookshelves?.[index]?.contains) {
+            setConfirm([{ identifier: "remove" + bookshelves?.[index]?.id, text: "Remove book from " + bookshelves?.[index]?.name + "?", options: [{ type: { response: "remove", index: index }, text: "Remove" }, { type: "cancel", text: "Cancel" }] }]);
+        }
+        else {
             await handleToggleBookApiId(index);
         }
     }
 
-    async function handleToggleBookApiId(index)
-    {
+    async function handleToggleBookApiId(index) {
         var url;
         var text;
-        if (bookshelves?.[index]?.contains)
-        {
-            url = "/bookshelf/removebookapiidbyid/"+bookshelves?.[index]?.id;
-            text = book?.name+" removed from "+bookshelves?.[index]?.name+".";
+        if (bookshelves?.[index]?.contains) {
+            url = "/bookshelf/removebookapiidbyid/" + bookshelves?.[index]?.id;
+            text = book?.name + " removed from " + bookshelves?.[index]?.name + ".";
         }
-        else
-        {
-            url = "/bookshelf/addbookapiidbyid/"+bookshelves?.[index]?.id;
-            text = book?.name+" added to "+bookshelves?.[index]?.name+".";
+        else {
+            url = "/bookshelf/addbookapiidbyid/" + bookshelves?.[index]?.id;
+            text = book?.name + " added to " + bookshelves?.[index]?.name + ".";
         }
-        try
-        {
+        try {
             setOverlay(true);
             await api.patch
-            (
-                url,
-                {
-                    apiId: apiId
-                },
-                {
-                    headers:
+                (
+                    url,
                     {
-                        email: loggedAccount?.email,
-                        password: loggedAccount?.password
+                        apiId: apiId
+                    },
+                    {
+                        headers:
+                        {
+                            email: loggedAccount?.email,
+                            password: loggedAccount?.password
+                        }
                     }
-                }
-            );
+                );
             setOverlay(false);
             var newBookshelves = [...bookshelves];
             newBookshelves[index].contains = !newBookshelves?.[index]?.contains;
             setBookshelves(newBookshelves);
             setAlert
-            (
-                [
-                    {
-                        text: text,
-                        type: "success"
-                    }
-                ]
-            );
+                (
+                    [
+                        {
+                            text: text,
+                            type: "success"
+                        }
+                    ]
+                );
         }
-        catch (exception)
-        {
+        catch (exception) {
             setOverlay(false);
-            if (exception?.response?.data === "authentication failed")
-            {
+            if (exception?.response?.data === "authentication failed") {
                 localStorage.clear();
                 setLoggedAccount(null);
             }
             navigate("/");
         }
     }
-
     return (
-        <div className = "page bookViewArea">
-            {
-                loggedAccount?.id !== undefined ?
-                <div className = "manageBox" style = {{padding: "20px"}}>
-                    <button className = "manageButton clickResponsive">
-                        Manage in bookshelves
-                    </button>
-                    {
-                        showBookshelves ?
-                        <>
-                            <div className = "selects clickSensitive">
-                                {
-                                    bookshelves?.map !== undefined ?
-                                    bookshelves.map
-                                    (
-                                        (bookshelf, bookshelfIndex) =>
-                                        {
-                                            return (
-                                                <div
-                                                className = "select"
-                                                key = {bookshelfIndex}
-                                                >
-                                                    <button
-                                                    className = "selectButton"
-                                                    onClick = {() => {handleConfirmToggleBookApiId(bookshelfIndex)}}
-                                                    disabled = {overlay}
-                                                    >
-                                                        {bookshelf?.contains ? "R" : "A"}
-                                                    </button>
-                                                    <div className = "bookshelfName">{bookshelf?.name}</div>
-                                                </div>
-                                            );
-                                        }
-                                    ):
-                                    <></>
-                                }
+        <div className="page bookViewArea">
+            <div className="First Column">
+                {book && <BookInfo book={book} />}
+
+                <Link to="/review/create">
+                    <button className="add-review-button">Add a Review</button>
+                </Link>
+            </div>
+
+            <div className="Second Column">
+                <button onClick={toggleDetails}>
+                    {showDetails ? "Hide Details" : "View Details"}
+                </button>
+
+                {showDetails ?
+                    <div>
+                        <div>Published in {book.publishedDate}</div>
+                        <div>Published by {book.publisher}</div>
+                        <div>Language: {book.language}</div>
+                        <div>Pages: {book.pageCount}</div>
+                        <div>
+                            ISBNs:
+                            <div>
+                                {book.ISBNs.map((isbn, index) => (
+                                    <div> {index}
+                                        {isbn.identifier} ({isbn.type})
+                                    </div>
+                                ))}
                             </div>
-                        </> :
+                        </div>
+                    </div> : <></>
+                }
+                {
+                    loggedAccount?.id !== undefined ?
+                        <div className="manageBox" style={{ padding: "20px" }}>
+                            <button className="manageButton clickResponsive">
+                                Manage in bookshelves
+                            </button>
+                            {
+                                showBookshelves ?
+                                    <>
+                                        <div className="selects clickSensitive">
+                                            {
+                                                bookshelves?.map !== undefined ?
+                                                    bookshelves.map
+                                                        (
+                                                            (bookshelf, bookshelfIndex) => {
+                                                                return (
+                                                                    <div
+                                                                        className="select"
+                                                                        key={bookshelfIndex}
+                                                                    >
+                                                                        <button
+                                                                            className="selectButton"
+                                                                            onClick={() => { handleConfirmToggleBookApiId(bookshelfIndex) }}
+                                                                            disabled={overlay}
+                                                                        >
+                                                                            {bookshelf?.contains ? "R" : "A"}
+                                                                        </button>
+                                                                        <div className="bookshelfName">{bookshelf?.name}</div>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        ) :
+                                                    <></>
+                                            }
+                                        </div>
+                                    </> :
+                                    <></>
+                            }
+                        </div> :
                         <></>
-                    }
-                </div> :
-                <></>
-            }
+                }
+            </div>
         </div>
     );
 }
