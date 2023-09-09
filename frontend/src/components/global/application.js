@@ -12,8 +12,6 @@ import confirmContext from "../context/confirm.js";
 import overlayContext from "../context/overlay.js";
 import clickContext from "../context/click.js";
 import scrollContext from "../context/scroll.js";
-import searchContext from "../context/search.js";
-import ResultsList from "../page/search/list.js";
 import deletedReviewContext from "../context/deletedReview.js";
 
 import "./application.css";
@@ -81,7 +79,6 @@ function Application ()
                 <confirmContext.Provider value = {{confirm, setConfirm}}>
                 <overlayContext.Provider value = {{overlay, setOverlay}}>
                 <clickContext.Provider value = {{click, setClick}}>
-                <searchContext.Provider value = {{search, setSearch}}>
                 <scrollContext.Provider value = {{scroll, setScroll}}>
                 <deletedReviewContext.Provider value = {{deletedReview, setDeletedReview}}>
                     {
@@ -94,7 +91,6 @@ function Application ()
                     }
                 </deletedReviewContext.Provider>
                 </scrollContext.Provider>
-                </searchContext.Provider>
                 </clickContext.Provider>
                 </overlayContext.Provider>
                 </confirmContext.Provider>

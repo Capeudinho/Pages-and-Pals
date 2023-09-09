@@ -82,7 +82,7 @@ function ReviewCreate() {
                 );
             setOverlay(false);
             setAlert([{ type: "success", text: "Review created." }]);
-            navigate("/review/from/" + loggedAccount.id + "/view/" + response?.data?.id);
+            navigate("/book/view/");
         }
         catch (exception) {
             setOverlay(false);

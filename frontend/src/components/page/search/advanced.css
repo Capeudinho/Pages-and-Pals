@@ -1,4 +1,4 @@
-.bookSearchArea
+.advancedArea
 {
     display: flex;
     flex-direction: column;
@@ -6,7 +6,7 @@
     padding: 20px;
 }
 
-.bookSearchArea input
+.advancedArea input
 {
     height: 30px;
     width: 100%;
@@ -17,18 +17,18 @@
     color: #191919;
 }
 
-.bookSearchArea .label
+.advancedArea .label
 {
     color: #7f7f7f;
 }
 
-.bookSearchArea .input[placeholder]:empty::before
+.advancedArea .input[placeholder]:empty::before
 {
     content: attr(placeholder);
     color: #7f7f7f; 
 }
 
-.bookSearchArea .button
+.advancedArea .button
 {
     padding: 10px;
     border-radius: 5px;

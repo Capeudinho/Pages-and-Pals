@@ -13,7 +13,9 @@ function SearchBar() {
     const [showProfileOptions, setShowProfileOptions] = useState(false);
     const { setAlert } = useContext(alertContext);
     const { confirm, setConfirm } = useContext(confirmContext);
+    const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
+
 
     useEffect
         (
@@ -31,6 +33,14 @@ function SearchBar() {
             [confirm]
         );
 
+    const handleSearch = async () => {
+        var newSearch = "?";
+        if (searchTerm !== "") {
+            newSearch = newSearch + "term=" + searchTerm + "&resultType=book";
+            navigate("/search/results" + newSearch);
+        }
+    }
+
     function handleConfirmLogOut() {
         setConfirm([{ identifier: "logout", text: "Log out from account?", options: [{ type: "logout", text: "Log out" }, { type: "cancel", text: "Cancel" }] }]);
     }
@@ -45,8 +55,12 @@ function SearchBar() {
     return (
         <div className="searchBarArea">
 
-            <input type="text" placeholder="Search books" />
-            <button>Search</button>
+            <input type="text" placeholder="Search books"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                spellCheck={false}
+            />
+            <button onClick={handleSearch}>Search</button>
 
             <div className="profileContainer"
                 onMouseEnter={() => setShowProfileOptions(true)}
@@ -64,14 +78,14 @@ function SearchBar() {
                         >
                             Advanced Search
                         </Link>
-                        
+
                         <Link
                             className="account"
                             to={`/account/view/${loggedAccount?.id}`}>
                             Your Profile
                         </Link>
 
-                        <button onClick={handleConfirmLogOut}>Log Out</button>
+                        <button className= "logOut" onClick={handleConfirmLogOut}>Log Out</button>
                     </div>
                 )}
             </div>
