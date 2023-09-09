@@ -17,7 +17,6 @@ import br.edu.ufape.poo.backend.business.facade.Facade;
 @RestController
 @RequestMapping("pagesandpals/api/v1/book")
 public class BookController {
-
 	@Autowired
 	private Facade facade;
 
@@ -38,22 +37,19 @@ public class BookController {
 			@RequestParam(required = false, name = "subject") String subject,
 			@RequestParam(required = false, name = "publisher") String publisher,
 			@RequestParam(required = false, name = "isbn") String isbn,
-			@RequestParam(defaultValue = "1", name = "maxResults") Integer maxResults,
-			@RequestParam(defaultValue = "0", name = "startIndex") Integer startIndex,
+			@RequestParam(defaultValue = "0", name = "startIndex") int offset,
+			@RequestParam(defaultValue = "1", name = "maxResults") int limit,
 			@RequestParam(required = false, name = "ownerName") String ownerName,
 			@RequestParam(required = false, name = "bookshelfName") String bookshelfName,
-			@RequestParam(required = false, name = "resultType") String resultType
-			) {
+			@RequestParam(required = false, name = "resultType") String resultType) {
 		ResponseEntity<?> responseEntity;
 		try {
-			List<Object> resultsList = facade.advancedSearch(term, title, author, subject, publisher, isbn, maxResults, startIndex, ownerName, bookshelfName, resultType);
+			List<Object> resultsList = facade.advancedSearch(term, title, author, subject, publisher, isbn, offset,
+					limit, ownerName, bookshelfName, resultType);
 			responseEntity = new ResponseEntity<List<Object>>(resultsList, HttpStatus.OK);
 			return responseEntity;
 		} catch (Exception exception) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception);
-
 		}
-
 	}
-
 }

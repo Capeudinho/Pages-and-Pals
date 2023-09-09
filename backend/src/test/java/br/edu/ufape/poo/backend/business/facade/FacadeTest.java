@@ -33,6 +33,7 @@ public class FacadeTest {
 	private ReviewRepository reviewRepository;
 
 	// ACCOUNT
+	
 	@Test
 	void accountSignUpValid() throws Exception {
 		Account account = new Account();
@@ -88,6 +89,7 @@ public class FacadeTest {
 	}
 
 	// BOOKSHELF
+	
 	@Test
 	void bookshelfCreateValid() throws Exception {
 		Account account = new Account();
@@ -218,8 +220,7 @@ public class FacadeTest {
 		bookshelf.setBookApiIds(bookApiIds);
 		bookshelf.setOwner(account);
 		bookshelf = bookshelfRepository.save(bookshelf);
-		List<Map<String, Object>> books = facade.bookshelfFindOwnBooksByIdPaginate(bookshelf.getId(), 0, 10, "a@a.a",
-				"a");
+		List<Map<String, Object>> books = facade.bookshelfFindOwnBooksByIdPaginate(bookshelf.getId(), 0, 10, "a@a.a", "a");
 		assertEquals(books.size(), 1);
 	}
 
@@ -251,8 +252,7 @@ public class FacadeTest {
 		bookshelf.setBookApiIds(bookApiIds);
 		bookshelf.setOwner(account);
 		bookshelf = bookshelfRepository.save(bookshelf);
-		List<Map<String, Object>> selects = facade.bookshelfFindOwnSelectByOwnerId(account.getId(), "u8w_DwAAQBAJ",
-				"a@a.a", "a");
+		List<Map<String, Object>> selects = facade.bookshelfFindOwnSelectByOwnerId(account.getId(), "u8w_DwAAQBAJ", "a@a.a", "a");
 		assertEquals(selects.size(), 1);
 	}
 
@@ -284,30 +284,37 @@ public class FacadeTest {
 	@Test
 	void advancedSearchBook() throws Exception {
 		List<Object> results = new ArrayList<>();
-		results = facade.advancedSearch(null, null, "shakespeare", null, null, null, null, null, "Jane", null, "book");
+		results = facade.advancedSearch(null, null, "shakespeare", null, null, null, 0, 1, "Jane", null, "book");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	void advancedSearchBookshelf() throws Exception {
-		List<Object> results = facade.advancedSearch(null, null, null, null, null, null, null, null, "Jane","Favorites", "bookshelf");
+		Account account = new Account();
+		account.setName("Jane");
+		accountRepository.save(account);
+		Bookshelf bookshelf = new Bookshelf();
+		bookshelf.setName("Favorites");
+		bookshelf.setOwner(account);
+		bookshelfRepository.save(bookshelf);
+		List<Object> results = facade.advancedSearch(null, null, null, null, null, null, 0, 1, "Jane", "Favorites", "bookshelf");
 		assertFalse(results.isEmpty());
 		assertEquals(results.size(), 1);
 
 		for (int i = 0; i < results.size(); i++) {
 			Object result = results.get(i);
 			assertTrue(result instanceof Bookshelf);
-			Bookshelf bookshelf = (Bookshelf) result;
-			assertNotNull(bookshelf.getName());
-			assertNotNull(bookshelf.getOwner());
-			assertTrue(bookshelf.getOwner().getName().contains("Jane"));
-			assertEquals("Favorites", bookshelf.getName());
+			Bookshelf foundBookshelf = (Bookshelf) result;
+			assertNotNull(foundBookshelf.getName());
+			assertNotNull(foundBookshelf.getOwner());
+			assertTrue(foundBookshelf.getOwner().getName().contains("Jane"));
+			assertEquals("Favorites", foundBookshelf.getName());
 		}
 	}
 
 	@Test
 	void advancedSearchAll() throws Exception {
-		List<Object> results = facade.advancedSearch(null, "Hamlet", "Shakespeare", null, null, null, null, null,"Jane", "Favorites", "all");
+		List<Object> results = facade.advancedSearch(null, "Hamlet", "Shakespeare", null, null, null, 0, 1,"Jane", "Favorites", "all");
 		assertFalse(results.isEmpty());
 
 		for (int i = 0; i < results.size(); i++) {
@@ -341,6 +348,7 @@ public class FacadeTest {
 	}
 
 	// REVIEW
+	
 	@Test
 	void reviewCreateValid() throws Exception {
 		Account account = new Account();
@@ -391,8 +399,9 @@ public class FacadeTest {
 		Review review = new Review();
 		account.setPrivacy(true);
 		account = accountRepository.save(account);
-		review.setOwner(account);
 		review.setBookApiId("u8w_DwAAQBAJ");
+		review.setPrivacy(true);
+		review.setOwner(account);
 		review = reviewRepository.save(review);
 		List<Map<String, Object>> reviews = facade.reviewFindByOwnerIdPaginate(review.getOwner().getId(), 0, 10);
 		assertEquals(reviews.size(), 1);
@@ -408,8 +417,7 @@ public class FacadeTest {
 		review.setOwner(account);
 		review.setBookApiId("u8w_DwAAQBAJ");
 		review = reviewRepository.save(review);
-		List<Map<String, Object>> reviews = facade.reviewFindOwnByOwnerIdPaginate(review.getOwner().getId(), 0, 10,
-				"a@a.a", "a");
+		List<Map<String, Object>> reviews = facade.reviewFindOwnByOwnerIdPaginate(review.getOwner().getId(), 0, 10, "a@a.a", "a");
 		assertEquals(reviews.size(), 1);
 	}
 
@@ -419,8 +427,9 @@ public class FacadeTest {
 		Review review = new Review();
 		account.setPrivacy(true);
 		account = accountRepository.save(account);
-		review.setOwner(account);
 		review.setBookApiId("u8w_DwAAQBAJ");
+		review.setPrivacy(true);
+		review.setOwner(account);
 		review = reviewRepository.save(review);
 		List<Review> reviews = facade.reviewFindByBookApiIdPaginate(review.getBookApiId(), 0, 10);
 		assertEquals(reviews.size(), 1);
@@ -436,8 +445,7 @@ public class FacadeTest {
 		review.setOwner(account);
 		review.setBookApiId("u8w_DwAAQBAJ");
 		review = reviewRepository.save(review);
-		List<Review> reviews = facade.reviewFindByBookApiIdPaginateAutenticaded(review.getBookApiId(), 0, 10, "a@a.a",
-				"a");
+		List<Review> reviews = facade.reviewFindByBookApiIdPaginateAutenticaded(review.getBookApiId(), 0, 10, "a@a.a", "a");
 		assertEquals(reviews.size(), 1);
 	}
 

@@ -18,19 +18,19 @@
     background-color: #f2f2f2;
 }
 
-.bookshelfCardArea .bookshelfInfo
+.bookshelfCardArea .info
 {
     flex: 1;
 }
 
-.bookshelfCardArea .bookshelfName
+.bookshelfCardArea .name
 {
     font-size: 20.25px;
     line-height: 15px;
     margin-bottom: 10px;
 }
 
-.bookshelfCardArea .bookshelfDescription
+.bookshelfCardArea .description
 {
     overflow: hidden;
     height: 60px;

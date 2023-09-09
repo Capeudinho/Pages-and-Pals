@@ -29,178 +29,118 @@ import br.edu.ufape.poo.backend.exceptions.TakenEmailException;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("pagesandpals/api/v1/account")
-public class AccountController
-{
+public class AccountController {
 	@Autowired
 	private Facade facade;
-	
+
 	@PostMapping("signup")
-	public ResponseEntity<?> signUp(@RequestBody Account account) throws Exception
-	{
+	public ResponseEntity<?> signUp(@RequestBody Account account) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		try
-		{
-			Account newAccount = facade.accountSignUp(account);
-			responseEntity = new ResponseEntity<Object>(newAccount, HttpStatus.CREATED);
-		}
-		catch (InvalidNameException exception)
-		{
+		try {
+			Map<String, Object> newAccountProfile = facade.accountSignUp(account);
+			responseEntity = new ResponseEntity<Object>(newAccountProfile, HttpStatus.CREATED);
+		} catch (InvalidNameException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
-		}
-		catch (InvalidEmailException exception)
-		{
+		} catch (InvalidEmailException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid email");
-		}
-		catch (InvalidPasswordException exception)
-		{
+		} catch (InvalidPasswordException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid password");
-		}
-		catch ( TakenEmailException exception)
-		{
+		} catch (TakenEmailException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("email taken");
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		return responseEntity;
 	}
-	
+
 	@GetMapping("login/{email}/{password}")
-	public ResponseEntity<?> logIn(@PathVariable String email, @PathVariable String password) throws Exception
-	{
+	public ResponseEntity<?> logIn(@PathVariable String email, @PathVariable String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		try
-		{
-			Account account = facade.accountLogIn(email, password);
-			responseEntity = new ResponseEntity<Object>(account, HttpStatus.OK);
-		}
-		catch (IncorrectEmailException | IncorrectPasswordException exception)
-		{
+		try {
+			Map<String, Object> accountProfile = facade.accountLogIn(email, password);
+			responseEntity = new ResponseEntity<Object>(accountProfile, HttpStatus.OK);
+		} catch (IncorrectEmailException | IncorrectPasswordException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect information");
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		return responseEntity;
 	}
-	
+
 	@PatchMapping("update")
-	public ResponseEntity<?> update(@RequestBody Account account, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
-	{
+	public ResponseEntity<?> update(@RequestBody Account account, @RequestHeader("email") String email,
+			@RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		try
-		{
-			Account newAccount = facade.accountUpdate(account, email, password);
-			responseEntity = new ResponseEntity<Object>(newAccount, HttpStatus.OK);
-		}
-		catch (IncorrectIdException exception)
-		{
+		try {
+			Map<String, Object> newAccountProfile = facade.accountUpdate(account, email, password);
+			responseEntity = new ResponseEntity<Object>(newAccountProfile, HttpStatus.OK);
+		} catch (IncorrectIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
-		}
-		catch (TakenEmailException exception)
-		{
+		} catch (TakenEmailException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("taken email");
-		}
-		catch (InvalidNameException exception)
-		{
+		} catch (InvalidNameException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid name");
-		}
-		catch (InvalidEmailException exception)
-		{
+		} catch (InvalidEmailException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid email");
-		}
-		catch (InvalidPasswordException exception)
-		{
+		} catch (InvalidPasswordException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid password");
-		}
-		catch (AuthenticationFailedException exception)
-		{
+		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
-		}
-		catch (AccessDeniedException exception)
-		{
+		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		return responseEntity;
 	}
-	
+
 	@DeleteMapping("deletebyid/{id}")
-	public ResponseEntity<?> deleteById(@PathVariable Long id, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
-	{
+	public ResponseEntity<?> deleteById(@PathVariable long id, @RequestHeader("email") String email,
+			@RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		try
-		{
-			Account account = facade.accountDeleteById(id, email, password);
-			responseEntity = new ResponseEntity<Object>(account, HttpStatus.OK);
-		}
-		catch (IncorrectIdException exception)
-		{
+		try {
+			Map<String, Object> oldAccountProfile = facade.accountDeleteById(id, email, password);
+			responseEntity = new ResponseEntity<Object>(oldAccountProfile, HttpStatus.OK);
+		} catch (IncorrectIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
-		}
-		catch (AuthenticationFailedException exception)
-		{
+		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
-		}
-		catch (AccessDeniedException exception)
-		{
+		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		return responseEntity;
 	}
-	
+
 	@GetMapping("findownbyid/{id}")
-	public ResponseEntity<?> finOwndProfileById(@PathVariable Long id, @RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception
-	{
+	public ResponseEntity<?> finOwndProfileById(@PathVariable long id, @RequestHeader("email") String email,
+			@RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		try
-		{
+		try {
 			Map<String, Object> accountProfile = facade.accountFindOwnById(id, email, password);
 			responseEntity = new ResponseEntity<Object>(accountProfile, HttpStatus.OK);
-		}
-		catch (IncorrectIdException exception)
-		{
+		} catch (IncorrectIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
-		}
-		catch (AuthenticationFailedException exception)
-		{
+		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
-		}
-		catch (AccessDeniedException exception)
-		{
+		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		return responseEntity;
 	}
-	
+
 	@GetMapping("findbyid/{id}")
-	public ResponseEntity<?> findProfileById(@PathVariable Long id) throws Exception
-	{
+	public ResponseEntity<?> findProfileById(@PathVariable long id) throws Exception {
 		ResponseEntity<Object> responseEntity;
-		try
-		{
+		try {
 			Map<String, Object> accountProfile = facade.accountFindById(id);
 			responseEntity = new ResponseEntity<Object>(accountProfile, HttpStatus.OK);
-		}
-		catch (IncorrectIdException exception)
-		{
+		} catch (IncorrectIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
-		}
-		catch (Exception exception)
-		{
+		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		return responseEntity;

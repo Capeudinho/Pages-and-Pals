@@ -54,7 +54,7 @@ public class BookshelfService implements BookshelfServiceInterface {
 		return newBookshelf;
 	}
 
-	public Bookshelf addBookApiIdById(Long id, String bookApiId) throws Exception {
+	public Bookshelf addBookApiIdById(long id, String bookApiId) throws Exception {
 		Bookshelf bookshelf = bookshelfRepository.findById(id).orElse(null);
 		if (bookshelf == null) {
 			throw new IncorrectIdException();
@@ -68,7 +68,7 @@ public class BookshelfService implements BookshelfServiceInterface {
 		return newBookshelf;
 	}
 
-	public Bookshelf removeBookApiIdById(Long id, String bookApiId) throws Exception {
+	public Bookshelf removeBookApiIdById(long id, String bookApiId) throws Exception {
 		Bookshelf bookshelf = bookshelfRepository.findById(id).orElse(null);
 		if (bookshelf == null) {
 			throw new IncorrectIdException();
@@ -82,7 +82,7 @@ public class BookshelfService implements BookshelfServiceInterface {
 		return newBookshelf;
 	}
 
-	public Bookshelf deleteById(Long id) throws Exception {
+	public Bookshelf deleteById(long id) throws Exception {
 		Bookshelf bookshelf = bookshelfRepository.findById(id).orElse(null);
 		if (bookshelf == null) {
 			throw new IncorrectIdException();
@@ -90,15 +90,13 @@ public class BookshelfService implements BookshelfServiceInterface {
 		bookshelfRepository.delete(bookshelf);
 		return bookshelf;
 	}
-	
-	public List<Bookshelf> deleteByOwnerId(Long ownerId) throws Exception
-	{
+
+	public List<Bookshelf> deleteByOwnerId(long ownerId) throws Exception {
 		List<Bookshelf> bookshelves = bookshelfRepository.deleteByOwnerId(ownerId);
 		return bookshelves;
 	}
-	
-	public Bookshelf findById(Long id) throws Exception
-	{
+
+	public Bookshelf findById(long id) throws Exception {
 		Bookshelf bookshelf = bookshelfRepository.findById(id).orElse(null);
 		if (bookshelf == null) {
 			throw new IncorrectIdException();
@@ -106,32 +104,25 @@ public class BookshelfService implements BookshelfServiceInterface {
 		return bookshelf;
 	}
 
-	public List<Bookshelf> findByOwnerId(Long id) {
+	public List<Bookshelf> findByOwnerId(long id) {
 		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerIdOrderByCreationDateDesc(id);
 		return bookshelves;
 	}
 
-	public List<Bookshelf> findByOwnerIdPaginate(Long id, int offset, int limit) {
+	public List<Bookshelf> findByOwnerIdPaginate(long id, int offset, int limit) {
 		Pageable pageable = new OffsetPageRequest(offset, limit);
 		List<Bookshelf> bookshelves = bookshelfRepository.findByOwnerIdOrderByCreationDateDesc(id, pageable);
 		return bookshelves;
 	}
-	
-	public List<Object> findByOwnerAndBookshelfName(String ownerName, String bookshelfName, Integer offset, Integer limit)
-	{	
-		if (limit == null || limit < 1) {
-			limit = 1;
-		}
-		if (offset == null || offset < 0) {
-			offset = 0;
-		}
+
+	public List<Object> findByOwnerNameAndBookshelfName(String ownerName, String bookshelfName, int offset, int limit) {
 		Pageable pageable = new OffsetPageRequest(offset, limit);
-		List<Object> bookshelves = bookshelfRepository.findByOwnerAndBookshelfName(ownerName, bookshelfName, pageable);
+		List<Object> bookshelves = bookshelfRepository.findByOwnerNameAndBookshelfName(ownerName, bookshelfName,
+				pageable);
 		return bookshelves;
 	}
-	
-	public int countByOwnerId(Long id)
-	{
+
+	public int countByOwnerId(long id) {
 		int bookshelfCount = bookshelfRepository.countByOwnerId(id);
 		return bookshelfCount;
 	}

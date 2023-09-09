@@ -12,11 +12,11 @@ function BookshelfCard({bookshelf})
             <Link to = {"/bookshelf/from/"+bookshelf?.owner?.id+"/view/"+bookshelf?.id}>
                 <div className = "bookshelf">
                     <BookshelfCovers covers = {[bookshelf?.covers?.[0], bookshelf?.covers?.[1], bookshelf?.covers?.[2]]}/>
-                    <div className = "bookshelfInfo">
-                        <div className = "bookshelfName">
+                    <div className = "info">
+                        <div className = "name">
                             {bookshelf?.name}
                         </div>
-                        <div className = "bookshelfDescription">
+                        <div className = "description">
                             {bookshelf?.description}
                         </div>
                     </div>

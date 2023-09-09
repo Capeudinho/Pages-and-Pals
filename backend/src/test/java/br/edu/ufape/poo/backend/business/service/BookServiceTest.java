@@ -7,18 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import br.edu.ufape.poo.backend.business.entity.Book;
-import br.edu.ufape.poo.backend.business.entity.Review;
 import br.edu.ufape.poo.backend.data.BookRepository;
-import br.edu.ufape.poo.backend.data.ReviewRepository;
-import br.edu.ufape.poo.backend.exceptions.IncorrectIdBookException;
-import br.edu.ufape.poo.backend.exceptions.IncorrectIdReviewException;
-import br.edu.ufape.poo.backend.exceptions.InvalidBookScoreReviewException;
-import br.edu.ufape.poo.backend.exceptions.InvalidReviewCountBookException;
+import br.edu.ufape.poo.backend.exceptions.IncorrectBookIdException;
+import br.edu.ufape.poo.backend.exceptions.InvalidReviewCountException;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @Transactional
-class BookServiceTest {
+public class BookServiceTest {
 	
 	@Autowired
 	private BookService bookService;
@@ -64,7 +60,7 @@ class BookServiceTest {
 		bookRepository.save(b);
 		b.setReviewCount(-6);
 		
-		assertThrows(InvalidReviewCountBookException.class, () -> {
+		assertThrows(InvalidReviewCountException.class, () -> {
 			bookService.update(b);
         });
 	}
@@ -101,7 +97,7 @@ class BookServiceTest {
 			fail();	
 		}
 	
-	assertThrows(IncorrectIdBookException.class, () -> {
+	assertThrows(IncorrectBookIdException.class, () -> {
 		bookService.deleteByApiId(apiId);;
     });
 		

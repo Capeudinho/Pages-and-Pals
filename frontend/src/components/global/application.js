@@ -14,6 +14,7 @@ import clickContext from "../context/click.js";
 import scrollContext from "../context/scroll.js";
 import searchContext from "../context/search.js";
 import ResultsList from "../page/search/list.js";
+import deletedReviewContext from "../context/deletedReview.js";
 
 import "./application.css";
 
@@ -26,6 +27,7 @@ function Application ()
     const [click, setClick] = useState(null);
     const [scroll, setScroll] = useState(null);
     const [search, setSearch] = useState(null);
+    const [deletedReview, setDeletedReview] = useState(null);
     
     useEffect
     (
@@ -81,8 +83,8 @@ function Application ()
                 <clickContext.Provider value = {{click, setClick}}>
                 <searchContext.Provider value = {{search, setSearch}}>
                 <scrollContext.Provider value = {{scroll, setScroll}}>
-                
-                {
+                <deletedReviewContext.Provider value = {{deletedReview, setDeletedReview}}>
+                    {
                         loggedAccount?.id !== undefined || loggedAccount === null ?
                         <>
                             <AlertList/>
@@ -90,6 +92,7 @@ function Application ()
                         </> :
                         <></>
                     }
+                </deletedReviewContext.Provider>
                 </scrollContext.Provider>
                 </searchContext.Provider>
                 </clickContext.Provider>

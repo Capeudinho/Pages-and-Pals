@@ -3,38 +3,37 @@ package br.edu.ufape.poo.backend.business.service;
 import static org.junit.jupiter.api.Assertions.*;
 import br.edu.ufape.poo.backend.data.AccountRepository;
 import br.edu.ufape.poo.backend.data.ReviewRepository;
-import br.edu.ufape.poo.backend.exceptions.IncorrectIdReviewException;
-import br.edu.ufape.poo.backend.exceptions.InvalidBookScoreReviewException;
+import br.edu.ufape.poo.backend.exceptions.IncorrectIdException;
+import br.edu.ufape.poo.backend.exceptions.InvalidBookScoreException;
 import br.edu.ufape.poo.backend.exceptions.InvalidReviewException;
-import br.edu.ufape.poo.backend.exceptions.InvalidTextReviewException;
+import br.edu.ufape.poo.backend.exceptions.InvalidTextException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import br.edu.ufape.poo.backend.business.entity.Account;
 import br.edu.ufape.poo.backend.business.entity.Review;
 
 @SpringBootTest
 @Transactional
-class ReviewServiceTest {
+public class ReviewServiceTest {
 	
 	@Autowired
 	private ReviewService reviewService;
-	
 	@Autowired
 	private ReviewRepository reviewRepository;
-	
 	@Autowired
 	private AccountRepository accountRepository;
 	
 	@Test
 	void testCreate() {
-		Review r;
-		r = new Review();
+		Review r = new Review();
+		Account a = new Account();
+		a = accountRepository.save(a);
 		
 		r.setBookScore(4.0);
 		r.setText("aaaaaaaaaa");
+		r.setOwner(a);
 		
 		try {
 			r = reviewService.create(r);
@@ -46,11 +45,12 @@ class ReviewServiceTest {
 	
 	@Test
 	void testValidationReview() {
-		Review r;
-		r = new Review();
+		Review r = new Review();
+		Account a = new Account();
+		a = accountRepository.save(a);
 		r.setBookScore(null);
 		r.setText("");
-		
+		r.setOwner(a);
 		assertThrows(InvalidReviewException.class, () -> {
             reviewService.create(r);
         });
@@ -59,45 +59,53 @@ class ReviewServiceTest {
 
 	@Test
 	void testBookScoreLessThanZero() {
-		Review r;
-		r = new Review();
+		Review r = new Review();
+		Account a = new Account();
+		a = accountRepository.save(a);
 		r.setBookScore(-2.0);
+		r.setOwner(a);
 		
-		assertThrows(InvalidBookScoreReviewException.class, () -> {
+		assertThrows(InvalidBookScoreException.class, () -> {
             reviewService.create(r);
         });
 	}
 	
 	@Test
 	void testBookScoreGreaterThanFive() {
-		Review r;
-		r = new Review();
+		Review r = new Review();
+		Account a = new Account();
+		a = accountRepository.save(a);
 		r.setBookScore(10.5);
+		r.setOwner(a);
 		
-		assertThrows(InvalidBookScoreReviewException.class, () -> {
+		assertThrows(InvalidBookScoreException.class, () -> {
             reviewService.create(r);
         });
 	}
 	
 	@Test
 	void testBookScoreDivisibleByMeans() {
-		Review r;
-		r = new Review();
+		Review r = new Review();
+		Account a = new Account();
+		a = accountRepository.save(a);
 		r.setBookScore(3.7);
+		r.setOwner(a);
 		
-		assertThrows(InvalidBookScoreReviewException.class, () -> {
+		assertThrows(InvalidBookScoreException.class, () -> {
             reviewService.create(r);
         });
 	}
 	
 	@Test
 	void testText() {
-		Review r;
-		r = new Review();
+		Review r = new Review();
+		Account a = new Account();
+		a = accountRepository.save(a);
 		r.setBookScore(5.0);
 		r.setText(null);
+		r.setOwner(a);
 		
-		assertThrows(InvalidTextReviewException.class, () -> {
+		assertThrows(InvalidTextException.class, () -> {
             reviewService.create(r);
         });
 	}
@@ -105,10 +113,12 @@ class ReviewServiceTest {
 	@Test
 	void testFindById() {
 		
-		Review r;
-		r = new Review();
+		Review r = new Review();
+		Account a = new Account();
+		a = accountRepository.save(a);
 		r.setText("text");
 		r.setBookScore(4.5);
+		r.setOwner(a);
 		
 		try {
 			reviewService.create(r);
@@ -116,7 +126,7 @@ class ReviewServiceTest {
 			fail();
 		}
 		
-		assertThrows(IncorrectIdReviewException.class, () -> {
+		assertThrows(IncorrectIdException.class, () -> {
             reviewService.findById(5515L);
         });
 		
@@ -161,7 +171,7 @@ class ReviewServiceTest {
 			fail();
 		}
 		
-		assertThrows(IncorrectIdReviewException.class, () -> {
+		assertThrows(IncorrectIdException.class, () -> {
 			reviewService.findById(id);
         });
 		

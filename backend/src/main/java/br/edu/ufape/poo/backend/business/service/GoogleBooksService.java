@@ -17,25 +17,20 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 public class GoogleBooksService implements GoogleBooksServiceInterface {
-	public Map<String, Object> findByApiId(String apiId, String extractInfo) throws Exception{
+	public Map<String, Object> findByApiId(String apiId, String extractInfo) throws Exception {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
-		String response = "";
+		String response;
 		Map<String, Object> bookInfo = new HashMap<>();
-		try
-		{
+		try {
 			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + apiId).retrieve()
-				.bodyToMono(String.class).block();
+					.bodyToMono(String.class).block();
+		} catch (Exception exception) {
+			throw new BookNotFoundException();
 		}
-		catch(Exception e)
-		{
-			response = "";
-		}
-		
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		bookInfo = extractBookInformationUtility(jsonObject, extractInfo);
-		if (bookInfo == null)
-		{
+		if (bookInfo == null) {
 			throw new BookNotFoundException();
 		}
 		return bookInfo;
@@ -45,13 +40,10 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		Gson gson = new Gson();
 		WebClient webClient = WebClient.create();
 		String response = "";
-		try
-		{
+		try {
 			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes/" + id).retrieve()
-				.bodyToMono(String.class).block();
-		}
-		catch(Exception e)
-		{
+					.bodyToMono(String.class).block();
+		} catch (Exception e) {
 			response = "";
 		}
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
@@ -66,13 +58,13 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		return cover;
 	}
 
-	public List<Object> advancedSearchResults(String term, String title, String author, String subject,String publisher, String isbn, Integer maxResults, Integer startIndex, String extractInfo) {
+	public List<Object> advancedSearchResults(String term, String title, String author, String subject,
+			String publisher, String isbn, int startIndex, int maxResults, String extractInfo) {
 		Map<String, Object> preview = new HashMap<>();
 		List<Object> previews = new ArrayList<Object>();
-		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, maxResults, startIndex);
+		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, startIndex, maxResults);
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
-
 		if (jsonObject != null && jsonObject.get("items") != null) {
 			JsonArray items = jsonObject.get("items").getAsJsonArray();
 			for (int index = 0; index < items.size(); index++) {
@@ -84,7 +76,8 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		return previews;
 	}
 
-	private String advancedSearchUtility(String term, String title, String author, String subject, String publisher,String isbn, Integer maxResults, Integer startIndex) {
+	private String advancedSearchUtility(String term, String title, String author, String subject, String publisher,
+			String isbn, int startIndex, int maxResults) {
 		String filter = "";
 		String filters = "";
 		String response = "";
@@ -109,31 +102,23 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		if (isbn != null && !isbn.isBlank()) {
 			filter = filter + "isbn:" + isbn + "&";
 		}
-		if (maxResults != null) {
-			if (maxResults < 1) {
-				maxResults = 1;
-			}
-			filter = filter + "maxResults=" + maxResults + "&";
+		if (maxResults < 1) {
+			maxResults = 1;
 		}
-		if (startIndex != null) {
-			if (startIndex < 0) {
-				startIndex = 0;
-			}
-			filter = filter + "startIndex=" + startIndex + "&";
+		filter = filter + "maxResults=" + maxResults + "&";
+		if (startIndex < 0) {
+			startIndex = 0;
 		}
-		
+		filter = filter + "startIndex=" + startIndex + "&";
 		if (filter.length() > 0) {
 			filters = filter.substring(0, filter.length() - 1);
 		}
-		try
-		{
-			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes?q=" + filters).retrieve().bodyToMono(String.class).block();
-		}
-		catch(Exception e)
-		{
+		try {
+			response = webClient.get().uri("https://www.googleapis.com/books/v1/volumes?q=" + filters).retrieve()
+					.bodyToMono(String.class).block();
+		} catch (Exception e) {
 			response = "";
 		}
-
 		return response;
 	}
 
@@ -156,10 +141,8 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		authors = new ArrayList<String>();
 		categories = new ArrayList<String>();
 		industryIdentifiers = new ArrayList<Map<String, Object>>();
-
 		if (jsonObject.get("volumeInfo") != null) {
 			JsonObject volumeInfo = jsonObject.get("volumeInfo").getAsJsonObject();
-
 			if (volumeInfo.get("title") != null) {
 				title = volumeInfo.get("title").getAsString();
 				bookInfo.put("title", title);
@@ -178,12 +161,10 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 				}
 				bookInfo.put("categories", categories);
 			}
-
 			if (volumeInfo.get("publishedDate") != null) {
 				publishedDate = volumeInfo.get("publishedDate").getAsString();
 				bookInfo.put("publishedDate", publishedDate);
 			}
-
 			if (volumeInfo.get("imageLinks") != null
 					&& volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail") != null) {
 				cover = volumeInfo.get("imageLinks").getAsJsonObject().get("thumbnail").getAsString();
@@ -199,7 +180,6 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 				}
 				bookInfo.put("authors", authors);
 			}
-
 			if ("complete".equals(extractAllData)) {
 				if (volumeInfo.get("pageCount") != null) {
 					pageCount = volumeInfo.get("pageCount").getAsInt();
@@ -217,7 +197,6 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 					description = volumeInfo.get("description").getAsString();
 					bookInfo.put("description", description);
 				}
-
 				if (volumeInfo.get("industryIdentifiers").getAsJsonArray() != null) {
 					JsonArray rawIndustryIdentifiers = volumeInfo.get("industryIdentifiers").getAsJsonArray();
 					for (int industryIdentifiersIndex = 0; industryIdentifiersIndex < rawIndustryIdentifiers
@@ -241,8 +220,7 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 				}
 			}
 		}
-		if (bookInfo.isEmpty())
-		{
+		if (bookInfo.isEmpty()) {
 			bookInfo = null;
 		}
 		return bookInfo;
