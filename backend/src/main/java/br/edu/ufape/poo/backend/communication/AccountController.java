@@ -46,7 +46,7 @@ public class AccountController {
 		} catch (InvalidPasswordException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("invalid password");
 		} catch (TakenEmailException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("email taken");
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("taken email");
 		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
