@@ -544,8 +544,9 @@ public class Facade {
 
 	private List<Map<String, Object>> bookshelfExtractCards(List<Bookshelf> bookshelves, Account account) {
 		List<Map<String, Object>> bookshelfCards = new ArrayList<Map<String, Object>>();
+		Bookshelf bookshelf;
 		for (int bookshelfIndex = 0; bookshelfIndex < bookshelves.size(); bookshelfIndex++) {
-			Bookshelf bookshelf = bookshelves.get(bookshelfIndex);
+			bookshelf = bookshelves.get(bookshelfIndex);
 			Map<String, Object> bookshelfCard = new HashMap<>();
 			bookshelfCard.put("id", bookshelf.getId());
 			bookshelfCard.put("name", bookshelf.getName());

@@ -120,6 +120,7 @@ public class BookshelfServiceTest {
 		Bookshelf bookshelf1 = new Bookshelf();
 		Bookshelf bookshelf2 = new Bookshelf();
 		user1.setName("A");
+		user1.setPrivacy(true);
 		user1 = accountRepository.save(user1);
 		bookshelf1.setOwner(user1);
 		bookshelf2.setOwner(user1);
@@ -159,6 +160,7 @@ public class BookshelfServiceTest {
 		Bookshelf bookshelf1 = new Bookshelf();
 		Bookshelf bookshelf2 = new Bookshelf();
 		user1.setName("A");
+		user1.setPrivacy(true);
 		user1 = accountRepository.save(user1);
 		bookshelf1.setOwner(user1);
 		bookshelf2.setOwner(user1);
@@ -178,6 +180,7 @@ public class BookshelfServiceTest {
 		Bookshelf bookshelf1 = new Bookshelf();
 		Bookshelf bookshelf2 = new Bookshelf();
 		user1.setName("A");
+		user1.setPrivacy(true);
 		user1 = accountRepository.save(user1);
 		bookshelf1.setOwner(user1);
 		bookshelf2.setOwner(user1);

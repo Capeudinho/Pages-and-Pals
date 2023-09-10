@@ -202,6 +202,7 @@ public class FacadeTest {
 		Bookshelf bookshelf = new Bookshelf();
 		account.setPrivacy(true);
 		account = accountRepository.save(account);
+		bookshelf.setBookApiIds(new ArrayList<String>());
 		bookshelf.setOwner(account);
 		bookshelf = bookshelfRepository.save(bookshelf);
 		List<Map<String, Object>> bookshelves = facade.bookshelfFindByOwnerIdPaginate(account.getId(), 0, 10);
@@ -292,6 +293,7 @@ public class FacadeTest {
 	void advancedSearchBookshelf() throws Exception {
 		Account account = new Account();
 		account.setName("Jane");
+		account.setPrivacy(true);
 		accountRepository.save(account);
 		Bookshelf bookshelf = new Bookshelf();
 		bookshelf.setName("Favorites");
@@ -302,13 +304,11 @@ public class FacadeTest {
 		assertEquals(results.size(), 1);
 
 		for (int i = 0; i < results.size(); i++) {
-			Object result = results.get(i);
-			assertTrue(result instanceof Bookshelf);
-			Bookshelf foundBookshelf = (Bookshelf) result;
-			assertNotNull(foundBookshelf.getName());
-			assertNotNull(foundBookshelf.getOwner());
-			assertTrue(foundBookshelf.getOwner().getName().contains("Jane"));
-			assertEquals("Favorites", foundBookshelf.getName());
+			Map<String, Object> result = results.get(i);
+			assertNotNull(result.get("name"));
+			assertNotNull(result.get("owner"));
+			assertTrue(((Account)result.get("owner")).getName().contains("Jane"));
+			assertEquals("Favorites", result.get("name"));
 		}
 	}
 
