@@ -101,8 +101,6 @@ public class ReviewController {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		} catch (IncorrectBookIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect book id");
-		} catch (DuplicateReviewException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("duplicate review");
 		} catch (InvalidReviewCountException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body("invalid review count");
 		} catch (AuthenticationFailedException exception) {
