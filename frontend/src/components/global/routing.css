@@ -1,12 +1,10 @@
-.routingArea .total
-{
+.routingArea .total {
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
-.background
-{
+.background {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -15,24 +13,41 @@
     overflow-x: auto;
 }
 
-.routingArea .enterBackground
-{
+.routingArea .enterBackground {
     padding-left: 400px;
     padding-right: 400px;
 }
 
-.routingArea .normalBackground
-{
+.routingArea .normalBackground {
     padding-left: 200px;
     padding-right: 200px;
 }
 
-.routingArea .main
-{
+.routingArea .main {
     display: flex;
     flex-direction: column;
     flex: 1;
     border-left: solid 1px #cccccc;
     border-right: solid 1px #cccccc;
     background-color: #ffffff;
+}
+
+.routingArea .main .firstPageTitle {
+    padding: 80px;
+    padding-bottom: 0;
+    font-size: 35px;
+    width: fit-content;
+    align-self: center;
+    color: #666666;
+}
+
+.routingArea .main .firstPageSummary {
+    gap: 15px;
+    line-height: 1.5;
+    padding: 80px;
+    font-size: 20px;
+    text-align: center;
+    width: fit-content;
+    align-self: center;
+    color: #666666;
 }

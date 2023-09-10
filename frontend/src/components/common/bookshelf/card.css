@@ -1,10 +1,8 @@
-.bookshelfCardArea
-{
+.bookshelfCardArea {
     color: #191919;
 }
 
-.bookshelfCardArea .bookshelf
-{
+.bookshelfCardArea .bookshelf {
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -14,13 +12,11 @@
     border-radius: 5px;
 }
 
-.bookshelfCardArea .bookshelf:hover
-{
+.bookshelfCardArea .bookshelf:hover {
     background-color: #f2f2f2;
 }
 
-.bookshelfCardArea .info
-{
+.bookshelfCardArea .info {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -39,3 +35,4 @@
     line-height: 20px;
     overflow: hidden;
 }
+

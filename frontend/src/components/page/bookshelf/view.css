@@ -1,47 +1,40 @@
-.bookshelfViewArea
-{
+.bookshelfViewArea {
     display: flex;
     flex-direction: column;
     gap: 20px;
     padding: 20px;
 }
 
-.bookshelfViewArea .topBox
-{
+.bookshelfViewArea .topBox {
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
-.bookshelfViewArea .headBox
-{
+.bookshelfViewArea .headBox {
     display: flex;
     flex-direction: column;
     gap: 10px;
     flex: 1;
 }
 
-.bookshelfViewArea .name
-{
+.bookshelfViewArea .name {
     font-size: 27px;
     line-height: 20px;
     color: #191919;
 }
 
-.bookshelfViewArea .creationDate
-{
+.bookshelfViewArea .creationDate {
     color: #191919;
 }
 
-.bookshelfViewArea .books
-{
+.bookshelfViewArea .books {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.bookshelfViewArea .description
-{
+.bookshelfViewArea .description {
     margin-top: -5px;
     line-height: 20px;
     color: #191919;

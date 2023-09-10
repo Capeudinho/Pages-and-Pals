@@ -1,16 +1,40 @@
 .searchBarArea {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    height: 50px;
+    height: 80px;
     border-bottom: solid 1px #cccccc;
     background-color: #ffffff;
     justify-content: space-between;
-    padding: 0 25px;
+}
+
+.searchBarArea .logo {
+    height: 60px;
+    width: 157px;
+}
+
+.searchBarArea .logoArea {
+    width: 200px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+.searchBarArea .inputGroup {
+    flex: 1;
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.searchBarArea .search {
+    height: 20px;
+    width: 20px;
 }
 
 .searchBarArea .ownerPicture {
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     border-radius: 5px;
     background-size: cover;
     background-position: center;
@@ -18,15 +42,17 @@
     position: relative;
 }
 
-.searchBarArea input[type="text"] {
+.searchBarArea input {
     height: 30px;
-    width: 350px;
-    padding-left: 10px;
-    padding-right: 10px;
+    width: 200px;
     border-radius: 5px;
-    margin-left: 150px;
+    padding: 10px;
     flex: 1;
     background-color: #e5e5e5;
+    color: #666666;
+}
+
+.searchBarArea input:focus {
     color: #191919;
 }
 
@@ -35,8 +61,23 @@
     background-color: #e5e5e5;
     border: none;
     border-radius: 5px;
-    padding: 10px;
+    padding: auto;
     cursor: pointer;
+    height: 30px;
+    width: 30px;
+}
+
+.searchBarArea .register {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    height: 30px;
+    font-weight: bold;
+    color: #191919;
+}
+
+.searchBarArea  .register:hover {
+    background-color: #cccccc;
 }
 
 .searchBarArea .advanced {
@@ -47,6 +88,7 @@
     padding: 10px;
     font-weight: bold;
     text-decoration: none;
+    text-align: center;
 }
 
 .searchBarArea .logOut {
@@ -67,6 +109,26 @@
     padding: 10px;
     font-weight: bold;
     text-decoration: none;
+    text-align: center;
+}
+
+.searchBarArea button:hover {
+    background-color: #cccccc;
+}
+
+.searchBarArea .account:hover {
+    background-color: #cccccc;
+}
+
+.searchBarArea .advanced:hover {
+    background-color: #cccccc;
+}
+
+.searchBarArea .rightArea {
+    width: 220px;
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px;
 }
 
 .searchBarArea .profileContainer {

@@ -275,7 +275,7 @@ function AccountView() {
                     setReviews(response?.data);
                 }
                 else {
-                    setReviews([...bookshelves, ...response?.data]);
+                    setReviews([...reviews, ...response?.data]);
                 }
             }
             catch (exception) {
