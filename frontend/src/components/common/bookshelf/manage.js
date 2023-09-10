@@ -190,7 +190,7 @@ function BookshelfManage({book})
                                                 onClick={() => { handleConfirmToggleBookApiId(bookshelfIndex) }}
                                                 disabled={overlay}
                                                 >
-                                                    {bookshelf?.contains ? "X" : "+"}
+                                                    {bookshelf?.contains ? "✘" : "✔"}
                                                 </button>
                                                 <div className="bookshelfName">{bookshelf?.name}</div>
                                             </div>

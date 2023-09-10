@@ -36,7 +36,7 @@ function SearchBar() {
     const handleSearch = async () => {
         var newSearch = "?";
         if (searchTerm !== "") {
-            newSearch = newSearch + "term=" + searchTerm + "&resultType=book";
+            newSearch = newSearch + "term=" + searchTerm + "&resulttype=book";
             navigate("/search/results" + newSearch);
         }
     }

@@ -18,33 +18,61 @@ function SearchResults() {
     const { loggedAccount, setLoggedAccount } = useContext(loggedAccountContext);
     const navigate = useNavigate();
     const { search } = useLocation();
-    const moreResults = useRef(true);
+    const moreResults = useRef(false);
 
     useEffect
-        (
-            () => {
-                let mounted = true;
-                const runEffect = async () => {
-                    if
-                        (
-                        !overlay && moreResults.current &&
-                        scroll?.target?.scrollHeight - scroll?.target?.scrollTop <= scroll?.target?.offsetHeight + 100
-                    ) {
-                        await loadResults();
-                    }
+    (
+        () =>
+        {
+            let mounted = true;
+            const runEffect = async () =>
+            {
+                await loadResults(true);
+            }
+            runEffect();
+            return (()=>{mounted = false});
+        },
+        [search]
+    );
+
+    useEffect
+    (
+        () =>
+        {
+            let mounted = true;
+            const runEffect = async () =>
+            {
+                if
+                (
+                    !overlay &&
+                    moreResults.current &&
+                    scroll?.target?.scrollHeight - scroll?.target?.scrollTop <= scroll?.target?.offsetHeight + 100
+                )
+                {
+                    await loadResults(false);
                 }
-                runEffect();
-                return (() => { mounted = false });
-            },
-            [scroll, results, search]
-        );
+            }
+            runEffect();
+            return (()=>{mounted = false});
+        },
+        [scroll, results]
+    );
 
-
-    async function loadResults() {
-        try {
-            setOverlay(true);
-            var newSearch = search + "&limit=20&offset=" + results.length;
+    async function loadResults(overwrite)
+    {
+        try
+        {
+            var newSearch;
             var response;
+            if (overwrite)
+            {
+                newSearch = search + "&limit=20&offset=0";
+            }
+            else
+            {
+                newSearch = search + "&limit=20&offset=" + results.length;
+            }
+            setOverlay(true);
             if (loggedAccount?.id !== undefined)
             {
                 response = await api.get
@@ -63,10 +91,17 @@ function SearchResults() {
             {
                 response = await api.get("/book/findbyadvanced"+newSearch);
             }
-            if (response.data.length < 20) {
-                moreResults.current = false;
+            if (response.data.length >= 20) {
+                moreResults.current = true;
             }
-            setResults([...results, ...response?.data]);
+            if (overwrite)
+            {
+                setResults(response?.data);
+            }
+            else
+            {
+                setResults([...results, ...response?.data]);
+            }
             setOverlay(false);
         }
         catch (exception) {
@@ -82,26 +117,26 @@ function SearchResults() {
         <div className="searchResultsArea">
             {
                 results?.map
-                    (
-                        (searchResult, searchResultIndex) => {
-                            return (
-                                searchResult?.title !== undefined ?
-                                <BookCard
-                                key={searchResultIndex}
-                                book={searchResult}
-                                bookIndex={null}
-                                remove={null}
-                                removeable={false}
-                                manageable={true}
-                                /> : 
-                                <BookshelfCard
-                                bookshelf={searchResult}
-                                linkable={true}
-                                key={searchResultIndex}
+                (
+                    (searchResult, searchResultIndex) => {
+                        return (
+                            searchResult?.title !== undefined ?
+                            <BookCard
+                            key={searchResultIndex}
+                            book={searchResult}
+                            bookIndex={null}
+                            remove={null}
+                            removeable={false}
+                            manageable={true}
+                            /> : 
+                            <BookshelfCard
+                            bookshelf={searchResult}
+                            linkable={true}
+                            key={searchResultIndex}
                             />
-                            );
-                        }
-                    )
+                        );
+                    }
+                )
             }
 
         </div>

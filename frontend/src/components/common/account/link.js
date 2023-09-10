@@ -7,16 +7,16 @@ function AccountLink({account})
 {
     return (
         <div className = "accountLinkArea">
-            <Link
-            className = "accountPicture"
-            to = {"/account/view/"+account?.id}
-            style = {{backgroundImage: "url("+account?.picture+")"}}
-            />
-            <Link
-            className = "accountName"
-            to = {"/account/view/"+account?.id}
-            >
-                {account?.name}
+            <Link to = {"/account/view/"+account?.id}>
+                <div
+                className = "accountPicture"
+                style = {{backgroundImage: "url("+account?.picture+")"}}
+                />
+                <div
+                className = "accountName"
+                >
+                    {account?.name}
+                </div>
             </Link>
         </div>
     );
