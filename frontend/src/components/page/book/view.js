@@ -127,7 +127,7 @@ function BookView() {
                 if (loggedAccount?.id !== undefined) {
                     response = await api.get
                         (
-                            "review/findbybookapiidpaginateautenticaded/" + apiId,
+                            "review/findbybookapiidpaginateautenticated/" + apiId,
                             {
                                 params:
                                 {
