@@ -264,12 +264,14 @@ public class Facade {
 	public Map<String, Object> bookFindByApiId(String apiId, String extractInfo) throws Exception {
 		Map<String, Object> result = googleBooksService.findByApiId(apiId, extractInfo);
 		Double score = bookService.findScoreByApiId((String) result.get("apiId"));
+		int reviewCount = reviewService.countByBookApiId(apiId);
 		if (score != null) {
 			score = ((double) Math.round(score * 10d)) / 10d;
 			result.put("score", score);
 		} else {
 			result.put("score", null);
 		}
+		result.put("reviewCount", reviewCount);
 		return result;
 	}
 
@@ -379,6 +381,24 @@ public class Facade {
 		}
 		oldReview = reviewService.deleteById(id);
 		return oldReview;
+	}
+	
+	public Review reviewFindById(long id) throws Exception {
+		Review review = reviewService.findById(id);
+		if(review.isPrivacy() == false || review.getOwner().isPrivacy() == false) {
+			throw new AccessDeniedException();
+		}
+		return review;
+	}
+	
+	public Review reviewFindOwnById (long id, String email, String password) throws Exception {
+		Review review = reviewService.findById(id);
+		Account requestingAccount = accountService.authenticate(email, password);
+		if (requestingAccount.getId() != review.getOwner().getId()) {
+			throw new AccessDeniedException();
+		}
+		
+		return review;
 	}
 
 	// Buscar lista de Reviews de um usuário qualquer paginado

@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useContext, useRef } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../../services/api.js";
 
 import loggedAccountContext from "../../context/loggedAccount.js";
 import overlayContext from "../../context/overlay.js";
+import scrollContext from "../../context/scroll.js";
+import deletedReviewContext from "../../context/deletedReview.js";
 
 import BookshelfManage from "../../common/bookshelf/manage";
+import ReviewCard from "../../common/review/card.js";
+
+
 
 import "./view.css";
 
@@ -14,7 +19,89 @@ function BookView() {
     const { overlay, setOverlay } = useContext(overlayContext);
     const [showDetails, setShowDetails] = useState(false);
     const [book, setBook] = useState(null);
+    const { scroll, setScroll } = useContext(scrollContext);
+    const { deletedReview, setDeletedReview } = useContext(deletedReviewContext);
+    const deletedReviewRef = useRef(false);
+    const [reviews, setReviews] = useState(null);
     const { apiId } = useParams();
+    const navigate = useNavigate();
+
+    useEffect
+        (
+            () => {
+                let mounted = true;
+                const runEffect = async () => {
+                    try {
+                        setOverlay(true);
+                        var response = await api.get
+                            (
+                                "book/findbyapiid/" + apiId
+                            );
+                        if (response?.data?.reviewCount > 0) {
+                            await loadReviews(true);
+                        }
+
+                        setOverlay(false);
+                        setBook(response?.data);
+
+                    } catch (exception) {
+                        setOverlay(false);
+                        if (exception?.response?.data === "authentication failed") {
+                            localStorage.clear();
+                            setLoggedAccount(null);
+                        }
+                        navigate("/");
+                    }
+                }
+                runEffect();
+                return (() => { mounted = false });
+            }, [apiId]
+        );
+    useEffect
+        (
+            () => {
+                let mounted = true;
+                const runEffect = async () => {
+                    if
+                        (
+                        !overlay &&
+                        reviews?.length < book?.reviewCount &&
+                        scroll?.target?.scrollHeight - scroll?.target?.scrollTop <= scroll?.target?.offsetHeight + 100
+                    ) {
+                        if (deletedReviewRef.current === false) {
+                            await loadReviews(false);
+                        } else {
+                            deletedReviewRef.current = false;
+                        }
+                    }
+                }
+                runEffect();
+                return (() => { mounted = false });
+            },
+            [scroll, reviews]
+        );
+
+    useEffect
+        (
+            () => {
+
+                var index;
+                if (deletedReview !== null) {
+                    for (var i = 0; i < reviews.length; i++) {
+                        if (reviews[i].id === deletedReview.id) {
+                            index = i;
+                        }
+                    }
+
+                    var newReviews = [...reviews];
+                    newReviews.splice(index, 1);
+                    deletedReviewRef.current = true;
+                    setReviews(newReviews);
+                    setDeletedReview(null);
+                }
+            },
+            [deletedReview]
+        );
 
     function cleanDescriptionUtility(description) {
         const cleanedText = description?.replace(/<[^>]*>?/gm, '');
@@ -24,32 +111,68 @@ function BookView() {
         return formattedText;
     }
 
-    async function fetchBookByApiId(apiId) {
-        try {
-            setOverlay(true);
-            var response = await api.get
-                (
-                    "book/findbyapiid/" + apiId
-                )
 
-            setOverlay(false);
-            setBook(response?.data);
-
-        } catch (exception) {
-            setOverlay(false);
-            if (exception?.response?.data === "authentication failed") {
-                localStorage.clear();
-                setLoggedAccount(null);
+    async function loadReviews(overwrite) {
+        if (overwrite || reviews?.length < book?.reviewCount) {
+            var offset;
+            if (overwrite) {
+                offset = 0;
             }
-            //navigate("/");
+            else {
+                offset = reviews?.length;
+            }
+            try {
+                var response;
+                setOverlay(true);
+                if (loggedAccount?.id !== undefined) {
+                    response = await api.get
+                        (
+                            "review/findbybookapiidpaginateautenticaded/" + apiId,
+                            {
+                                params:
+                                {
+                                    offset: offset,
+                                    limit: 20
+                                },
+                                headers:
+                                {
+                                    email: loggedAccount?.email,
+                                    password: loggedAccount?.password
+                                }
+                            }
+                        );
+                }
+                else {
+                    response = await api.get
+                        (
+                            "/review/findbybookapiidpaginate/" + apiId,
+                            {
+                                params:
+                                {
+                                    offset: offset,
+                                    limit: 20
+                                }
+                            }
+                        );
+                }
+                setOverlay(false);
+                if (overwrite) {
+                    setReviews(response?.data);
+                }
+                else {
+                    setReviews([...reviews, ...response?.data]);
+                }
+            }
+            catch (exception) {
+                setOverlay(false);
+                if (exception?.response?.data === "authentication failed") {
+                    localStorage.clear();
+                    setLoggedAccount(null);
+                }
+                navigate("/");
+            }
         }
     }
-    useEffect
-        (
-            () => {
-                fetchBookByApiId(apiId);
-            }, [apiId]
-        );
 
     const toggleDetails = () => {
         setShowDetails(!showDetails);
@@ -228,9 +351,24 @@ function BookView() {
             </div>
             <div className="reviewArea">
                 <div className="reviews">Reviews</div>
-                <Link to="/review/create">
+                <Link to={"/review/create/" + apiId}>
                     <button className="addReviewButton">Add a Review</button>
                 </Link>
+                {
+                    reviews?.map
+                        (
+                            (review, index) => {
+                                return (
+                                    <ReviewCard
+                                        review={review}
+                                        linkable={true}
+                                        key={index}
+                                    />
+                                );
+                            }
+                        )
+
+                }
             </div>
 
         </div>

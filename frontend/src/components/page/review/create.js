@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../services/api.js";
 
 import loggedAccountContext from "../../context/loggedAccount.js";
@@ -17,12 +17,14 @@ function ReviewCreate() {
     const { alert, setAlert } = useContext(alertContext);
     const { confirm, setConfirm } = useContext(confirmContext);
     const { overlay, setOverlay } = useContext(overlayContext);
+    const { bookApiId } = useParams();
     const [review, setReview] = useState
         (
             {
-                body: "",
-                bookScore: null,
-                privacy: true
+                text: "",
+                bookScore: 0,
+                privacy: true,
+                bookApiId: ""
             }
         );
     const navigate = useNavigate();
@@ -43,9 +45,9 @@ function ReviewCreate() {
             [confirm]
         );
 
-    function handleChangeBody(event) {
+    function handleChangeText(event) {
         var newReview = { ...review };
-        newReview.body = event.target.innerText;
+        newReview.text = event.target.innerText;
         setReview(newReview);
     }
 
@@ -68,10 +70,15 @@ function ReviewCreate() {
     async function handleCreate() {
         try {
             setOverlay(true);
-            var response = await api.post
+            var newReview = { ...review };
+            newReview.bookApiId = bookApiId;
+            if (newReview.bookScore === 0) {
+                newReview.bookScore = null;
+            }
+            await api.post
                 (
                     "/review/create",
-                    review,
+                    newReview,
                     {
                         headers:
                         {
@@ -82,7 +89,7 @@ function ReviewCreate() {
                 );
             setOverlay(false);
             setAlert([{ type: "success", text: "Review created." }]);
-            navigate("/book/view/");
+            navigate("/book/view/" + bookApiId);
         }
         catch (exception) {
             setOverlay(false);
@@ -91,6 +98,12 @@ function ReviewCreate() {
             }
             if (exception?.response?.data === "invalid text") {
                 setAlert([{ type: "warning", text: "Review text is invalid!" }]);
+            }
+            if (exception?.response?.data === "invalid review") {
+                setAlert([{ type: "warning", text: "Review is invalid!" }]);
+            }
+            if (exception?.response?.data === "duplicate review") {
+                setAlert([{ type: "warning", text: "duplicate review!" }]);
             }
             else if (exception?.response?.data === "authentication failed") {
                 localStorage.clear();
@@ -104,16 +117,16 @@ function ReviewCreate() {
     }
 
     async function handleDiscard() {
-        navigate("/book/view/:apiId");
+        navigate("/book/view/" + bookApiId);
     }
 
     return (
         <div className="page reviewCreateArea">
             <div className="label">What did you think?</div>
             <div
-                className="bodyInput"
-                value={review?.body}
-                onChange={(event) => {handleChangeBody(event)}}
+                className="textInput"
+                value={review?.text}
+                onInput={(event) => { handleChangeText(event) }}
                 spellCheck={false}
                 contentEditable={true}
                 placeholder="Type your review"

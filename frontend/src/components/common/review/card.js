@@ -94,17 +94,19 @@ function ReviewCard({ review, linkable }) {
         <div className="reviewCardArea">
             {
                 !linkable ?
-                    <div
+                    <Link
                         className="cover"
                         style={{ backgroundImage: "url(" + review?.cover + ")" }}
+                        to = {"/book/view/" + review.bookApiId}
                     /> : <></>
             }
             <div className="info">
                 {
                     !linkable ?
-                        <div className="title">
+                        <Link className="title"
+                        to = {"/book/view/" + review.bookApiId}>
                             {review?.title}
-                        </div> : <></>
+                        </Link> : <></>
                 }
 
                 <div className="middleBox">

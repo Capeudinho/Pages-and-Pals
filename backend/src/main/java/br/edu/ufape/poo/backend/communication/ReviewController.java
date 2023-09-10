@@ -113,6 +113,41 @@ public class ReviewController {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
 		return responseEntity;
+		
+	}
+	@GetMapping("findbyid/{id}")
+	public ResponseEntity<?> findById(@PathVariable long id) throws Exception {
+		ResponseEntity<Object> responseEntity;
+		try {
+			Review review = facade.reviewFindById(id);
+			responseEntity = new ResponseEntity<Object>(review, HttpStatus.OK);
+		} catch (IncorrectIdException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		} catch (AccessDeniedException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+		} catch (Exception exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
+	}
+	
+	@GetMapping("findownbyid/{id}")
+	public ResponseEntity<?> findOwnById(@PathVariable long id, @RequestHeader("email") String email,
+			@RequestHeader("password") String password ) throws Exception {
+		ResponseEntity<Object> responseEntity;
+		try {
+			Review review = facade.reviewFindOwnById(id, email, password);
+			responseEntity = new ResponseEntity<Object>(review, HttpStatus.OK);
+		} catch (IncorrectIdException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
+		} catch (AuthenticationFailedException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
+		} catch (AccessDeniedException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+		} catch (Exception exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+		}
+		return responseEntity;
 	}
 
 	@GetMapping("findbyowneridpaginate/{ownerId}")

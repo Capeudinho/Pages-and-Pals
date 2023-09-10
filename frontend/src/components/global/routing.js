@@ -12,8 +12,10 @@ import BookshelfEdit from "../page/bookshelf/edit.js";
 import BookView from "../page/book/view.js";
 import SearchBar from "../common/header/searchBar.js";
 import ReviewCreate from "../page/review/create.js";
+import ReviewEdit from "../page/review/edit.js";
 import SearchAdvanced from "../page/search/advanced.js";
 import SearchResults from "../page/search/results.js";
+
 
 import "./routing.css";
 
@@ -89,7 +91,8 @@ function Routing() {
                                         <Route exact path="/bookshelf/create" element={<BookshelfCreate />} />
                                         <Route exact path="/bookshelf/edit/:id" element={<BookshelfEdit />} />
                                         <Route exact path="/book/view/:apiId" element={<BookView />} />
-                                        <Route exact path="/review/create" element={<ReviewCreate />} />
+                                        <Route exact path="/review/create/:bookApiId" element={<ReviewCreate />} />
+                                        <Route exact path="/review/edit/:id" element={<ReviewEdit />} />
                                         <Route exact path="/search/advanced" element={<SearchAdvanced />} />
                                         <Route exact path="/search/results" element={<SearchResults />} />
                                     </Routes>
