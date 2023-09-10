@@ -404,6 +404,7 @@ public class Facade {
 	// Buscar lista de Reviews do prório usuário paginado
 	public List<Map<String, Object>> reviewFindOwnByOwnerIdPaginate(long ownerId, int offset, int limit, String email,
 			String password) throws Exception {
+		accountService.findById(ownerId);
 		Account requestingAccount = accountService.authenticate(email, password);
 		if (requestingAccount.getId() != ownerId) {
 			throw new AccessDeniedException();

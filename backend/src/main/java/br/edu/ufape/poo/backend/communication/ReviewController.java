@@ -122,7 +122,7 @@ public class ReviewController {
 		} catch (IncorrectIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		} catch (AccessDeniedException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
 		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
@@ -141,7 +141,7 @@ public class ReviewController {
 		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		} catch (AccessDeniedException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
 		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
@@ -159,7 +159,7 @@ public class ReviewController {
 		} catch (IncorrectIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		} catch (AccessDeniedException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
 		} catch (BookNotFoundException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("book not found");
 		} catch (Exception exception) {
@@ -182,7 +182,7 @@ public class ReviewController {
 		} catch (AuthenticationFailedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		} catch (AccessDeniedException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("access denied");
 		} catch (BookNotFoundException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("book not found");
 		} catch (Exception exception) {
@@ -205,8 +205,8 @@ public class ReviewController {
 		return responseEntity;
 	}
 
-	@GetMapping("findbybookapiidpaginateautenticaded/{bookApiId}")
-	public ResponseEntity<?> reviewFindByBookApiIdPaginateAutenticaded(@PathVariable String bookApiId,
+	@GetMapping("findbybookapiidpaginateautenticated/{bookApiId}")
+	public ResponseEntity<?> reviewFindByBookApiIdPaginateAutenticated(@PathVariable String bookApiId,
 			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit,
 			@RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
