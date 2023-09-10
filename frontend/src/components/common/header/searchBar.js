@@ -54,13 +54,13 @@ function SearchBar() {
     return (
         <div className="searchBarArea">
             <div className="logoArea">
-            <Link
-                to={`/`}>
-                <img
-                    className="logo"
-                    src={process.env.PUBLIC_URL + "/large logo.svg"}
-                />
-                  </Link>
+                <Link
+                    to={`/`}>
+                    <img
+                        className="logo"
+                        src={process.env.PUBLIC_URL + "/large logo.svg"}
+                    />
+                </Link>
             </div>
 
             <div className="inputGroup">
@@ -76,33 +76,40 @@ function SearchBar() {
             </div>
 
             <div className="rightArea">
-                <div className="profileContainer"
-                    onMouseEnter={() => setShowProfileOptions(true)}
-                    onMouseLeave={() => setShowProfileOptions(false)}
-                >
-                    <div
-                        className="ownerPicture"
-                        style={{ backgroundImage: `url(${loggedAccount?.picture})` }}
-                    />
-                    {showProfileOptions && (
-                        <div className="profileOptions">
-                            <Link
-                                className="advanced"
-                                to="/search/advanced"
-                            >
-                                Advanced Search
-                            </Link>
+                {loggedAccount?.id !== undefined ?
+                    <div className="profileContainer"
+                        onMouseEnter={() => setShowProfileOptions(true)}
+                        onMouseLeave={() => setShowProfileOptions(false)}
+                    >
+                        <div
+                            className="ownerPicture"
+                            style={{ backgroundImage: `url(${loggedAccount?.picture})` }}
+                        />
+                        {showProfileOptions && (
+                            <div className="profileOptions">
+                                <Link
+                                    className="advanced"
+                                    to="/search/advanced"
+                                >
+                                    Advanced Search
+                                </Link>
 
-                            <Link
-                                className="account"
-                                to={`/account/view/${loggedAccount?.id}`}>
-                                Your Profile
-                            </Link>
+                                <Link
+                                    className="account"
+                                    to={`/account/view/${loggedAccount?.id}`}>
+                                    Your Profile
+                                </Link>
 
-                            <button className="logOut" onClick={handleConfirmLogOut}>Log Out</button>
-                        </div>
-                    )}
-                </div>
+                                <button className="logOut" onClick={handleConfirmLogOut}>Log Out</button>
+                            </div>
+                        )}
+
+                    </div> : <Link
+                        className="register"
+                        to={"/account/enter"}>
+                        Register
+                    </Link>
+                }
             </div>
 
 

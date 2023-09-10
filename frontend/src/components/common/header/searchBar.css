@@ -8,12 +8,12 @@
     justify-content: space-between;
 }
 
-.searchBarArea .logo{
-    height:60px;
+.searchBarArea .logo {
+    height: 60px;
     width: 157px;
 }
 
-.searchBarArea .logoArea{
+.searchBarArea .logoArea {
     width: 200px;
     padding: 10px;
     display: flex;
@@ -27,7 +27,7 @@
     flex-direction: row;
 }
 
-.searchBarArea .search{
+.searchBarArea .search {
     height: 20px;
     width: 20px;
 }
@@ -52,7 +52,7 @@
     color: #666666;
 }
 
-.searchBarArea input:focus{
+.searchBarArea input:focus {
     color: #191919;
 }
 
@@ -65,6 +65,19 @@
     cursor: pointer;
     height: 30px;
     width: 30px;
+}
+
+.searchBarArea .register {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    height: 30px;
+    font-weight: bold;
+    color: #191919;
+}
+
+.searchBarArea  .register:hover {
+    background-color: #cccccc;
 }
 
 .searchBarArea .advanced {
@@ -99,23 +112,20 @@
     text-align: center;
 }
 
-.searchBarArea button:hover
-{
+.searchBarArea button:hover {
     background-color: #cccccc;
 }
 
-.searchBarArea .account:hover
-{
+.searchBarArea .account:hover {
     background-color: #cccccc;
 }
 
-.searchBarArea .advanced:hover
-{
+.searchBarArea .advanced:hover {
     background-color: #cccccc;
 }
 
-.searchBarArea .rightArea{
-    width: 220px; 
+.searchBarArea .rightArea {
+    width: 220px;
     display: flex;
     justify-content: flex-end;
     padding: 20px;
