@@ -211,7 +211,7 @@ function AccountEdit()
                 className = "showPasswordButton"
                 onClick = {() => {handleChangeShowPassword()}}
                 >
-                    {showPassword ? "H" : "S"}
+                    {showPassword ? "Hide" : "Show"}
                 </button>
             </div>
             <div className = "label">Biography</div>

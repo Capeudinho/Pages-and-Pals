@@ -6,7 +6,7 @@
     padding: 20px;
 }
 
-.searchAdvancedArea input, .searchAdvancedArea select
+.searchAdvancedArea input
 {
     height: 30px;
     width: 100%;
@@ -14,12 +14,17 @@
     padding-right: 10px;
     border-radius: 5px;
     background-color: #e5e5e5;
-    color: #191919;
 }
 
 .searchAdvancedArea .label
 {
-    color: #7f7f7f;
+    color: #999999;
+}
+
+.searchAdvancedArea .bigLabel
+{
+    color: #666666;
+    font-weight: bold;
 }
 
 .searchAdvancedArea .input[placeholder]:empty::before
@@ -35,10 +40,9 @@
     background-color: #e5e5e5;
     height: 30px;
     font-weight: bold;
-    color: #191919;
 }
 
-.advancedArea .search:hover
+.searchAdvancedArea .search:hover
 {
     background-color: #cccccc;
 }

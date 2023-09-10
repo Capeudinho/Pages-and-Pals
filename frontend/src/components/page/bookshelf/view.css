@@ -8,7 +8,7 @@
 .bookshelfViewArea .topBox {
     display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 20px;
 }
 
 .bookshelfViewArea .headBox {
@@ -20,12 +20,13 @@
 
 .bookshelfViewArea .name {
     font-size: 27px;
-    line-height: 20px;
-    color: #191919;
+    line-height: 30px;
+    margin-top: -5px;
+    margin-bottom: 5px;
 }
 
 .bookshelfViewArea .creationDate {
-    color: #191919;
+    white-space: nowrap;
 }
 
 .bookshelfViewArea .books {
@@ -37,5 +38,4 @@
 .bookshelfViewArea .description {
     margin-top: -5px;
     line-height: 20px;
-    color: #191919;
 }

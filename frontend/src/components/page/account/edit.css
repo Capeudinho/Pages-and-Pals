@@ -13,12 +13,11 @@
     padding-left: 10px;
     padding-right: 10px;
     background-color: #e5e5e5;
-    color: #191919;
 }
 
 .accountEditArea .label
 {
-    color: #7f7f7f;
+    color: #999999;
 }
 
 .accountEditArea .normalInput
@@ -42,12 +41,11 @@
 .accountEditArea .showPasswordButton
 {
     height: 30px;
-    width: 30px;
+    padding: 10px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     background-color: #e5e5e5;
     font-weight: bold;
-    color: #191919;
 }
 
 .accountEditArea .showPasswordButton:hover
@@ -64,7 +62,6 @@
     padding-right: 10px;
     border-radius: 5px;
     background-color: #e5e5e5;
-    color: #191919;
     line-height: 20px;
     cursor: text;
 }

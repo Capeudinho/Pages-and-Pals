@@ -6,17 +6,6 @@
     padding: 20px;
 }
 
-.reviewCreateArea input
-{
-    height: 30px;
-    width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 5px;
-    background-color: #e5e5e5;
-    color: #191919;
-}
-
 .reviewCreateArea .label
 {
     color: #7f7f7f;
@@ -31,7 +20,6 @@
     padding-right: 10px;
     border-radius: 5px;
     background-color: #e5e5e5;
-    color: #191919;
     line-height: 20px;
     cursor: text;
 }
@@ -40,4 +28,68 @@
 {
     content: attr(placeholder);
     color: #7f7f7f; 
+}
+
+.reviewCreateArea .bookScoreBox
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.reviewCreateArea .numberBox
+{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.reviewCreateArea .bookScore
+{
+    flex: 1;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #e5e5e5;
+}
+
+.reviewCreateArea .minusButton
+{
+    height: 30px;
+    width: 30px;
+    background-color: #e5e5e5;
+    font-weight: bold;
+}
+
+.reviewCreateArea .minusButton:hover
+{
+    background-color: #cccccc;
+}
+
+.reviewCreateArea .plusButton
+{
+    height: 30px;
+    width: 30px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #e5e5e5;
+    font-weight: bold;
+}
+
+.reviewCreateArea .plusButton:hover
+{
+    background-color: #cccccc;
+}
+
+.reviewCreateArea .clearButton
+{
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    font-weight: bold;
+}
+
+.reviewCreateArea .clearButton:hover
+{
+    background-color: #cccccc;
 }

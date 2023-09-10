@@ -34,17 +34,31 @@ function ReviewEdit() {
         () => {
             let mounted = true;
             const runEffect = async () => {
-                var response = await api.get
-                ("/review/findownbyid/" + id,
-                {
-                    headers:
+                try{
+                    setOverlay(true);
+                    var response = await api.get
+                    ("/review/findownbyid/" + id,
                     {
-                        email: loggedAccount?.email,
-                        password: loggedAccount?.password
+                        headers:
+                        {
+                            email: loggedAccount?.email,
+                            password: loggedAccount?.password
+                        }
+                    });
+                    setOverlay(false);
+                    setReview(response.data);
+                    textInput.current.innerText = response.data.text;
+                }
+                catch (exception)
+                {
+                    setOverlay(false);
+                    if (exception?.response?.data === "authentication failed")
+                    {
+                        localStorage.clear();
+                        setLoggedAccount(null);
                     }
-                });
-                setReview(response.data);
-                textInput.current.innerText = response.data.text;
+                    navigate("/");
+                }
             }
             runEffect();
             return (() => { mounted = false });
@@ -74,9 +88,39 @@ function ReviewEdit() {
         setReview(newReview);
     }
 
-    function handleChangeRating(newRating) {
+    function handlePlusBookScore() {
+        if (review.bookScore === null)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = 0.5;
+            setReview(newReview);
+        }
+        else if (review.bookScore < 5)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = newReview.bookScore+0.5;
+            setReview(newReview);
+        }
+    }
+
+    function handleMinusBookScore() {
+        if (review.bookScore === null)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = 0.5;
+            setReview(newReview);
+        }
+        else if (review.bookScore > 0.5)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = newReview.bookScore-0.5;
+            setReview(newReview);
+        }
+    }
+
+    function handleClearBookScore() {
         var newReview = { ...review };
-        newReview.bookScore = newRating;
+        newReview.bookScore = null;
         setReview(newReview);
     }
 
@@ -87,20 +131,16 @@ function ReviewEdit() {
     }
 
     function handleConfirmDiscard() {
-        setConfirm([{ identifier: "discard", text: "Discard review?", options: [{ type: "discard", text: "Discard" }, { type: "cancel", text: "Cancel" }] }]);
+        setConfirm([{ identifier: "discard", text: "Discard alterations from review?", options: [{ type: "discard", text: "Discard" }, { type: "cancel", text: "Cancel" }] }]);
     }
 
     async function handleEdit() {
         try {
             setOverlay(true);
-            var newReview = { ...review };
-            if (newReview.bookScore === 0) {
-                newReview.bookScore = null;
-            }
             await api.patch
                 (
                     "/review/update",
-                    newReview,
+                    review,
                     {
                         headers:
                         {
@@ -110,22 +150,22 @@ function ReviewEdit() {
                     }
                 );
             setOverlay(false);
-            setAlert([{ type: "success", text: "Review edited." }]);
+            setAlert([{ type: "success", text: "Review saved." }]);
             navigate(-1);
         }
         catch (exception) {
             setOverlay(false);
             if (exception?.response?.data === "invalid book score") {
-                setAlert([{ type: "warning", text: "Book score is invalid!" }]);
+                setAlert([{ type: "warning", text: "Book score is invalid." }]);
             }
             if (exception?.response?.data === "invalid text") {
-                setAlert([{ type: "warning", text: "Review text is invalid!" }]);
+                setAlert([{ type: "warning", text: "Review text is invalid." }]);
             }
             if (exception?.response?.data === "invalid review") {
-                setAlert([{ type: "warning", text: "Review is invalid!" }]);
+                setAlert([{ type: "warning", text: "Review is invalid." }]);
             }
             if (exception?.response?.data === "duplicate review") {
-                setAlert([{ type: "warning", text: "duplicate review!" }]);
+                setAlert([{ type: "warning", text: "Duplicate review." }]);
             }
             else if (exception?.response?.data === "authentication failed") {
                 localStorage.clear();
@@ -143,8 +183,8 @@ function ReviewEdit() {
     }
 
     return (
-        <div className="page reviewCreateArea">
-            <div className="label">What did you think?</div>
+        <div className="page reviewEditArea">
+            <div className="label">Text</div>
             <div
                 ref={textInput}
                 className="textInput"
@@ -154,16 +194,21 @@ function ReviewEdit() {
                 contentEditable={true}
                 placeholder="Type your review"
             />
-            <div className="label">Rate this book</div>
-            <input
-                className="ratingInput"
-                type="number"
-                value={review.bookScore}
-                onChange={(e) => handleChangeRating((e.target.value))}
-                min={0}
-                max={5}
-                step={0.5}
-            />
+            <div className="label">Score</div>
+            <div className="bookScoreBox">
+                <div className="numberBox">
+                    <div className="bookScore">
+                        {review?.bookScore !== null ? <> {review?.bookScore} <b>★</b></> : "No score"}
+                    </div>
+                    <button className="minusButton" onClick={() => {handleMinusBookScore()}}>
+                        −
+                    </button>
+                    <button className="plusButton" onClick={() => {handlePlusBookScore()}}>
+                        +
+                    </button>
+                </div>
+                <button className="clearButton" onClick={() => {handleClearBookScore()}}>Clear</button>
+            </div>
             <div className="label">Privacy</div>
             <ButtonMode
                 modes={[{ text: "Public", type: true }, { text: "Private", type: false }]}
@@ -171,7 +216,7 @@ function ReviewEdit() {
                 setMode={handleChangePrivacy}
                 appearance="switch"
             />
-            <ButtonGroup options={[{ text: "Edit", operation: handleEdit }, { text: "Discard", operation: handleConfirmDiscard }]} />
+            <ButtonGroup options={[{ text: "Save", operation: handleEdit }, { text: "Discard", operation: handleConfirmDiscard }]} />
         </div>
     );
 }

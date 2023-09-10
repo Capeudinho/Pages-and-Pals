@@ -1,4 +1,4 @@
-.reviewCreateArea
+.reviewEditArea
 {
     display: flex;
     flex-direction: column;
@@ -6,23 +6,12 @@
     padding: 20px;
 }
 
-.reviewCreateArea input
-{
-    height: 30px;
-    width: 100%;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 5px;
-    background-color: #e5e5e5;
-    color: #191919;
-}
-
-.reviewCreateArea .label
+.reviewEditArea .label
 {
     color: #7f7f7f;
 }
 
-.reviewCreateArea .textInput
+.reviewEditArea .textInput
 {
     flex: 1;
     padding-top: 5px;
@@ -31,13 +20,76 @@
     padding-right: 10px;
     border-radius: 5px;
     background-color: #e5e5e5;
-    color: #191919;
     line-height: 20px;
     cursor: text;
 }
 
-.reviewCreateArea .textInput[placeholder]:empty::before
+.reviewEditArea .textInput[placeholder]:empty::before
 {
     content: attr(placeholder);
     color: #7f7f7f; 
+}
+
+.reviewEditArea .bookScoreBox
+{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.reviewEditArea .numberBox
+{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.reviewEditArea .bookScore
+{
+    flex: 1;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #e5e5e5;
+}
+
+.reviewEditArea .minusButton
+{
+    height: 30px;
+    width: 30px;
+    background-color: #e5e5e5;
+    font-weight: bold;
+}
+
+.reviewEditArea .minusButton:hover
+{
+    background-color: #cccccc;
+}
+
+.reviewEditArea .plusButton
+{
+    height: 30px;
+    width: 30px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: #e5e5e5;
+    font-weight: bold;
+}
+
+.reviewEditArea .plusButton:hover
+{
+    background-color: #cccccc;
+}
+
+.reviewEditArea .clearButton
+{
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #e5e5e5;
+    font-weight: bold;
+}
+
+.reviewEditArea .clearButton:hover
+{
+    background-color: #cccccc;
 }

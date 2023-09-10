@@ -22,7 +22,7 @@ function ReviewCreate() {
         (
             {
                 text: "",
-                bookScore: 0,
+                bookScore: null,
                 privacy: true,
                 bookApiId: ""
             }
@@ -51,9 +51,39 @@ function ReviewCreate() {
         setReview(newReview);
     }
 
-    function handleChangeRating(newRating) {
+    function handlePlusBookScore() {
+        if (review.bookScore === null)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = 0.5;
+            setReview(newReview);
+        }
+        else if (review.bookScore < 5)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = newReview.bookScore+0.5;
+            setReview(newReview);
+        }
+    }
+
+    function handleMinusBookScore() {
+        if (review.bookScore === null)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = 0.5;
+            setReview(newReview);
+        }
+        else if (review.bookScore > 0.5)
+        {
+            var newReview = { ...review };
+            newReview.bookScore = newReview.bookScore-0.5;
+            setReview(newReview);
+        }
+    }
+
+    function handleClearBookScore() {
         var newReview = { ...review };
-        newReview.bookScore = newRating;
+        newReview.bookScore = null;
         setReview(newReview);
     }
 
@@ -72,9 +102,6 @@ function ReviewCreate() {
             setOverlay(true);
             var newReview = { ...review };
             newReview.bookApiId = bookApiId;
-            if (newReview.bookScore === 0) {
-                newReview.bookScore = null;
-            }
             await api.post
                 (
                     "/review/create",
@@ -94,16 +121,17 @@ function ReviewCreate() {
         catch (exception) {
             setOverlay(false);
             if (exception?.response?.data === "invalid book score") {
-                setAlert([{ type: "warning", text: "Book score is invalid!" }]);
+                setAlert([{ type: "warning", text: "Book score is invalid." }]);
             }
             if (exception?.response?.data === "invalid text") {
-                setAlert([{ type: "warning", text: "Review text is invalid!" }]);
+                setAlert([{ type: "warning", text: "Review text is invalid." }]);
             }
             if (exception?.response?.data === "invalid review") {
-                setAlert([{ type: "warning", text: "Review is invalid!" }]);
+                setAlert([{ type: "warning", text: "Review is invalid." }]);
             }
             if (exception?.response?.data === "duplicate review") {
-                setAlert([{ type: "warning", text: "duplicate review!" }]);
+                setAlert([{ type: "warning", text: "Duplicate review." }]);
+                navigate("/book/view/" + bookApiId);
             }
             else if (exception?.response?.data === "authentication failed") {
                 localStorage.clear();
@@ -122,7 +150,7 @@ function ReviewCreate() {
 
     return (
         <div className="page reviewCreateArea">
-            <div className="label">What did you think?</div>
+            <div className="label">Text</div>
             <div
                 className="textInput"
                 value={review?.text}
@@ -131,16 +159,21 @@ function ReviewCreate() {
                 contentEditable={true}
                 placeholder="Type your review"
             />
-            <div className="label">Rate this book</div>
-            <input
-                className="ratingInput"
-                type="number"
-                value={review.bookScore}
-                onChange={(e) => handleChangeRating((e.target.value))}
-                min={0}
-                max={5}
-                step={0.5}
-            />
+            <div className="label">Score</div>
+            <div className="bookScoreBox">
+                <div className="numberBox">
+                    <div className="bookScore">
+                        {review?.bookScore !== null ? <> {review?.bookScore} <b>★</b></> : "No score"}
+                    </div>
+                    <button className="minusButton" onClick={() => {handleMinusBookScore()}}>
+                        −
+                    </button>
+                    <button className="plusButton" onClick={() => {handlePlusBookScore()}}>
+                        +
+                    </button>
+                </div>
+                <button className="clearButton" onClick={() => {handleClearBookScore()}}>Clear</button>
+            </div>
             <div className="label">Privacy</div>
             <ButtonMode
                 modes={[{ text: "Public", type: true }, { text: "Private", type: false }]}

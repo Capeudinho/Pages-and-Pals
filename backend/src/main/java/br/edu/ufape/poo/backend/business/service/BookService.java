@@ -14,26 +14,7 @@ import jakarta.transaction.Transactional;
 public class BookService implements BookServiceInterface {
 	@Autowired
 	private BookRepository bookRepository;
-
-	public Book findByApiId(String apiId) throws Exception {
-		Optional<Book> bookOptional = bookRepository.findByApiId(apiId);
-		if (!bookOptional.isPresent()) {
-			return null;
-		}
-		Book book = bookOptional.get();
-		return book;
-	}
-
-	public Double findScoreByApiId(String apiId) throws Exception {
-		Optional<Book> bookOptional = bookRepository.findByApiId(apiId);
-		if (!bookOptional.isPresent()) {
-			return null;
-		}
-		Book book = bookOptional.get();
-		Double score = ((book.getScoreTotal()) / ((double) book.getReviewCount()));
-		return score;
-	}
-
+	
 	public Book create(Book book) {
 		book.setReviewCount(0);
 		book.setScoreTotal(0.0);
@@ -56,5 +37,24 @@ public class BookService implements BookServiceInterface {
 		}
 		bookRepository.delete(book);
 		return book;
+	}
+
+	public Book findByApiId(String apiId) throws Exception {
+		Optional<Book> bookOptional = bookRepository.findByApiId(apiId);
+		if (!bookOptional.isPresent()) {
+			return null;
+		}
+		Book book = bookOptional.get();
+		return book;
+	}
+
+	public Double findScoreByApiId(String apiId) throws Exception {
+		Optional<Book> bookOptional = bookRepository.findByApiId(apiId);
+		if (!bookOptional.isPresent()) {
+			return null;
+		}
+		Book book = bookOptional.get();
+		Double score = ((book.getScoreTotal()) / ((double) book.getReviewCount()));
+		return score;
 	}
 }

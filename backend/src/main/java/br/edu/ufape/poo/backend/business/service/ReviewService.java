@@ -71,17 +71,17 @@ public class ReviewService implements ReviewServiceInterface {
 		return review;
 	}
 
-	public List<Review> deleteByOwnerId(long ownerId) throws Exception {
-		List<Review> reviews = reviewRepository.deleteByOwnerId(ownerId);
-		return reviews;
-	}
-
 	public Review findById(long id) throws Exception {
 		Review review = reviewRepository.findById(id).orElse(null);
 		if (review == null) {
 			throw new IncorrectIdException();
 		}
 		return review;
+	}
+	
+	public List<Review> findByOwnerId(long id) {
+		List<Review> reviews = reviewRepository.findByOwnerIdOrderByCreationDateDesc(id);
+		return reviews;
 	}
 
 	// Buscar por todas as Reviews de um usuário

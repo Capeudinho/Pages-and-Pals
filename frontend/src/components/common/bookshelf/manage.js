@@ -32,7 +32,7 @@ function BookshelfManage({book})
                 {
                     setShowBookshelves(false);
                 }
-                else if (!showBookshelves && click?.target?.closest(".clickResponsiveBookshelf"+book?.apiId) !== undefined && click?.target?.closest(".clickResponsiveBookshelf"+book?.apiId) !== null) {
+                else if (!showBookshelves && click?.target?.closest(".clickResponsiveBookshelf"+book?.apiId) !== null && click?.target?.closest(".clickResponsiveBookshelf"+book?.apiId) !== undefined) {
                     if (bookshelves?.length === undefined) {
                         try {
                             setOverlay(true);
@@ -170,7 +170,7 @@ function BookshelfManage({book})
     return (
         <div className="bookshelfManageArea">
             <button className={"manageButton clickResponsiveBookshelf"+book?.apiId}>
-                M
+                ✔
             </button>
             {
                 showBookshelves ?

@@ -7,8 +7,8 @@ public interface ReviewServiceInterface {
 	public Review create(Review review) throws Exception;
 	public Review update(Review review) throws Exception;
 	public Review deleteById(long id) throws Exception;
-	public List<Review> deleteByOwnerId(long ownerId) throws Exception;
 	public Review findById(long id) throws Exception;
+	public List<Review> findByOwnerId(long id);
 	public List<Review> findByOwnerIdPaginate(long id, int offset, int limit);
 	public List<Review> findByOwnerIdAndPublicPaginate(long id, int offset, int limit);
 	public List<Review> findByBookApiIdAndPublicOrOwnerIdPaginate(String bookApiId, long ownerId, int offset, int limit);

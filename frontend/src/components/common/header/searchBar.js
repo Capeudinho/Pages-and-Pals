@@ -1,36 +1,62 @@
-import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useContext } from "react";
+import { Link, useNavigate, useHref } from "react-router-dom";
 
 import loggedAccountContext from "../../context/loggedAccount.js";
 import alertContext from "../../context/alert.js";
 import confirmContext from "../../context/confirm.js";
+import clickContext from "../../context/click.js";
 
 import "./searchBar.css";
 
 
 function SearchBar() {
     const { loggedAccount, setLoggedAccount } = useContext(loggedAccountContext);
-    const [showProfileOptions, setShowProfileOptions] = useState(false);
+    const [showOptions, setShowOptions] = useState(false);
     const { setAlert } = useContext(alertContext);
     const { confirm, setConfirm } = useContext(confirmContext);
+    const {click, setClick} = useContext(clickContext);
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
+    const href = useHref();
 
     useEffect
-        (
-            () => {
-                let mounted = true;
-                const runEffect = async () => {
-                    if (confirm === "logout") {
-                        setConfirm(null);
-                        handleLogOut();
-                    }
+    (
+        () =>
+        {
+            if (showOptions && click?.target?.closest(".clickSensitive") === null) {
+                setShowOptions(false);
+            }
+            else if (!showOptions && click?.target?.closest(".clickResponsiveAccount") !== null ) {
+                setShowOptions(true);
+            }
+        },
+        [click]
+    );
+
+    useEffect
+    (
+        () => {
+            let mounted = true;
+            const runEffect = async () => {
+                if (confirm === "logout") {
+                    setConfirm(null);
+                    handleLogOut();
                 }
-                runEffect();
-                return (() => { mounted = false });
-            },
-            [confirm]
-        );
+            }
+            runEffect();
+            return (() => { mounted = false });
+        },
+        [confirm]
+    );
+
+    useEffect
+    (
+        () =>
+        {
+            setShowOptions(false);
+        },
+        [href]
+    );
 
     const handleSearch = async () => {
         var newSearch = "?";
@@ -53,66 +79,78 @@ function SearchBar() {
 
     return (
         <div className="searchBarArea">
-            <div className="logoArea">
+            <div className="leftBox">
                 <Link
-                    to={`/`}>
+                    to={"/"}>
                     <img
                         className="logo"
                         src={process.env.PUBLIC_URL + "/large logo.svg"}
                     />
                 </Link>
             </div>
-
-            <div className="inputGroup">
-                <input type="text" placeholder="Search books"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    spellCheck={false}
-                />
-                <button onClick={handleSearch}><img
-                    className="search"
-                    src={process.env.PUBLIC_URL + "/search-icon.svg"}
-                /></button>
-            </div>
-
-            <div className="rightArea">
-                {loggedAccount?.id !== undefined ?
-                    <div className="profileContainer"
-                        onMouseEnter={() => setShowProfileOptions(true)}
-                        onMouseLeave={() => setShowProfileOptions(false)}
-                    >
-                        <div
-                            className="ownerPicture"
-                            style={{ backgroundImage: `url(${loggedAccount?.picture})` }}
+            <div className="middleBox">
+                <div className="searchBox">
+                    <div className="label">Search books</div>
+                    <div className="inputGroup">
+                        <input type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        spellCheck={false}
                         />
-                        {showProfileOptions && (
-                            <div className="profileOptions">
+                        <button
+                        className="searchButton"
+                        onClick={handleSearch}>
+                            Search
+                        </button>
+                    </div>
+                </div>
+                <Link
+                className="advancedSearchButton"
+                to="/search/advanced"
+                >
+                    Advanced
+                </Link>
+            </div>
+            <div className="rightBox">
+                {
+                    loggedAccount?.id !== undefined ?
+                    <>
+                        <div
+                        className="picture clickResponsiveAccount"
+                        style={{ backgroundImage: "url("+loggedAccount?.picture+")"}}
+                        />
+                        {
+                            showOptions ?
+                            <div className="options clickSensitive">
+                                <div>{loggedAccount?.name}</div>
                                 <Link
-                                    className="advanced"
-                                    to="/search/advanced"
+                                className="option"
+                                to={"/account/view/"+loggedAccount?.id}
                                 >
-                                    Advanced Search
+                                    Account page
                                 </Link>
-
                                 <Link
-                                    className="account"
-                                    to={`/account/view/${loggedAccount?.id}`}>
-                                    Your Profile
+                                className="option"
+                                to="/account/edit">
+                                    Edit account
                                 </Link>
-
-                                <button className="logOut" onClick={handleConfirmLogOut}>Log Out</button>
-                            </div>
-                        )}
-
-                    </div> : <Link
-                        className="register"
-                        to={"/account/enter"}>
+                                <div
+                                className="option"
+                                onClick={handleConfirmLogOut}
+                                >
+                                    Log out
+                                </div>
+                            </div> :
+                            <></>
+                        }
+                    </> :
+                    <Link
+                    className="register"
+                    to={"/account/enter"}>
                         Register
                     </Link>
                 }
             </div>
-
-
         </div>
     );
 }

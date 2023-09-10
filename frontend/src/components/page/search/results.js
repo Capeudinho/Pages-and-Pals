@@ -77,7 +77,7 @@ function SearchResults() {
             {
                 response = await api.get
                 (
-                    "/book/findownbyadvanced"+newSearch,
+                    "/book/findbyadvancedauthenticated"+newSearch,
                     {
                         headers:
                         {

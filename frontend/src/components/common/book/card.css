@@ -36,14 +36,23 @@
 .bookCardArea .title
 {
     font-size: 20.25px;
-    line-height: 15px;
+    line-height: 25px;
+    margin-top: -5px;
+    margin-bottom: -5px;
 }
 
 .bookCardArea .authors
 {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    flex-wrap: wrap;
+    row-gap: 10px;
+    column-gap: 20px;
+}
+
+.bookCardArea .author
+{
+    white-space: nowrap;
 }
 
 .bookCardArea .categories

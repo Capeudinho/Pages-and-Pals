@@ -14,7 +14,6 @@
     padding-right: 10px;
     border-radius: 5px;
     background-color: #e5e5e5;
-    color: #191919;
 }
 
 .bookshelfEditArea .label
@@ -31,7 +30,6 @@
     padding-right: 10px;
     border-radius: 5px;
     background-color: #e5e5e5;
-    color: #191919;
     line-height: 20px;
     cursor: text;
 }
