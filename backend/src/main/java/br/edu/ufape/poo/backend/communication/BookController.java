@@ -30,7 +30,7 @@ public class BookController {
 		}
 	}
 
-	@GetMapping("/findownbyadvanced")
+	@GetMapping("/findbyadvancedauthenticated")
 	public ResponseEntity<?> findOwnByAdvanced(
 			@RequestParam(required = false, name = "term") String term,
 			@RequestParam(required = false, name = "title") String title,
@@ -47,7 +47,7 @@ public class BookController {
 			@RequestHeader("password") String password) {
 		ResponseEntity<?> responseEntity;
 		try {
-			List<Map<String, Object>> resultsList = facade.bookFindOwnByAdvanced(term, title, author, subject, publisher, isbn, offset,
+			List<Map<String, Object>> resultsList = facade.bookFindByAdvancedAuthenticated(term, title, author, subject, publisher, isbn, offset,
 					limit, ownerName, bookshelfName, resultType, email, password);
 			responseEntity = new ResponseEntity<List<Map<String, Object>>>(resultsList, HttpStatus.OK);
 			return responseEntity;

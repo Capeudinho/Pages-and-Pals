@@ -6,6 +6,7 @@ import loggedAccountContext from "../../context/loggedAccount.js";
 import overlayContext from "../../context/overlay.js";
 import scrollContext from "../../context/scroll.js";
 import deletedReviewContext from "../../context/deletedReview.js";
+import confirmContext from "../../context/confirm.js";
 
 import BookshelfManage from "../../common/bookshelf/manage";
 import ReviewCard from "../../common/review/card.js";
@@ -21,42 +22,39 @@ function BookView() {
     const [book, setBook] = useState(null);
     const { scroll, setScroll } = useContext(scrollContext);
     const { deletedReview, setDeletedReview } = useContext(deletedReviewContext);
+    const { confirm, setConfirm } = useContext(confirmContext);
     const deletedReviewRef = useRef(false);
     const [reviews, setReviews] = useState(null);
     const { apiId } = useParams();
     const navigate = useNavigate();
 
     useEffect
-        (
-            () => {
-                let mounted = true;
-                const runEffect = async () => {
-                    try {
-                        setOverlay(true);
-                        var response = await api.get
-                            (
-                                "book/findbyapiid/" + apiId
-                            );
-                        if (response?.data?.reviewCount > 0) {
-                            await loadReviews(true);
-                        }
+    (
+        () => {
+            let mounted = true;
+            const runEffect = async () => {
+                await loadBook();
+            }
+            runEffect();
+            return (() => { mounted = false });
+        }, [apiId]
+    );
 
-                        setOverlay(false);
-                        setBook(response?.data);
-
-                    } catch (exception) {
-                        setOverlay(false);
-                        if (exception?.response?.data === "authentication failed") {
-                            localStorage.clear();
-                            setLoggedAccount(null);
-                        }
-                        navigate("/");
-                    }
+    useEffect
+    (
+        () => {
+            let mounted = true;
+            const runEffect = async () => {
+                if (typeof confirm === "string" && confirm?.startsWith("deleteReview"))
+                {
+                    await loadBook();
                 }
-                runEffect();
-                return (() => { mounted = false });
-            }, [apiId]
-        );
+            }
+            runEffect();
+            return (() => { mounted = false });
+        }, [confirm]
+    );
+
     useEffect
         (
             () => {
@@ -103,14 +101,28 @@ function BookView() {
             [deletedReview]
         );
 
-    function cleanDescriptionUtility(description) {
-        const cleanedText = description?.replace(/<[^>]*>?/gm, '');
-
-        const formattedText = cleanedText?.replace(/<br\s*\/?>/gm, '\n');
-
-        return formattedText;
+    async function loadBook()
+    {
+        try {
+            setOverlay(true);
+            var response = await api.get
+                (
+                    "book/findbyapiid/" + apiId
+                );
+            if (response?.data?.reviewCount > 0) {
+                await loadReviews(true);
+            }
+            setOverlay(false);
+            setBook(response?.data);
+        } catch (exception) {
+            setOverlay(false);
+            if (exception?.response?.data === "authentication failed") {
+                localStorage.clear();
+                setLoggedAccount(null);
+            }
+            navigate("/");
+        }
     }
-
 
     async function loadReviews(overwrite) {
         if (overwrite || reviews?.length < book?.reviewCount) {
@@ -174,185 +186,197 @@ function BookView() {
         }
     }
 
+    function handleFormatDescription(description)
+    {
+        const cleanedText = description?.replace(/<[^>]*>?/gm, '');
+        const formattedText = cleanedText?.replace(/<br\s*\/?>/gm, '\n');
+        return formattedText;
+    }
+
+    function handleFormatDate(date)
+    {
+        if (date !== null && date !== undefined)
+        {
+            var dateArray = date?.split("-");
+            var newDate = dateArray[1]+"/"+dateArray[2]+"/"+dateArray[0];
+            return newDate;
+        }
+        else
+        {
+            return undefined;
+        }
+    }
+
     const toggleDetails = () => {
         setShowDetails(!showDetails);
     };
 
     return (
         <div className="page bookViewArea">
-            <div className="bookArea">
-                <div className="scoreArea">
+            <div className="bookBox">
+                <div className="scoreBox">
                     <div
                         className="cover"
                         style={{ backgroundImage: "url(" + book?.cover + ")" }}
                     />
                     {
                         book?.score !== null ?
-                            <div className="score">{book?.score} ★</div> :
+                            <div className="score">{book?.score} <b>★</b></div> :
                             <></>
                     }
                 </div>
-                <div
-                    className="bookInfoArea" >
-                    {
-                        book?.title !== "" ?
-                            <div className="title">{book?.title}</div> :
+                <div className="book">
+                    <div className="topBox">
+                        <div className="topRightBox">
+                            {
+                                book?.title !== "" ?
+                                    <div className="title">{book?.title}</div> :
+                                    <></>
+                            }
+                            {
+                                book?.authors?.length > 0 ?
+                                    <div className="authors">
+                                        {
+                                            book?.authors?.map
+                                                (
+                                                    (author, authorIndex) => {
+                                                        return (
+                                                            <div
+                                                                className="author"
+                                                                key={authorIndex}
+                                                            >
+                                                                {author}
+                                                            </div>
+                                                        );
+                                                    }
+                                                )
+                                        }
+                                    </div> :
+                                    <></>
+                            }
+                            {
+                                book?.categories?.length > 0 ?
+                                    <div className="categories">
+                                        {
+                                            book?.categories?.map
+                                                (
+                                                    (category, categoryIndex) => {
+                                                        return (
+                                                            <div
+                                                                className="category"
+                                                                key={categoryIndex}
+                                                            >
+                                                                {category}
+                                                            </div>
+                                                        );
+                                                    }
+                                                )
+                                        }
+                                    </div> :
+                                    <></>
+                            }
+                        </div>
+                        {
+                            loggedAccount?.id !== undefined ?
+                            <BookshelfManage book={book} />:
                             <></>
-                    }
-                    {
-                        book?.authors?.length > 0 ?
-                            <div className="authors">
-                                {
-                                    book?.authors?.map
-                                        (
-                                            (author, authorIndex) => {
-                                                return (
-                                                    <div
-                                                        className="author"
-                                                        key={authorIndex}
-                                                    >
-                                                        {author}
-                                                    </div>
-                                                );
-                                            }
-                                        )
-                                }
-                            </div> :
-                            <></>
-                    }
-                    {
-                        book?.categories?.length > 0 ?
-                            <div className="categories">
-                                {
-                                    book?.categories?.map
-                                        (
-                                            (category, categoryIndex) => {
-                                                return (
-                                                    <div
-                                                        className="category"
-                                                        key={categoryIndex}
-                                                    >
-                                                        {category}
-                                                    </div>
-                                                );
-                                            }
-                                        )
-                                }
-                            </div> :
-                            <></>
-                    }
+                        }
+                    </div>
                     {
                         book?.description !== "" ?
                             <div
-                                className="description">{cleanDescriptionUtility(book?.description)}
+                                className="description">{handleFormatDescription(book?.description)}
                             </div>
                             :
                             <></>
                     }
-                    <button onClick={toggleDetails}>
-                        {showDetails ? "Hide Details" : "View Details"}
+                    <button
+                    className ="showMoreButton"
+                    onClick={toggleDetails}
+                    >
+                        {showDetails ? "Hide details" : "View details"}
                     </button>
-
                     {showDetails && (
-                        <div className="additionalInfoArea">
+                        <div className="additionalInfo">
                             <div className="labels">
                                 {
-                                    book?.publishedDate ? (
-                                        <div className="publishedDate">Published Date
-                                        </div>
-                                    ) : (
-                                        <></>
-                                    )
+                                    book?.publishedDate !== undefined ?
+                                    <div className="publishedDate">Published date</div> :
+                                    <></>
                                 }
-
-                                {book?.publisher ? (
-                                    <div className="publisher">Publisher </div>
-                                ) : (
-                                    <></>
-                                )}
-
-                                {book?.language ? (
-                                    <div className="language">Language </div>
-                                ) : (
-                                    <></>
-                                )}
-
-                                {book?.pageCount ? (
-                                    <div className="pageCount">Page Count </div>
-                                ) : (
-                                    <></>
-                                )}
-
                                 {
-                                    book?.ISBNs?.length > 0 ? (
-                                        <div className="ISBNs"> ISBNs
-                                        </div>
-                                    ) : (
-                                        <></>
-                                    )
+                                    book?.publisher !== undefined ?
+                                    <div className="publisher">Publisher</div> :
+                                    <></>
+                                }
+                                {
+                                    book?.language !== undefined ?
+                                    <div className="language">Language</div> :
+                                    <></>
+                                }
+                                {
+                                    book?.pageCount !== undefined ?
+                                    <div className="pageCount">Page count</div> :
+                                    <></>
+                                }
+                                {
+                                    book?.ISBNs?.length > 0 ? 
+                                    <div className="ISBNs"> ISBNs</div> :
+                                    <></>
                                 }
                             </div>
-
                             <div className="content">
-
-                                {book?.publishedDate ?
+                                {
+                                    book?.publishedDate !== undefined ?
                                     <div className="publishedDate">
-                                        {book?.publishedDate}
+                                        {handleFormatDate(book?.publishedDate)}
                                     </div> :
                                     <></>
                                 }
-
-
-                                {book?.publisher ?
+                                {
+                                    book?.publisher !== undefined ?
                                     <div className="publisher">
                                         {book?.publisher}
                                     </div> :
                                     <></>
                                 }
-
-                                {book?.language ?
+                                {
+                                    book?.language !== undefined ?
                                     <div className="language">
                                         {book?.language}
                                     </div> :
                                     <></>
                                 }
-
-                                {book?.pageCount ?
+                                {
+                                    book?.pageCount !== undefined ?
                                     <div className="pageCount">
                                         {book?.pageCount}
                                     </div> :
                                     <></>
                                 }
-
                                 {
-                                    book?.ISBNs?.length > 0 ? (
-                                        book?.ISBNs?.map((ISBNs, ISBNsIndex) => (
+                                    book?.ISBNs?.length > 0 ? 
+                                    book?.ISBNs?.map
+                                    (
+                                        (ISBNs, ISBNsIndex) =>
+                                        (
                                             <div className="ISBN" key={ISBNsIndex}>
-                                                {ISBNs.identifier} ({ISBNs.type})
+                                                <div>{ISBNs?.identifier}</div>
+                                                <div>{ISBNs?.type}</div>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <></>
-                                    )
+                                        )
+                                    ) :
+                                    <></>
                                 }
-
-
                             </div>
                         </div>
                     )
                     }
-                </div >
-
-                {
-                    loggedAccount?.id !== undefined ?
-                        <BookshelfManage book={book} /> :
-                        <></>
-                }
+                </div>
             </div>
-            <div className="reviewArea">
-                <div className="reviews">Reviews</div>
+            <div className="reviewBox">
                 <Link to={"/review/create/" + apiId}>
-                    <button className="addReviewButton">Add a Review</button>
+                    <button className="addReviewButton">Create review</button>
                 </Link>
                 {
                     reviews?.map
@@ -367,10 +391,8 @@ function BookView() {
                                 );
                             }
                         )
-
                 }
             </div>
-
         </div>
     );
 }

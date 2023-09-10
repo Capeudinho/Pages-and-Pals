@@ -25,6 +25,7 @@ body, div, input, select, button
     font-family: Roboto, sans-serif;
     font-size: 13.5px;
     line-height: 10px;
+    color: #191919;
 }
 
 button
@@ -69,7 +70,7 @@ button:hover
 {
     border: 5px solid rgba(0, 0, 0, 0);
     border-radius: 100px;
-    background-color: #cccccc;
+    background-color: #d8d8d8;
     background-clip: padding-box;
 }
 
@@ -80,5 +81,5 @@ button:hover
 
 ::-webkit-scrollbar-thumb:active
 {
-    background-color: #b2b2b2;
+    background-color: #a5a5a5;
 }

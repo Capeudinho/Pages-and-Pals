@@ -78,7 +78,7 @@ function BookCard({book, bookIndex, remove, removeable, manageable})
                 }
                 {
                     book?.score !== null ?
-                    <div className = "score">{book?.score} ★</div> :
+                    <div className = "score">{book?.score} <b>★</b></div> :
                     <></>
                 }
             </div>
@@ -88,7 +88,7 @@ function BookCard({book, bookIndex, remove, removeable, manageable})
                 className = "removeButton"
                 onClick = {() => {remove(bookIndex)}}
                 >
-                    X
+                    ✘
                 </button> :
                 <></>
             }

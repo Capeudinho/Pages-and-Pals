@@ -4,7 +4,6 @@ import Routing from "./routing.js";
 import api from "../../services/api.js";
 
 import AlertList from "../common/alert/list.js";
-import AdvancedSearch from "../page/search/advanced.js";
 
 import loggedAccountContext from "../context/loggedAccount.js";
 import alertContext from "../context/alert.js";

@@ -13,7 +13,6 @@
     padding-left: 10px;
     padding-right: 10px;
     background-color: #e5e5e5;
-    color: #191919;
 }
 
 .accountEnterArea .topBox
@@ -28,7 +27,6 @@
 
 .accountEnterArea .text
 {
-    color: #191919;
     font-size: 27px;
     line-height: 20px;
 }
@@ -66,12 +64,11 @@
 .accountEnterArea .showPasswordButton
 {
     height: 30px;
-    width: 30px;
+    padding: 10px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     background-color: #e5e5e5;
     font-weight: bold;
-    color: #191919;
 }
 
 .accountEnterArea .showPasswordButton:hover

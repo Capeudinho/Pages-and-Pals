@@ -170,7 +170,7 @@ function AccountEnter()
                             className = "showPasswordButton"
                             onClick = {() => {handleChangeShowLogInPassword()}}
                             >
-                                {showLogInPassword ? "H" : "S"}
+                                {showLogInPassword ? "Hide" : "Show"}
                             </button>
                         </div>
                         <ButtonGroup options = {[{text: "Log in", operation: handleLogIn}]}/>
@@ -203,7 +203,7 @@ function AccountEnter()
                             className = "showPasswordButton"
                             onClick = {() => {handleChangeShowSignUpPassword()}}
                             >
-                                {showSignUpPassword ? "H" : "S"}
+                                {showSignUpPassword ? "Hide" : "Show"}
                             </button>
                         </div>
                         <ButtonGroup options = {[{text: "Sign up", operation: handleSignUp}]}/>

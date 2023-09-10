@@ -101,7 +101,11 @@ public class Facade {
 			throw new AccessDeniedException();
 		}
 		bookshelfService.deleteByOwnerId(id);
-		reviewService.deleteByOwnerId(id);
+		List<Review> reviews = reviewService.findByOwnerId(id);
+		for(int index = 0; index < reviews.size(); index++)
+		{
+			reviewDeleteByIdUtility(reviews.get(index));
+		}
 		Account oldAccount = accountService.deleteById(id);
 		Map<String, Object> oldAccountProfile = new HashMap<>();
 		oldAccountProfile.put("id", oldAccount.getId());
@@ -275,7 +279,7 @@ public class Facade {
 		return result;
 	}
 
-	public List<Map<String, Object>> bookFindOwnByAdvanced(String term, String title, String author, String subject,
+	public List<Map<String, Object>> bookFindByAdvancedAuthenticated(String term, String title, String author, String subject,
 			String publisher, String isbn, int offset, int limit, String ownerName, String bookshelfName,
 			String resultType, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
@@ -313,8 +317,8 @@ public class Facade {
 			}
 			Double bookScore = book.getScoreTotal() + newReview.getBookScore();
 			book.setScoreTotal(bookScore);
-			int reviewsCount = book.getReviewCount() + 1;
-			book.setReviewCount(reviewsCount);
+			int reviewCount = book.getReviewCount() + 1;
+			book.setReviewCount(reviewCount);
 			bookService.update(book);
 		}
 		return newReview;
@@ -322,21 +326,21 @@ public class Facade {
 
 	// Verificando se a conta que quer editar existe e se é criadora da Review
 	public Review reviewUpdate(Review review, String email, String password) throws Exception {
-
 		Account requestingAccount = accountService.authenticate(email, password);
 		Review oldReview = reviewService.findById(review.getId());
+		Double oldBookScore = oldReview.getBookScore();
 		if (requestingAccount.getId() != oldReview.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
 		Review newReview = reviewService.update(review);
 		Book book = bookService.findByApiId(oldReview.getBookApiId());
 		Double bookScore;
-		int reviewsCount;
-		if (oldReview.getBookScore() != null) {
-			bookScore = book.getScoreTotal() - oldReview.getBookScore();
+		int reviewCount;
+		if (oldBookScore != null) {
+			bookScore = book.getScoreTotal() - oldBookScore;
 			book.setScoreTotal(bookScore);
-			reviewsCount = book.getReviewCount() - 1;
-			book.setReviewCount(reviewsCount);
+			reviewCount = book.getReviewCount() - 1;
+			book.setReviewCount(reviewCount);
 			if (book.getReviewCount() == 0 && newReview.getBookScore() == null) {
 				bookService.deleteByApiId(book.getApiId());
 			} else {
@@ -351,8 +355,8 @@ public class Facade {
 			}
 			bookScore = book.getScoreTotal() + newReview.getBookScore();
 			book.setScoreTotal(bookScore);
-			reviewsCount = book.getReviewCount() + 1;
-			book.setReviewCount(reviewsCount);
+			reviewCount = book.getReviewCount() + 1;
+			book.setReviewCount(reviewCount);
 			bookService.update(book);
 		}
 		return newReview;
@@ -361,25 +365,11 @@ public class Facade {
 	// Verificando se a conta que quer deletar existe e se é criadora da Review
 	public Review reviewDeleteById(long id, String email, String password) throws Exception {
 		Account requestingAccount = accountService.authenticate(email, password);
-		Review oldReview = reviewService.findById(id);
-		if (requestingAccount.getId() != oldReview.getOwner().getId()) {
+		Review review = reviewService.findById(id);
+		if (requestingAccount.getId() != review.getOwner().getId()) {
 			throw new AccessDeniedException();
 		}
-		Book book = bookService.findByApiId(oldReview.getBookApiId());
-		Double bookScore;
-		int reviewsCount;
-		if (oldReview.getBookScore() != null) {
-			bookScore = book.getScoreTotal() - oldReview.getBookScore();
-			book.setScoreTotal(bookScore);
-			reviewsCount = book.getReviewCount() - 1;
-			book.setReviewCount(reviewsCount);
-			if (book.getReviewCount() == 0) {
-				bookService.deleteByApiId(book.getApiId());
-			} else {
-				bookService.update(book);
-			}
-		}
-		oldReview = reviewService.deleteById(id);
+		Review oldReview = reviewDeleteByIdUtility(review);
 		return oldReview;
 	}
 	
@@ -610,6 +600,26 @@ public class Facade {
 			results.addAll(bookshelfCards);
 		}
 		return results;
+	}
+	
+	private Review reviewDeleteByIdUtility(Review review) throws Exception
+	{
+		Book book = bookService.findByApiId(review.getBookApiId());
+		Double bookScore;
+		int reviewsCount;
+		if (review.getBookScore() != null) {
+			bookScore = book.getScoreTotal() - review.getBookScore();
+			book.setScoreTotal(bookScore);
+			reviewsCount = book.getReviewCount() - 1;
+			book.setReviewCount(reviewsCount);
+			if (book.getReviewCount() == 0) {
+				bookService.deleteByApiId(book.getApiId());
+			} else {
+				bookService.update(book);
+			}
+		}
+		Review oldReview = reviewService.deleteById(review.getId());
+		return oldReview;
 	}
 
 	// Função de utilidade para buscar por reviews sem capa, pelo Id do livro

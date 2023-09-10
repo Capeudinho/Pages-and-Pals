@@ -1,85 +1,97 @@
 .bookViewArea {
   display: flex;
   flex-direction: column;
-  gap: 50px;
+  gap: 20px;
   padding: 20px;
 }
 
-.bookViewArea .bookArea {
+.bookViewArea .bookBox {
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  gap: 20px;
 }
 
-.bookViewArea .scoreArea {
+.bookViewArea .scoreBox {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 }
 
-.bookViewArea .scoreArea .cover {
-  height: 150px;
-  width: 100px;
+.bookViewArea .cover {
+  height: 180px;
+  width: 120px;
   border-radius: 5px;
   background-size: cover;
   background-position: center;
   background-color: #e5e5e5;
 }
 
-.bookViewArea .scoreArea button {
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #cccccc;
-  font-weight: bold;
-  color: #333333;
-}
-
-.bookViewArea .scoreArea .score {
+.bookViewArea .score {
   margin-left: auto;
-}
-
-.bookViewArea .bookInfoArea {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 9px;
-}
-
-.bookViewArea .bookInfoArea button {
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #cccccc;
-  font-weight: bold;
-  color: #333333;
-}
-
-.bookViewArea .bookInfoArea {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 9px;
-}
-
-.bookViewArea .bookInfoArea .title {
+  margin-right: auto;
   font-size: 20.25px;
   line-height: 15px;
 }
 
-.bookViewArea .bookInfoArea .authors {
+.bookViewArea .book {
   display: flex;
-  flex-direction: row;
-  padding-bottom: 10px;
-  gap: 10px;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.bookViewArea .bookInfoArea .categories {
+.bookViewArea .topBox {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.bookViewArea .topRightBox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.bookViewArea .bookshelfManageArea {
+    margin-left: auto;
+}
+
+.bookViewArea .showMoreButton {
+  border-radius: 5px;
+  font-weight: bold;
+  color: #999999;
+}
+
+.bookViewArea .showMoreButton:hover {
+    color: #191919;
+}
+
+.bookViewArea .title {
+    font-size: 27px;
+    line-height: 30px;
+    margin-top: -5px;
+    margin-bottom: 5px;
+}
+
+.bookViewArea .authors {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  row-gap: 10px;
+  column-gap: 20px;
+}
+
+.bookViewArea .author {
+    white-space: nowrap;
+}
+
+.bookViewArea .categories {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.bookViewArea .bookInfoArea .category {
+.bookViewArea .category {
   padding: 5px;
   border-radius: 5px;
   background-color: #e5e5e5;
@@ -87,63 +99,65 @@
   white-space: nowrap;
 }
 
-.bookViewArea .bookInfoArea .description {
+.bookViewArea .description {
   text-align: left;
   display: flex;
   flex-direction: row;
-  gap: 15px;
-  line-height: 1.5;
+  margin-top: -5px;
+  margin-bottom: -5px;
+  line-height: 20px;
 }
 
-.bookViewArea .bookInfoArea .additionalInfoArea {
-  
+.bookViewArea .additionalInfo {
   display: flex;
   flex-direction: row;
   gap: 20px;
+  white-space: nowrap;
 }
 
-.bookViewArea .bookInfoArea .additionalInfoArea .labels {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-weight:bold;
-  color: #7f7f7f;
-}
-
-.bookViewArea .bookInfoArea .additionalInfoArea .content {
+.bookViewArea .labels {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.bookViewArea .bookInfoArea .additionalInfoArea .ISBNs {
+.bookViewArea .labels div {
+
+    color: #999999;
+}
+
+.bookViewArea .content {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.bookViewArea .reviewArea {
+.bookViewArea .ISBNs {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.bookViewArea .reviewArea .reviews {
-  font-size: 20.25px;
-  line-height: 15px;
+.bookViewArea .ISBN {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 
-.bookViewArea .reviewArea .addReviewButton {
-  height: 30px;
+.bookViewArea .reviewBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bookViewArea .addReviewButton {
   width: 100%;
-  padding-left: 9px;
-  padding-right: 9px;
+  padding: 10px;
   border: solid 1px #e5e5e5;
   border-radius: 5px;
   font-weight: bold;
-  color: #191919;
 }
 
-.bookViewArea .reviewArea .addReviewButton:hover {
+.bookViewArea .addReviewButton:hover {
   background-color: #f2f2f2;
 }

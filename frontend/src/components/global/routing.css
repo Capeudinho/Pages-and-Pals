@@ -8,27 +8,27 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    background-color: #e5e5e5;
+    background-color: #f2f2f2;
     overflow-y: scroll;
     overflow-x: auto;
 }
 
 .routingArea .enterBackground {
     padding-left: 400px;
-    padding-right: 400px;
+    padding-right: 380px;
 }
 
 .routingArea .normalBackground {
     padding-left: 200px;
-    padding-right: 200px;
+    padding-right: 180px;
 }
 
 .routingArea .main {
     display: flex;
     flex-direction: column;
     flex: 1;
-    border-left: solid 1px #cccccc;
-    border-right: solid 1px #cccccc;
+    border-left: solid 1px #e5e5e5;
+    border-right: solid 1px #e5e5e5;
     background-color: #ffffff;
 }
 

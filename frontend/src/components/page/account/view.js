@@ -358,13 +358,13 @@ function AccountView() {
                     </div>
                 </div>
                 {
-                    loggedAccount instanceof Object && loggedAccount?.id === Number(id) ?
+                    loggedAccount?.id !== undefined && loggedAccount?.id === Number(id) ?
                         <ButtonGroup options={[{ text: "Edit", operation: handleEdit }, { text: "Log out", operation: handleConfirmLogOut }, { text: "Delete", operation: handleConfirmDelete }]} /> :
                         <></>
                 }
             </div>
             {
-                (loggedAccount instanceof Object && loggedAccount?.id === Number(id)) || account?.privacy ?
+                (loggedAccount?.id !== undefined && loggedAccount?.id === Number(id)) || account?.privacy ?
                     <>
                         <ButtonMode
                             modes={[{ text: "Bookshelves", type: "bookshelves" }, { text: "Reviews", type: "reviews" }, { text: "Biography", type: "biography" }]}
@@ -380,7 +380,7 @@ function AccountView() {
                                     mode === "bookshelves" ?
                                         <div className="innerInfoBox bookshelvesBox">
                                             {
-                                                loggedAccount instanceof Object && loggedAccount?.id === Number(id) ?
+                                                loggedAccount?.id !== undefined && loggedAccount?.id === Number(id) ?
                                                     <Link to={"/bookshelf/create"}>
                                                         <button
                                                             className="createBookshelfButton"

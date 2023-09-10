@@ -39,6 +39,14 @@ function ReviewCard({ review, linkable }) {
         [confirm]
     );
 
+    function handleClick(event)
+    {
+        if (!linkable && event?.target?.closest(".optionButton") === null)
+        {
+            navigate("/book/view/" + review.bookApiId);
+        }
+    }
+
     function handleFormatDate(date) {
         if (date !== null && date !== undefined) {
             var dateArray = date?.split("-");
@@ -49,8 +57,18 @@ function ReviewCard({ review, linkable }) {
             return undefined;
         }
     }
+
     function handleConfirmDelete() {
-        setConfirm([{ identifier: "delete" + review?.id, text: "Delete review of book " + review?.title + "?", options: [{ type: "deleteReview" + review?.id, text: "Delete" }, { type: "cancel", text: "Cancel" }] }]);
+        var newText;
+        if (review?.title !== undefined)
+        {
+            newText = "Delete review of book " + review?.title + "?";
+        }
+        else
+        {
+            newText = "Delete review of book?";
+        }
+        setConfirm([{ identifier: "delete" + review?.id, text: newText, options: [{ type: "deleteReview" + review?.id, text: "Delete" }, { type: "cancel", text: "Cancel" }] }]);
     }
 
     function handleEdit() {
@@ -91,24 +109,21 @@ function ReviewCard({ review, linkable }) {
 
 
     return (
-        <div className="reviewCardArea">
+        <div className={"reviewCardArea"+(!linkable? " cardButton" : "")} onClick={(event) => {handleClick(event)}}>
             {
                 !linkable ?
-                    <Link
+                    <div
                         className="cover"
                         style={{ backgroundImage: "url(" + review?.cover + ")" }}
-                        to = {"/book/view/" + review.bookApiId}
                     /> : <></>
             }
             <div className="info">
                 {
                     !linkable ?
-                        <Link className="title"
-                        to = {"/book/view/" + review.bookApiId}>
+                        <div className="title">
                             {review?.title}
-                        </Link> : <></>
+                        </div> : <></>
                 }
-
                 <div className="middleBox">
                     {
                         linkable ?
@@ -126,7 +141,7 @@ function ReviewCard({ review, linkable }) {
                     {
                         review?.bookScore !== null ?
                             <div className="bookScore">
-                                {review?.bookScore} ★
+                                {review?.bookScore} <b>★</b>
                             </div> : <></>
                     }
                 </div>
@@ -134,8 +149,8 @@ function ReviewCard({ review, linkable }) {
                     {review?.text}
                 </div>
                 {
-                    loggedAccount instanceof Object && loggedAccount?.id === review?.owner?.id ?
-                        <ButtonGroup options={[{ text: "Edit", operation: handleEdit }, { text: "Delete", operation: handleConfirmDelete }]} /> :
+                    loggedAccount?.id !== undefined && loggedAccount?.id === review?.owner?.id ?
+                        <ButtonGroup options={[{ text: "Edit", operation: handleEdit }, { text: "Delete", operation: handleConfirmDelete }]}/> :
                         <></>
                 }
             </div>

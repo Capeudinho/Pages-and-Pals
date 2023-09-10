@@ -61,53 +61,53 @@ function SearchAdvanced() {
                 setMode={(newMode) => setSearchParams({ ...searchParams, resultType: newMode })}
                 appearance={"switch"}
             />
-
             {searchParams.resultType === "book" || searchParams.resultType === "all" ?
                 <>
-                    <div className="label">Term:</div>
+                    <div className="bigLabel">Book</div>
+                    <div className="label">Term</div>
                     <input
                         type="text"
-                        placeholder="Search term"
+                        placeholder="Optional"
                         value={searchParams.term}
                         onChange={(e) => setSearchParams({ ...searchParams, term: e.target.value })}
                         spellCheck={false}
                     />
-                    <div className="label">Title:</div>
+                    <div className="label">Title</div>
                     <input
                         type="title"
-                        placeholder="Search title"
+                        placeholder="Optional"
                         value={searchParams.title}
                         onChange={(e) => setSearchParams({ ...searchParams, title: e.target.value })}
                         spellCheck={false}
                     />
-                    <div className="label">Author:</div>
+                    <div className="label">Author</div>
                     <input
                         type="author"
-                        placeholder="Search author"
+                        placeholder="Optional"
                         value={searchParams.author}
                         onChange={(e) => setSearchParams({ ...searchParams, author: e.target.value })}
                         spellCheck={false}
                     />
-                    <div className="label">Subject:</div>
+                    <div className="label">Subject</div>
                     <input
                         type="subject"
-                        placeholder="Search subject"
+                        placeholder="Optional"
                         value={searchParams.subject}
                         onChange={(e) => setSearchParams({ ...searchParams, subject: e.target.value })}
                         spellCheck={false}
                     />
-                    <div className="label">Publisher:</div>
+                    <div className="label">Publisher</div>
                     <input
                         type="publisher"
-                        placeholder="Search publisher"
+                        placeholder="Optional"
                         value={searchParams.publisher}
                         onChange={(e) => setSearchParams({ ...searchParams, publisher: e.target.value })}
                         spellCheck={false}
                     />
-                    <div className="label">Isbn:</div>
+                    <div className="label">ISBN</div>
                     <input
                         type="isbn"
-                        placeholder="Search isbn"
+                        placeholder="Optional"
                         value={searchParams.isbn}
                         onChange={(e) => setSearchParams({ ...searchParams, isbn: e.target.value })}
                         spellCheck={false}
@@ -117,18 +117,19 @@ function SearchAdvanced() {
 
             {searchParams.resultType === "bookshelf" || searchParams.resultType === "all" ?
                 <>
-                    <div className="label">Bookshelf Name:</div>
+                    <div className="bigLabel">Bookshelf</div>
+                    <div className="label">Name</div>
                     <input
                         type="bookshelfName"
-                        placeholder="Search name"
+                        placeholder="Optional"
                         value={searchParams.bookshelfName}
                         onChange={(e) => setSearchParams({ ...searchParams, bookshelfName: e.target.value })}
                         spellCheck={false}
                     />
-                    <div className="label">Owner Name:</div>
+                    <div className="label">Owner name</div>
                     <input
                         type="ownerName"
-                        placeholder="Search owner"
+                        placeholder="Optional"
                         value={searchParams.ownerName}
                         onChange={(e) => setSearchParams({ ...searchParams, ownerName: e.target.value })}
                         spellCheck={false}

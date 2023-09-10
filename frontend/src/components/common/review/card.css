@@ -8,6 +8,12 @@
     border-radius: 5px;
 }
 
+.cardButton:hover:not(:has(.optionButton:hover))
+{
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
 .reviewCardArea .cover
 {
     height: 90px;
@@ -29,7 +35,9 @@
 .reviewCardArea .title
 {
     font-size: 20.25px;
-    line-height: 15px;
+    line-height: 25px;
+    margin-top: -5px;
+    margin-bottom: -5px;
 }
 
 .reviewCardArea .middleBox
@@ -49,14 +57,14 @@
     align-items: center;
 }
 
-.reviewCardArea .ownerPicture
+.reviewCardArea .creationDate
 {
-    height: 30px;
-    width: 30px;
-    border-radius: 5px;
-    background-size: cover;
-    background-position: center;
-    background-color: #e5e5e5;
+    white-space: nowrap;
+}
+
+.reviewCardArea .editionDate
+{
+    white-space: nowrap;
 }
 
 .reviewCardArea .bookScore
