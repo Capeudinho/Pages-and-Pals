@@ -101,8 +101,6 @@ public class ReviewController {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		} catch (IncorrectBookIdException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect book id");
-		} catch (DuplicateReviewException exception) {
-			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("duplicate review");
 		} catch (InvalidReviewCountException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT).body("invalid review count");
 		} catch (AuthenticationFailedException exception) {
@@ -152,7 +150,7 @@ public class ReviewController {
 
 	@GetMapping("findbyowneridpaginate/{ownerId}")
 	public ResponseEntity<?> findByOwnerIdPaginate(@PathVariable long ownerId,
-			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit)
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit)
 			throws Exception {
 		ResponseEntity<Object> responseEntity;
 		try {
@@ -162,6 +160,8 @@ public class ReviewController {
 			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("incorrect id");
 		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+		} catch (BookNotFoundException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("book not found");
 		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
@@ -170,7 +170,7 @@ public class ReviewController {
 
 	@GetMapping("findownbyowneridpaginate/{ownerId}")
 	public ResponseEntity<?> findOwnByOwnerIdPaginate(@PathVariable long ownerId,
-			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit,
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit,
 			@RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
 		try {
@@ -183,6 +183,8 @@ public class ReviewController {
 			responseEntity = ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("authentication failed");
 		} catch (AccessDeniedException exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.FORBIDDEN).body("acess denied");
+		} catch (BookNotFoundException exception) {
+			responseEntity = ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("book not found");
 		} catch (Exception exception) {
 			responseEntity = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
 		}
@@ -191,7 +193,7 @@ public class ReviewController {
 
 	@GetMapping("findbybookapiidpaginate/{bookApiId}")
 	public ResponseEntity<?> reviewFindByBookApiIdPaginate(@PathVariable String bookApiId,
-			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit)
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit)
 			throws Exception {
 		ResponseEntity<Object> responseEntity;
 		try {
@@ -205,7 +207,7 @@ public class ReviewController {
 
 	@GetMapping("findbybookapiidpaginateautenticaded/{bookApiId}")
 	public ResponseEntity<?> reviewFindByBookApiIdPaginateAutenticaded(@PathVariable String bookApiId,
-			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "0") int limit,
+			@RequestParam(defaultValue = "0") int offset, @RequestParam(defaultValue = "1") int limit,
 			@RequestHeader("email") String email, @RequestHeader("password") String password) throws Exception {
 		ResponseEntity<Object> responseEntity;
 		try {
