@@ -566,6 +566,7 @@ public class Facade {
 			String resultType, Account account) throws Exception {
 		List<Map<String, Object>> results = new ArrayList<>();
 		List<Map<String, Object>> bookResults = new ArrayList<>();
+		List<Map<String, Object>> bookshelfBookResults = new ArrayList<>();
 		List<Map<String, Object>> bookshelfCards = new ArrayList<>();
 		List<Bookshelf> bookshelfResults = new ArrayList<>();
 		List<String> bookApiIds = new ArrayList<>();
@@ -575,9 +576,8 @@ public class Facade {
 		if (limit < 1) {
 			limit = 1;
 		}
-		bookResults = googleBooksService.findByAdvanced(term, title, author, subject, publisher, isbn,
-				offset, limit, "incomplete");
 		if ("all".equals(resultType) || "book".equals(resultType)) {
+			bookResults = googleBooksService.findByAdvanced(term, title, author, subject, publisher, isbn, offset, limit, "incomplete");
 			for (int index = 0; index < bookResults.size(); index++) {
 				Double score = bookService.findScoreByApiId((String) bookResults.get(index).get("apiId"));
 				if (score != null) {
@@ -590,9 +590,10 @@ public class Facade {
 			results.addAll(bookResults);
 		}
 		if ("all".equals(resultType) || "bookshelf".equals(resultType)) {
-			for (int index = 0; index < bookResults.size(); index++)
+			bookshelfBookResults = googleBooksService.findByAdvanced(term, title, author, subject, publisher, isbn, 0, 20, "incomplete");
+			for (int index = 0; index < bookshelfBookResults.size(); index++)
 			{
-				bookApiIds.add((String)bookResults.get(index).get("apiId"));
+				bookApiIds.add((String)bookshelfBookResults.get(index).get("apiId"));
 			}
 			if (account == null) {
 				bookshelfResults = bookshelfService.findByAdvanced(ownerName, bookshelfName, bookApiIds, offset, limit);
