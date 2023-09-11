@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,6 +19,7 @@ public class Bookshelf {
 	private String name;
 	@Column(columnDefinition = "TEXT")
 	private String description;
+	@ElementCollection
 	private List<String> bookApiIds;
 	private LocalDate creationDate;
 	private boolean privacy;

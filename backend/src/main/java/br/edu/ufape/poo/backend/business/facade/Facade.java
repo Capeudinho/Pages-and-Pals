@@ -568,15 +568,16 @@ public class Facade {
 		List<Map<String, Object>> bookResults = new ArrayList<>();
 		List<Map<String, Object>> bookshelfCards = new ArrayList<>();
 		List<Bookshelf> bookshelfResults = new ArrayList<>();
+		List<String> bookApiIds = new ArrayList<>();
 		if (offset < 0) {
 			offset = 0;
 		}
 		if (limit < 1) {
 			limit = 1;
 		}
+		bookResults = googleBooksService.findByAdvanced(term, title, author, subject, publisher, isbn,
+				offset, limit, "incomplete");
 		if ("all".equals(resultType) || "book".equals(resultType)) {
-			bookResults = googleBooksService.advancedSearchResults(term, title, author, subject, publisher, isbn,
-					offset, limit, "incomplete");
 			for (int index = 0; index < bookResults.size(); index++) {
 				Double score = bookService.findScoreByApiId((String) bookResults.get(index).get("apiId"));
 				if (score != null) {
@@ -589,12 +590,15 @@ public class Facade {
 			results.addAll(bookResults);
 		}
 		if ("all".equals(resultType) || "bookshelf".equals(resultType)) {
+			for (int index = 0; index < bookResults.size(); index++)
+			{
+				bookApiIds.add((String)bookResults.get(index).get("apiId"));
+			}
 			if (account == null) {
-				bookshelfResults = bookshelfService.findByPublicAndOwnerNameAndBookshelfName(ownerName, bookshelfName,
-						offset, limit);
+				bookshelfResults = bookshelfService.findByAdvanced(ownerName, bookshelfName, bookApiIds, offset, limit);
 			} else {
-				bookshelfResults = bookshelfService.findByPublicOrOwnerIdAndOwnerNameAndBookshelfName(ownerName,
-						bookshelfName, account.getId(), offset, limit);
+				bookshelfResults = bookshelfService.findByAdvancedAutheticated(ownerName, bookshelfName, bookApiIds, account.getId(),
+						offset, limit);
 			}
 			bookshelfCards = bookshelfExtractCards(bookshelfResults, account);
 			results.addAll(bookshelfCards);

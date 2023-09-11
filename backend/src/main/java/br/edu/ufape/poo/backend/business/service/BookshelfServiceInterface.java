@@ -14,7 +14,7 @@ public interface BookshelfServiceInterface {
 	public Bookshelf findById(long id) throws Exception;
 	public List<Bookshelf> findByOwnerId(long id);
 	public List<Bookshelf> findByOwnerIdPaginate(long id, int offset, int limit);
-	public List<Bookshelf> findByPublicOrOwnerIdAndOwnerNameAndBookshelfName(String ownerName, String bookshelfName, long ownerId, int offset, int limit);
-	public List<Bookshelf> findByPublicAndOwnerNameAndBookshelfName(String ownerName, String bookshelfName, int offset, int limit);
+	public List<Bookshelf> findByAdvancedAutheticated(String ownerName, String bookshelfName, List<String> bookApiIds, long ownerId, int offset, int limit);
+	public List<Bookshelf> findByAdvanced(String ownerName, String bookshelfName, List<String> bookApiIds, int offset, int limit);
 	public int countByOwnerId(long id);
 }

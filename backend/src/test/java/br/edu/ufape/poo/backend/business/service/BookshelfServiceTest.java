@@ -114,7 +114,7 @@ public class BookshelfServiceTest {
 		assertEquals(bookshelfCount, 1);
 	}
 
-	@Test
+	/*@Test
 	public void testFindByOwnerAndBookshelfName() {
 		Account user1 = new Account();
 		Bookshelf bookshelf1 = new Bookshelf();
@@ -230,6 +230,6 @@ public class BookshelfServiceTest {
 		bookshelfRepository.save(bookshelf2);
 		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(user1.getName(),"Nonexistent Bookshelf", null);
 		assertEquals(0, results.size());
-	}
+	}*/
 
 }

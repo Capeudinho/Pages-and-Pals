@@ -78,7 +78,7 @@ public class BookController {
 			responseEntity = new ResponseEntity<List<Map<String, Object>>>(resultsList, HttpStatus.OK);
 			return responseEntity;
 		} catch (Exception exception) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception);
 		}
 	}
 }

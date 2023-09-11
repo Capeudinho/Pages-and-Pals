@@ -18,49 +18,49 @@ public class GoogleBooksServiceTest {
 
 	@Test
 	public void advancedSearchTerm() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults("flowers", null, null, null, null, null, 0, 1, "incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced("flowers", null, null, null, null, null, 0, 1, "incomplete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	public void advancedSearchTitle() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults(null, "flowers", null, null, null, null, 0, 1, "incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced(null, "flowers", null, null, null, null, 0, 1, "incomplete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	public void advancedSearchAuthor() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults(null, null, "shakespeare", null, null, null, 0, 1, "incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced(null, null, "shakespeare", null, null, null, 0, 1, "incomplete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	public void advancedSearchSubject() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults(null, null, null, "fiction", null, null, 0, 1, "incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced(null, null, null, "fiction", null, null, 0, 1, "incomplete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	public void advancedSearchPublisher() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults(null, null, null, null, "penguin", null, 0, 1, "incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced(null, null, null, null, "penguin", null, 0, 1, "incomplete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	public void advancedSearchIsbn() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults(null, null, null, null, null, "9786555524697", 0, 1, "incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced(null, null, null, null, null, "9786555524697", 0, 1, "incomplete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	public void advancedSearchMaxResults() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults(null, null, null, null, "penguin", null, 0, 3, "incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced(null, null, null, null, "penguin", null, 0, 3, "incomplete");
 		assertFalse(results.isEmpty());
 	}
 
 	@Test
 	public void advancedSearchStartIndex() {
-		List<Map<String, Object>> results = googleBooksService.advancedSearchResults(null, null, null, null, "penguin", null, 3, 1,"incomplete");
+		List<Map<String, Object>> results = googleBooksService.findByAdvanced(null, null, null, null, "penguin", null, 3, 1,"incomplete");
 		assertFalse(results.isEmpty());
 	}
 

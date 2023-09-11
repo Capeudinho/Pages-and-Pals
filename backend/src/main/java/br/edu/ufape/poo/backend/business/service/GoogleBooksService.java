@@ -29,7 +29,7 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 			throw new BookNotFoundException();
 		}
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
-		bookInfo = extractBookInformationUtility(jsonObject, extractInfo);
+		bookInfo = extractInformationUtility(jsonObject, extractInfo);
 		if (bookInfo == null) {
 			throw new BookNotFoundException();
 		}
@@ -58,25 +58,25 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		return cover;
 	}
 
-	public List<Map<String, Object>> advancedSearchResults(String term, String title, String author, String subject,
+	public List<Map<String, Object>> findByAdvanced(String term, String title, String author, String subject,
 			String publisher, String isbn, int startIndex, int maxResults, String extractInfo) {
 		Map<String, Object> preview = new HashMap<>();
 		List<Map<String, Object>> previews = new ArrayList<>();
-		String response = advancedSearchUtility(term, title, author, subject, publisher, isbn, startIndex, maxResults);
+		String response = findByAdvancedUtility(term, title, author, subject, publisher, isbn, startIndex, maxResults);
 		Gson gson = new Gson();
 		JsonObject jsonObject = gson.fromJson(response, JsonObject.class);
 		if (jsonObject != null && jsonObject.get("items") != null) {
 			JsonArray items = jsonObject.get("items").getAsJsonArray();
 			for (int index = 0; index < items.size(); index++) {
 				JsonObject bookObject = items.get(index).getAsJsonObject();
-				preview = extractBookInformationUtility(bookObject, extractInfo);
+				preview = extractInformationUtility(bookObject, extractInfo);
 				previews.add(preview);
 			}
 		}
 		return previews;
 	}
 
-	private String advancedSearchUtility(String term, String title, String author, String subject, String publisher,
+	private String findByAdvancedUtility(String term, String title, String author, String subject, String publisher,
 			String isbn, int startIndex, int maxResults) {
 		String filter = "";
 		String filters = "";
@@ -122,7 +122,7 @@ public class GoogleBooksService implements GoogleBooksServiceInterface {
 		return response;
 	}
 
-	private Map<String, Object> extractBookInformationUtility(JsonObject jsonObject, String extractAllData) {
+	private Map<String, Object> extractInformationUtility(JsonObject jsonObject, String extractAllData) {
 		Map<String, Object> bookInfo;
 		String apiId = "";
 		String title = "";
