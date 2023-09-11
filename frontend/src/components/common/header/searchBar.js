@@ -64,6 +64,9 @@ function SearchBar() {
             newSearch = newSearch + "term=" + searchTerm + "&resulttype=book";
             navigate("/search/results" + newSearch);
         }
+        else{
+            setAlert([{type: "warning", text: "Empty search request."}]);
+        }
     }
 
     function handleConfirmLogOut() {

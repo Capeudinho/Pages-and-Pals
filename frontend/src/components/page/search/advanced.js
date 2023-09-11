@@ -2,11 +2,12 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import ButtonMode from "../../common/button/mode.js";
+import alertContext from "../../context/alert.js";
 
 import "./advanced.css";
 
 function SearchAdvanced() {
-
+    const {alert, setAlert} = useContext(alertContext);
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useState({
         term: "",
@@ -22,34 +23,48 @@ function SearchAdvanced() {
 
     const handleSearch = async () => {
         var newSearch = "?";
+        var flag = false;
         if (searchParams.term !== "") {
+            flag = true;
             newSearch = newSearch + "term=" + searchParams.term + "&";
         }
         if (searchParams.title !== "") {
+            flag = true;
             newSearch = newSearch + "title=" + searchParams.title + "&";
         }
         if (searchParams.author !== "") {
+            flag = true;
             newSearch = newSearch + "author=" + searchParams.author + "&";
         }
         if (searchParams.subject !== "") {
+            flag = true;
             newSearch = newSearch + "subject=" + searchParams.subject + "&";
         }
         if (searchParams.publisher !== "") {
+            flag = true;
             newSearch = newSearch + "publisher=" + searchParams.publisher + "&";
         }
         if (searchParams.isbn !== "") {
+            flag = true;
             newSearch = newSearch + "isbn=" + searchParams.isbn + "&";
         }
         if (searchParams.bookshelfName !== "") {
+            flag = true;
             newSearch = newSearch + "bookshelfname=" + searchParams.bookshelfName + "&";
         }
         if (searchParams.ownerName !== "") {
+            flag = true;
             newSearch = newSearch + "ownername=" + searchParams.ownerName + "&";
         }
 
         newSearch = newSearch + "resulttype=" + searchParams.resultType;
-
-        navigate("/search/results" + newSearch);
+        if(flag === true){
+            navigate("/search/results" + newSearch);
+        }
+        else{
+            setAlert([{type: "warning", text: "Empty filters."}]);
+        }
+       
     }
 
     return (

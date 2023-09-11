@@ -50,14 +50,19 @@ function Routing() {
                                 className="background normalBackground"
                             >
                                 <div className="main">
+                                    <img
+                                        className="bookCovers"
+                                        src={process.env.PUBLIC_URL + "/front page.svg"}
+                                    />
                                     <div className="firstPageTitle">
                                         Welcome to Pages & Pals!
                                     </div>
                                     <div className="firstPageSummary">
-                                        A place for you to share your love for books and literature. Here you can add books to 
+                                        A place for you to share your love for books and literature. Here you can add books to
                                         your <b>personalized bookshelves</b> and share your opinions by <b>writing inspiring reviews</b> as well
                                         as giving your readings ratings.
                                     </div>
+
                                 </div>
                             </div>
                         </div>

@@ -51,3 +51,7 @@
     align-self: center;
     color: #666666;
 }
+
+.routingArea .main .bookCovers{
+    filter: blur(3px); 
+}
