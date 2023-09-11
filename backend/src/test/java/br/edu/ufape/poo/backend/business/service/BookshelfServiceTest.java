@@ -114,7 +114,6 @@ public class BookshelfServiceTest {
 		assertEquals(bookshelfCount, 1);
 	}
 
-	/*@Test
 	public void testFindByOwnerAndBookshelfName() {
 		Account user1 = new Account();
 		Bookshelf bookshelf1 = new Bookshelf();
@@ -130,8 +129,8 @@ public class BookshelfServiceTest {
 		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-
-		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(user1.getName(), "Bookshelf 1", null);
+		List<String> bookApiIds = new ArrayList<String>();
+		List<Bookshelf> results = bookshelfRepository.findByAdvanced(user1.getName(), "Bookshelf 1", bookApiIds, null);
 		assertEquals(results.size(), 1);
 	}
 
@@ -150,7 +149,8 @@ public class BookshelfServiceTest {
 		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(null, null, null);
+		List<String> bookApiIds = new ArrayList<String>();
+		List<Bookshelf> results = bookshelfRepository.findByAdvanced(null, null, bookApiIds, null);
 		assertEquals(results.size(), 0);
 	}
 
@@ -170,7 +170,8 @@ public class BookshelfServiceTest {
 		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(null, "Bookshelf 1", null);
+		List<String> bookApiIds = new ArrayList<String>();
+		List<Bookshelf> results = bookshelfRepository.findByAdvanced(null, "Bookshelf 1", bookApiIds, null);
 		assertEquals(results.size(), 1);
 	}
 
@@ -190,7 +191,8 @@ public class BookshelfServiceTest {
 		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(user1.getName(), null, null);
+		List<String> bookApiIds = new ArrayList<String>();
+		List<Bookshelf> results = bookshelfRepository.findByAdvanced(user1.getName(), null, bookApiIds, null);
 		assertEquals(results.size(), 2);
 	}
 
@@ -209,7 +211,8 @@ public class BookshelfServiceTest {
 		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName("Nonexistent User", "Bookshelf 1", null);
+		List<String> bookApiIds = new ArrayList<String>();
+		List<Bookshelf> results = bookshelfRepository.findByAdvanced("Nonexistent User", "Bookshelf 1", bookApiIds, null);
 		assertEquals(0, results.size());
 	}
 
@@ -228,8 +231,9 @@ public class BookshelfServiceTest {
 		bookshelf2.setPrivacy(true);
 		bookshelfRepository.save(bookshelf1);
 		bookshelfRepository.save(bookshelf2);
-		List<Bookshelf> results = bookshelfRepository.findByPublicAndOwnerNameAndBookshelfName(user1.getName(),"Nonexistent Bookshelf", null);
+		List<String> bookApiIds = new ArrayList<String>();
+		List<Bookshelf> results = bookshelfRepository.findByAdvanced(user1.getName(),"Nonexistent Bookshelf", bookApiIds, null);
 		assertEquals(0, results.size());
-	}*/
+	}
 
 }

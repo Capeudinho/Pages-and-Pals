@@ -29,6 +29,7 @@
 {
     font-size: 27px;
     line-height: 20px;
+    color: #666666;
 }
 
 .accountEnterArea .formBox
@@ -74,4 +75,9 @@
 .accountEnterArea .showPasswordButton:hover
 {
     background-color: #cccccc;
+}
+
+.accountEnterArea .logo {
+    height: 80px;
+    width: 210px;
 }

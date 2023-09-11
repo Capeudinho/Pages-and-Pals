@@ -139,7 +139,10 @@ function AccountEnter()
         <div className = "page accountEnterArea">
             <div className = "topBox">
                 <div className = "text">Welcome to</div>
-                <div className = "text">Pages & Pals</div>
+                <img
+                className="logo"
+                src={process.env.PUBLIC_URL + "/large logo.svg"}
+                />
             </div>
             <ButtonMode
             modes = {[{text: "Log in", type: "login"}, {text: "Sign up", type: "signup"}]}

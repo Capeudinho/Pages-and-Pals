@@ -6,19 +6,20 @@ import "./link.css";
 function AccountLink({account})
 {
     return (
-        <div className = "accountLinkArea">
-            <Link to = {"/account/view/"+account?.id}>
-                <div
-                className = "accountPicture"
-                style = {{backgroundImage: "url("+account?.picture+")"}}
-                />
-                <div
-                className = "accountName"
-                >
-                    {account?.name}
-                </div>
-            </Link>
-        </div>
+        <Link
+        className = "accountLinkArea"
+        to = {"/account/view/"+account?.id}
+        >
+            <div
+            className = "accountPicture"
+            style = {{backgroundImage: "url("+account?.picture+")"}}
+            />
+            <div
+            className = "accountName"
+            >
+                {account?.name}
+            </div>
+        </Link>
     );
 }
 

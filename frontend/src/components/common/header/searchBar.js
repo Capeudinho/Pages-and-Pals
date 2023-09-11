@@ -61,11 +61,11 @@ function SearchBar() {
     const handleSearch = async () => {
         var newSearch = "?";
         if (searchTerm !== "") {
-            newSearch = newSearch + "term=" + searchTerm + "&resulttype=book";
+            newSearch = newSearch + "term=" + searchTerm + "&resulttype=all";
             navigate("/search/results" + newSearch);
         }
         else{
-            setAlert([{type: "warning", text: "Empty search request."}]);
+            setAlert([{type: "warning", text: "Empty filter."}]);
         }
     }
 
@@ -93,7 +93,7 @@ function SearchBar() {
             </div>
             <div className="middleBox">
                 <div className="searchBox">
-                    <div className="label">Search books</div>
+                    <div className="label">Search books, and bookshelves</div>
                     <div className="inputGroup">
                         <input type="text"
                         value={searchTerm}

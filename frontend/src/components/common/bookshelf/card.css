@@ -1,10 +1,5 @@
 .bookshelfCardArea
 {
-    color: #191919;
-}
-
-.bookshelfCardArea .bookshelf
-{
     display: flex;
     flex-direction: row;
     gap: 10px;
@@ -14,9 +9,10 @@
     border-radius: 5px;
 }
 
-.bookshelfCardArea .bookshelf:hover
+.bookshelfCardArea:hover:not(:has(.accountLinkArea:hover))
 {
     background-color: #f2f2f2;
+    cursor: pointer;
 }
 
 .bookshelfCardArea .info
