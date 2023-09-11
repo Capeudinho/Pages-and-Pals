@@ -81,3 +81,10 @@
     height: 80px;
     width: 210px;
 }
+
+.accountEnterArea .mainPageLink {
+    width: fit-content;
+    margin-top: auto;
+    align-self: center;
+    color: #666666;
+}

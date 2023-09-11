@@ -87,7 +87,7 @@ function SearchBar() {
                     to={"/"}>
                     <img
                         className="logo"
-                        src={process.env.PUBLIC_URL + "/large logo.svg"}
+                        src={process.env.PUBLIC_URL + "/logo.svg"}
                     />
                 </Link>
             </div>

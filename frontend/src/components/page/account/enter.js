@@ -1,5 +1,5 @@
 import React, {useState, useContext} from "react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import api from "../../../services/api.js";
 
 import loggedAccountContext from "../../context/loggedAccount.js";
@@ -141,7 +141,7 @@ function AccountEnter()
                 <div className = "text">Welcome to</div>
                 <img
                 className="logo"
-                src={process.env.PUBLIC_URL + "/large logo.svg"}
+                src={process.env.PUBLIC_URL + "/logo.svg"}
                 />
             </div>
             <ButtonMode
@@ -213,6 +213,11 @@ function AccountEnter()
                     </>
                 }
             </div>
+            <Link
+            className="mainPageLink"
+            to={"/"}>
+                Go back to main page
+            </Link>
         </div>
     );
 }
